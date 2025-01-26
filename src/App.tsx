@@ -1,5 +1,8 @@
+import { RouterProvider } from 'react-router';
+import { routes } from './routes';
+
 const App = () => {
-  return <div className=''>JIRA CLONE</div>;
+  return <RouterProvider router={routes} />;
 };
 
 export default App;
