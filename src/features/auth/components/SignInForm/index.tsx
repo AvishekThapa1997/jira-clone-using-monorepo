@@ -1,12 +1,10 @@
-import { Box, Button, TextField } from '@radix-ui/themes';
-import { Form, useActionData, useNavigation } from 'react-router';
-import { PasswordInput } from '../PasswordInput';
-import { SIGNIN_FORM_FIELDS } from '../../constants';
-import type { SignInAction } from '../../action';
+import { Box, TextField } from '@radix-ui/themes';
+import { Form, useNavigation } from 'react-router';
 import { LoadingButton } from '../../../../shared/components/ui';
+import { SIGNIN_FORM_FIELDS } from '../../constants';
+import { PasswordInput } from '../PasswordInput';
 
 const SignInForm = () => {
-  const result = useActionData<SignInAction>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
 

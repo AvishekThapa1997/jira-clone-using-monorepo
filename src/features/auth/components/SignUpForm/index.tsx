@@ -1,9 +1,9 @@
-import { Box, Button, TextField } from '@radix-ui/themes';
+import { Box, TextField } from '@radix-ui/themes';
 import { Form, useActionData, useNavigation } from 'react-router';
+import { LoadingButton } from '../../../../shared/components/ui';
 import type { SignUpAction } from '../../action';
 import { SIGNUP_FORM_FIELDS } from '../../constants';
 import { PasswordInput } from '../PasswordInput';
-import { LoadingButton } from '../../../../shared/components/ui';
 
 const SignUpForm = () => {
   const result = useActionData<SignUpAction>();
