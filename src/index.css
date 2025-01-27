@@ -10,3 +10,11 @@ a {
   text-decoration: underline;
   color: rgb(59 130 246 / 1);
 }
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}

@@ -17,14 +17,13 @@ const PasswordInput = ({ inputProps, slotProps }: PasswordInputProps) => {
   const handlePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
-  console.log({ showPassword });
   const type: PasswordInputType = showPassword ? 'text' : 'password';
   return (
     <TextField.Root
       size={size ?? '2'}
-      type={type}
       placeholder={placeholder ?? 'Enter password'}
       {...(_inputProps ? _inputProps : {})}
+      type={type}
     >
       <TextField.Slot side='right' gap='2' {...(_slotProps ? _slotProps : {})}>
         <Button
