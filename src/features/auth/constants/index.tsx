@@ -1,40 +1,44 @@
-import { TextField } from '@radix-ui/themes';
+import { TextFieldProps } from '@mui/material';
 
 export const PASSWORD_LENGTH = {
   MIN: 8,
   MAX: 16,
 };
 
-export const SIGNIN_FORM_FIELDS: Array<
-  TextField.RootProps & { label: string }
-> = [
+export const SIGNIN_FORM_FIELDS: Array<TextFieldProps> = [
   {
     name: 'email',
     type: 'email',
     required: true,
     placeholder: 'Enter email',
-    label: 'email',
+    'aria-label': 'email',
+    hiddenLabel: true,
+    fullWidth: true,
   },
   {
     name: 'password',
     type: 'password',
     required: true,
     placeholder: 'Enter password',
-    minLength: PASSWORD_LENGTH.MIN,
-    maxLength: PASSWORD_LENGTH.MAX,
-    label: 'password',
+    'aria-label': 'password',
+    fullWidth: true,
+    slotProps: {
+      // htmlInput: {
+      //   minLength: PASSWORD_LENGTH.MIN,
+      //   maxLength: PASSWORD_LENGTH.MAX,
+      // },
+    },
   },
 ];
 
-export const SIGNUP_FORM_FIELDS: Array<
-  TextField.RootProps & { label: string }
-> = [
+export const SIGNUP_FORM_FIELDS: Array<TextFieldProps> = [
   {
     type: 'text',
     required: true,
-    label: 'username',
+    'aria-label': 'username',
     placeholder: 'Enter name',
     name: 'name',
+    fullWidth: true,
   },
   ...SIGNIN_FORM_FIELDS,
 ];

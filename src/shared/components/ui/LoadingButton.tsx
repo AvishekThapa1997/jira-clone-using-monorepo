@@ -1,14 +1,24 @@
-import { Button, ButtonProps, Spinner } from '@radix-ui/themes';
+import { Button, ButtonProps } from '@mui/material';
 
 const LoadingButton = ({
   children,
   loading,
   disabled,
+  loadingIndicator,
+  variant = 'contained',
+  size = 'large',
+  loadingPosition = 'start',
   ...props
 }: ButtonProps) => {
   return (
-    <Button {...props} disabled={disabled}>
-      <Spinner loading={!!loading} />
+    <Button
+      {...props}
+      variant={variant}
+      size={size}
+      loading={loading}
+      loadingIndicator={loadingIndicator}
+      loadingPosition={loadingPosition}
+    >
       {children}
     </Button>
   );

@@ -18,3 +18,8 @@ button:not(:disabled) {
 button:disabled {
   cursor: not-allowed;
 }
+
+/*Do it later using custom theme*/
+input:disabled {
+  cursor: not-allowed;
+}

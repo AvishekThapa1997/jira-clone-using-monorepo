@@ -6,7 +6,7 @@ export const useSignOut = () => {
     mutationKey: ['user-signout'],
     mutationFn: () => signOutUser(),
     onSuccess() {
-      window.location.href = '/';
+      window.location.href = '/auth/sign-in';
     },
   });
 };

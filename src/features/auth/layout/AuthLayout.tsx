@@ -1,21 +1,30 @@
-import { Box, Card, Flex } from '@radix-ui/themes';
 import { Outlet } from 'react-router';
 import { OAuthButtonSection } from '../components';
+import { Box, Container, Paper, Stack } from '@mui/material';
 
 const AuthLayout = () => {
   return (
-    <main className='h-svh'>
-      <Flex className='h-full' align='center' justify='center'>
-        <Box className='basis-full max-w-md mx-auto'>
-          <Card size='3' className='p-6'>
-            <Outlet />
-            <Box className='pt-6 border-t'>
-              <OAuthButtonSection />
+    <Box minHeight='100svh'>
+      <Stack
+        height='100%'
+        direction='column'
+        alignItems='center'
+        justifyContent='center'
+        paddingY={4}
+        paddingX={2}
+      >
+        <Container maxWidth='sm'>
+          <Paper>
+            <Box padding={4}>
+              <Outlet />
+              <Box>
+                <OAuthButtonSection />
+              </Box>
             </Box>
-          </Card>
-        </Box>
-      </Flex>
-    </main>
+          </Paper>
+        </Container>
+      </Stack>
+    </Box>
   );
 };
 

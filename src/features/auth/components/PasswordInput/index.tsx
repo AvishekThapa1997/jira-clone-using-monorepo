@@ -1,42 +1,47 @@
-import { Button, TextField } from '@radix-ui/themes';
-import { Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import {
+  IconButton,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+} from '@mui/material';
 
-interface PasswordInputProps {
-  inputProps?: Omit<TextField.RootProps, 'type'>;
-  slotProps?: TextField.SlotProps;
-}
+import { useState } from 'react';
 
 type PasswordInputType = 'text' | 'password';
 
-const PasswordInput = ({ inputProps, slotProps }: PasswordInputProps) => {
-  const [showPassword, setShowPassword] = useState(false);
+type PasswordInputProps = Omit<TextFieldProps, 'type'>;
 
-  const { size, placeholder, ..._inputProps } = inputProps ?? {};
-  const { side, gap, ..._slotProps } = slotProps ?? {};
+export const PasswordInput = ({ slotProps, ...props }: PasswordInputProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const inputType: PasswordInputType = showPassword ? 'text' : 'password';
+  const Icon = showPassword ? VisibilityIcon : VisibilityOffIcon;
   const handlePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
-  const type: PasswordInputType = showPassword ? 'text' : 'password';
+  const { input, ...remainingSlotProps } = slotProps ?? {};
   return (
-    <TextField.Root
-      size={size ?? '2'}
-      placeholder={placeholder ?? 'Enter password'}
-      {...(_inputProps ? _inputProps : {})}
-      type={type}
-    >
-      <TextField.Slot side='right' gap='2' {...(_slotProps ? _slotProps : {})}>
-        <Button
-          onClick={handlePasswordVisibility}
-          className='cursor-pointer text-gray-800'
-          type='button'
-          variant='ghost'
-        >
-          {showPassword ? <EyeOff size='20' /> : <Eye size='20' />}
-        </Button>
-      </TextField.Slot>
-    </TextField.Root>
+    <TextField
+      {...props}
+      type={inputType}
+      slotProps={{
+        input: {
+          ...(input ? input : {}),
+          ...(remainingSlotProps ? remainingSlotProps : {}),
+          endAdornment: (
+            <InputAdornment position='end'>
+              <IconButton
+                type='button'
+                onClick={handlePasswordVisibility}
+                disabled={props.disabled}
+              >
+                <Icon color='action' />
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
   );
 };
-
-export { PasswordInput };

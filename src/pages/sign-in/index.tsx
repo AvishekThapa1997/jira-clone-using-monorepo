@@ -1,27 +1,34 @@
-import { Box, Flex, Heading, Text } from '@radix-ui/themes';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { SignInForm } from '../../features/auth/components';
 import { Link } from 'react-router';
 
 const SignInPage = () => {
   return (
     <Box>
-      <input />
-      <Box className='text-center border-b pb-6'>
-        <Heading className='mb-1'>Welcome back!</Heading>
-        <Text className='text-gray-500 text-[13px]'>
+      <Box textAlign='center' paddingBottom={2}>
+        <Typography variant='h4' fontWeight='bold'>
+          Welcome back!
+        </Typography>
+        <Typography variant='body2' marginTop={0.5} color='textSecondary'>
           Enter your email and password to sign in
-        </Text>
+        </Typography>
       </Box>
+      <Divider />
       <Box className='py-6 space-y-2'>
         <SignInForm />
-        <Flex className='text-sm' justify='center' gap='2'>
-          <Text align='center' className='text-sm'>
-            Don't have an account?
-          </Text>
+        <Stack
+          direction='row'
+          className='text-sm'
+          justifyContent='center'
+          alignItems='center'
+          columnGap={0.5}
+        >
+          <Typography textAlign='center'>Don't have an account?</Typography>
+
           <Link className='underline' to='/auth/sign-up'>
             Sign up
           </Link>
-        </Flex>
+        </Stack>
       </Box>
     </Box>
   );

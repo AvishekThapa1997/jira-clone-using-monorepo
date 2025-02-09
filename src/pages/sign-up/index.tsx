@@ -1,27 +1,28 @@
-import { Box, Flex, Heading, Text } from '@radix-ui/themes';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import { SignUpForm } from '../../features/auth/components';
 import { Link } from 'react-router';
 
 const SignUpPage = () => {
   return (
     <Box>
-      <Box className='text-center border-b pb-6'>
-        <Heading className='mb-1'>Sign Up</Heading>
-        <Text align='left' className='text-gray-500 text-[13px]'>
+      <Box textAlign='center' paddingBottom={2}>
+        <Typography variant='h4' fontWeight='bold'>
+          Welcome back!
+        </Typography>
+        <Typography variant='body2' marginTop={0.5} color='textSecondary'>
           By signing up, you agree to our <Link to='/'>Privacy Policy</Link> and{' '}
           <Link to='/'>Terms of Service</Link>
-        </Text>
+        </Typography>
       </Box>
+      <Divider />
       <Box className='py-6 space-y-2'>
         <SignUpForm />
-        <Flex className='text-sm' justify='center' gap='2'>
-          <Text align='center' className='text-sm'>
-            Already have an account?
-          </Text>
+        <Stack direction='row' justifyContent='center' columnGap={0.5}>
+          <Typography alignItems='center'>Already have an account?</Typography>
           <Link className='underline' to='/auth/sign-in'>
             Sign in
           </Link>
-        </Flex>
+        </Stack>
       </Box>
     </Box>
   );

@@ -21,7 +21,7 @@ const useAuthStatus = () => {
   const isAuthInProgress =
     navigation.state === 'submitting' &&
     ['/auth/sign-in', '/auth/sign-up'].includes(navigation.location.pathname);
-  console.log({ navigation });
+  ({ navigation });
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

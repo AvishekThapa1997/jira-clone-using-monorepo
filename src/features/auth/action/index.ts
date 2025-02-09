@@ -12,7 +12,7 @@ export const signUpAction = async ({ request }: ActionFunctionArgs) => {
     password,
   });
   if (data?.id) {
-    window.location.href = '/';
+    window.location.href = '/dashboard';
     return;
   }
   return error;
@@ -27,7 +27,7 @@ export const signInAction = async ({ request }: ActionFunctionArgs) => {
     password,
   });
   if (data?.id) {
-    window.location.href = '/';
+    window.location.href = '/dashboard';
     return;
   }
   return error;

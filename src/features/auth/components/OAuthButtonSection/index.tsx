@@ -1,30 +1,39 @@
-import { Button, Flex } from '@radix-ui/themes';
 import { useAuth } from '../../../../shared/hooks/useAuth';
+import { Button, Stack } from '@mui/material';
 
 const OAuthButtonSection = () => {
   const { isAuthInProgress } = useAuth();
-  console.log({ isAuthInProgress });
+  ({ isAuthInProgress });
   return (
-    <Flex direction='column' gap='3'>
+    <Stack direction='column' rowGap={1.5}>
       <Button
-        className='cursor-pointer text-sm  ring-1 tracking-wide ring-gray-200 text-gray-600'
-        variant='outline'
+        variant='outlined'
+        size='large'
         type='button'
         disabled={isAuthInProgress}
-        size='3'
+        sx={{
+          color: 'GrayText',
+          borderColor: 'gray',
+          textTransform: 'none',
+        }}
       >
         Login With Google
       </Button>
       <Button
-        className='cursor-pointer text-sm ring-1 tracking-wide ring-gray-200 text-gray-600'
-        variant='outline'
+        size='large'
+        variant='outlined'
         disabled={isAuthInProgress}
         type='button'
-        size='3'
+        sx={{
+          color: 'GrayText',
+          borderColor: 'gray',
+          fontWeight: 'medium',
+          textTransform: 'none',
+        }}
       >
         Login with Github
       </Button>
-    </Flex>
+    </Stack>
   );
 };
 

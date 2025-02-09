@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { signInAction, signUpAction } from '../features/auth/action';
 import { AuthLayout } from '../features/auth/layout';
 import { DashboardLayout } from '../features/dashboard/layout/DashboardLayout';
@@ -22,7 +22,7 @@ const routes = createBrowserRouter([
         children: [
           {
             path: '/',
-            element: <AuthMiddlewareRoute />,
+            element: <Navigate to='/dashboard' replace={true} />,
           },
           {
             path: '/dashboard/',

@@ -1,15 +1,16 @@
-import { Box, TextField } from '@radix-ui/themes';
 import { Form, useActionData, useNavigation } from 'react-router';
 import { LoadingButton } from '../../../../shared/components/ui';
 import type { SignUpAction } from '../../action';
 import { SIGNUP_FORM_FIELDS } from '../../constants';
+import { Box, TextField } from '@mui/material';
 import { PasswordInput } from '../PasswordInput';
 
 const SignUpForm = () => {
   const result = useActionData<SignUpAction>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
-  console.log({ result });
+  ({ result });
+  console.log({ isSubmitting });
   return (
     <Form method='post' action='/auth/sign-up'>
       <Box className='space-y-4'>
@@ -17,39 +18,26 @@ const SignUpForm = () => {
           if (formField.type === 'password') {
             return (
               <Box key={index}>
-                <PasswordInput
-                  inputProps={{
-                    'aria-label': label,
-                    ...formField,
-                    className: 'text-sm',
-                    size: '3',
-                    disabled: isSubmitting,
-                  }}
-                />
+                <PasswordInput {...formField} />
               </Box>
             );
           }
           return (
             <Box key={index}>
-              <TextField.Root
-                {...formField}
-                size='3'
-                className='text-sm'
-                aria-label={label}
-                disabled={isSubmitting}
-              />
+              <TextField {...formField} />
             </Box>
           );
         })}
       </Box>
       <Box className='mt-6'>
         <LoadingButton
-          className='w-full text-sm tracking-wide cursor-pointer'
-          size='3'
-          disabled={isSubmitting}
+          type='submit'
           loading={isSubmitting}
+          fullWidth
+          size='large'
+          focusRipple={false}
         >
-          Login
+          Register
         </LoadingButton>
       </Box>
     </Form>
