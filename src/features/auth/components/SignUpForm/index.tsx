@@ -2,7 +2,8 @@ import { Form, useActionData, useNavigation } from 'react-router';
 import { LoadingButton } from '../../../../shared/components/ui';
 import type { SignUpAction } from '../../action';
 import { SIGNUP_FORM_FIELDS } from '../../constants';
-import { Box, TextField } from '@mui/material';
+
+import { Box, Input, VStack } from '@chakra-ui/react';
 import { PasswordInput } from '../PasswordInput';
 
 const SignUpForm = () => {
@@ -13,8 +14,8 @@ const SignUpForm = () => {
   console.log({ isSubmitting });
   return (
     <Form method='post' action='/auth/sign-up'>
-      <Box className='space-y-4'>
-        {SIGNUP_FORM_FIELDS.map(({ label, ...formField }, index) => {
+      <VStack gap={3} alignItems='stretch'>
+        {SIGNUP_FORM_FIELDS.map(({ ...formField }, index) => {
           if (formField.type === 'password') {
             return (
               <Box key={index}>
@@ -24,18 +25,17 @@ const SignUpForm = () => {
           }
           return (
             <Box key={index}>
-              <TextField {...formField} />
+              <Input {...formField} />
             </Box>
           );
         })}
-      </Box>
-      <Box className='mt-6'>
+      </VStack>
+      <Box marginBlockStart={5}>
         <LoadingButton
           type='submit'
           loading={isSubmitting}
-          fullWidth
-          size='large'
-          focusRipple={false}
+          loadingText='Register'
+          width='full'
         >
           Register
         </LoadingButton>

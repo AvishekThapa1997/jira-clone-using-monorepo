@@ -1,35 +1,33 @@
-import { Box, Divider, Stack, Typography } from '@mui/material';
 import { SignInForm } from '../../features/auth/components';
 import { Link } from 'react-router';
+import {
+  Box,
+  Heading,
+  HStack,
+  Separator,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 
 const SignInPage = () => {
   return (
     <Box>
-      <Box textAlign='center' paddingBottom={2}>
-        <Typography variant='h4' fontWeight='bold'>
-          Welcome back!
-        </Typography>
-        <Typography variant='body2' marginTop={0.5} color='textSecondary'>
+      <Box textAlign='center'>
+        <Heading size='4xl'> Welcome back!</Heading>
+        <Text marginBlockStart={1} textStyle='sm' color='gray.500'>
           Enter your email and password to sign in
-        </Typography>
+        </Text>
       </Box>
-      <Divider />
-      <Box className='py-6 space-y-2'>
+      <Separator marginBlock={4} />
+      <VStack alignItems='stretch' gap={4}>
         <SignInForm />
-        <Stack
-          direction='row'
-          className='text-sm'
-          justifyContent='center'
-          alignItems='center'
-          columnGap={0.5}
-        >
-          <Typography textAlign='center'>Don't have an account?</Typography>
-
+        <HStack justifyContent='center'>
+          <Text textAlign='center'>Don't have an account?</Text>
           <Link className='underline' to='/auth/sign-up'>
             Sign up
           </Link>
-        </Stack>
-      </Box>
+        </HStack>
+      </VStack>
     </Box>
   );
 };

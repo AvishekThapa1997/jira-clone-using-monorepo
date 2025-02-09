@@ -1,19 +1,18 @@
-import { TextFieldProps } from '@mui/material';
+import { InputProps } from '@chakra-ui/react';
 
 export const PASSWORD_LENGTH = {
   MIN: 8,
   MAX: 16,
 };
 
-export const SIGNIN_FORM_FIELDS: Array<TextFieldProps> = [
+export const SIGNIN_FORM_FIELDS: Array<InputProps> = [
   {
     name: 'email',
     type: 'email',
     required: true,
     placeholder: 'Enter email',
     'aria-label': 'email',
-    hiddenLabel: true,
-    fullWidth: true,
+    size: 'xl',
   },
   {
     name: 'password',
@@ -21,24 +20,18 @@ export const SIGNIN_FORM_FIELDS: Array<TextFieldProps> = [
     required: true,
     placeholder: 'Enter password',
     'aria-label': 'password',
-    fullWidth: true,
-    slotProps: {
-      // htmlInput: {
-      //   minLength: PASSWORD_LENGTH.MIN,
-      //   maxLength: PASSWORD_LENGTH.MAX,
-      // },
-    },
+    size: 'xl',
   },
 ];
 
-export const SIGNUP_FORM_FIELDS: Array<TextFieldProps> = [
+export const SIGNUP_FORM_FIELDS: Array<InputProps> = [
   {
     type: 'text',
     required: true,
     'aria-label': 'username',
     placeholder: 'Enter name',
     name: 'name',
-    fullWidth: true,
+    size: 'lg',
   },
   ...SIGNIN_FORM_FIELDS,
 ];

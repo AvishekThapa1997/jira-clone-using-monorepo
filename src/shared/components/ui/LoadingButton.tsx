@@ -1,23 +1,21 @@
-import { Button, ButtonProps } from '@mui/material';
+import { ButtonProps, Button } from '@chakra-ui/react';
 
 const LoadingButton = ({
   children,
   loading,
   disabled,
-  loadingIndicator,
-  variant = 'contained',
-  size = 'large',
-  loadingPosition = 'start',
+  colorPalette = 'blue',
+  variant = 'solid',
+  size = 'xl',
   ...props
 }: ButtonProps) => {
   return (
     <Button
       {...props}
+      colorPalette={colorPalette}
       variant={variant}
       size={size}
-      loading={loading}
-      loadingIndicator={loadingIndicator}
-      loadingPosition={loadingPosition}
+      letterSpacing={2}
     >
       {children}
     </Button>

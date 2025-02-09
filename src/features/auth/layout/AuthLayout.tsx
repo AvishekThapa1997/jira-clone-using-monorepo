@@ -1,29 +1,23 @@
 import { Outlet } from 'react-router';
 import { OAuthButtonSection } from '../components';
-import { Box, Container, Paper, Stack } from '@mui/material';
+
+import { Box, Card, Container, VStack } from '@chakra-ui/react';
 
 const AuthLayout = () => {
   return (
-    <Box minHeight='100svh'>
-      <Stack
-        height='100%'
-        direction='column'
-        alignItems='center'
-        justifyContent='center'
-        paddingY={4}
-        paddingX={2}
-      >
-        <Container maxWidth='sm'>
-          <Paper>
-            <Box padding={4}>
-              <Outlet />
-              <Box>
+    <Box>
+      <VStack minHeight='svh' justifyContent='center'>
+        <Container maxW='xl'>
+          <Card.Root>
+            <Card.Body>
+              <VStack gap={3} alignItems='stretch'>
+                <Outlet />
                 <OAuthButtonSection />
-              </Box>
-            </Box>
-          </Paper>
+              </VStack>
+            </Card.Body>
+          </Card.Root>
         </Container>
-      </Stack>
+      </VStack>
     </Box>
   );
 };

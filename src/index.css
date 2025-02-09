@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+  --sidebar-width: 17rem;
+}
 
 body {
   background-color: lightgrey;

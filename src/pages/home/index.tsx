@@ -1,7 +1,5 @@
-import { LogoutButton } from '../../shared/components/LogoutButton';
-
 const HomePage = () => {
-  return <LogoutButton />;
+  return <>Home Page</>;
 };
 
 export { HomePage };

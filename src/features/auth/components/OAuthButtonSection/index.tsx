@@ -1,39 +1,30 @@
+import { Button, VStack } from '@chakra-ui/react';
 import { useAuth } from '../../../../shared/hooks/useAuth';
-import { Button, Stack } from '@mui/material';
 
 const OAuthButtonSection = () => {
   const { isAuthInProgress } = useAuth();
   ({ isAuthInProgress });
   return (
-    <Stack direction='column' rowGap={1.5}>
+    <VStack alignItems='stretch' gap={3}>
       <Button
-        variant='outlined'
-        size='large'
+        variant='outline'
+        size='xl'
         type='button'
         disabled={isAuthInProgress}
-        sx={{
-          color: 'GrayText',
-          borderColor: 'gray',
-          textTransform: 'none',
-        }}
+        letterSpacing={1}
       >
-        Login With Google
+        Login with Google
       </Button>
       <Button
-        size='large'
-        variant='outlined'
-        disabled={isAuthInProgress}
+        variant='outline'
+        size='xl'
         type='button'
-        sx={{
-          color: 'GrayText',
-          borderColor: 'gray',
-          fontWeight: 'medium',
-          textTransform: 'none',
-        }}
+        disabled={isAuthInProgress}
+        letterSpacing={1}
       >
         Login with Github
       </Button>
-    </Stack>
+    </VStack>
   );
 };
 
