@@ -1,18 +1,17 @@
-import { InputProps } from '@chakra-ui/react';
+import { ComponentProps } from 'react';
 
 export const PASSWORD_LENGTH = {
   MIN: 8,
   MAX: 16,
 };
 
-export const SIGNIN_FORM_FIELDS: Array<InputProps> = [
+export const SIGNIN_FORM_FIELDS: Array<ComponentProps<'input'>> = [
   {
     name: 'email',
     type: 'email',
     required: true,
     placeholder: 'Enter email',
     'aria-label': 'email',
-    size: 'xl',
   },
   {
     name: 'password',
@@ -20,18 +19,16 @@ export const SIGNIN_FORM_FIELDS: Array<InputProps> = [
     required: true,
     placeholder: 'Enter password',
     'aria-label': 'password',
-    size: 'xl',
   },
 ];
 
-export const SIGNUP_FORM_FIELDS: Array<InputProps> = [
+export const SIGNUP_FORM_FIELDS: Array<ComponentProps<'input'>> = [
   {
     type: 'text',
     required: true,
     'aria-label': 'username',
     placeholder: 'Enter name',
     name: 'name',
-    size: 'lg',
   },
   ...SIGNIN_FORM_FIELDS,
 ];

@@ -3,7 +3,11 @@ import { useAuth } from '../hooks/useAuth';
 
 const RootLayout = () => {
   const { isLoading } = useAuth();
-  return isLoading ? <p>Loading...</p> : <Outlet />;
+  return (
+    <div className='max-w-[1600px] mx-auto '>
+      {isLoading ? <p>Loading...</p> : <Outlet />}
+    </div>
+  );
 };
 
 export { RootLayout };

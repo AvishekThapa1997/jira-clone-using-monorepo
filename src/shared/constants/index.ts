@@ -1,35 +1,37 @@
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import HomeIcon from '@mui/icons-material/Home';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import GroupIcon from '@mui/icons-material/Group';
+import {
+  MdHome,
+  MdOutlineHome,
+  MdCheckCircle,
+  MdCheckCircleOutline,
+  MdOutlineSettings,
+  MdSettings,
+  MdPeopleAlt,
+  MdOutlinePeopleAlt,
+} from 'react-icons/md';
 
-export const routes = [
+export const navigationRoutes = [
   {
     label: 'Home',
-    href: '/',
-    icon: HomeOutlinedIcon,
-    activeIcon: HomeIcon,
+    href: '/dashboard',
+    icon: MdOutlineHome,
+    activeIcon: MdHome,
   },
   {
     label: 'Task',
     href: '/tasks',
-    icon: CheckCircleOutlineOutlinedIcon,
-    activeIcon: CheckCircleIcon,
+    icon: MdCheckCircleOutline,
+    activeIcon: MdCheckCircle,
   },
   {
     label: 'Settings',
     href: '/settings',
-    icon: SettingsOutlinedIcon,
-    activeIcon: SettingsIcon,
+    icon: MdOutlineSettings,
+    activeIcon: MdSettings,
   },
   {
     label: 'Members',
     href: '/members',
-    icon: GroupOutlinedIcon,
-    activeIcon: GroupIcon,
+    icon: MdOutlinePeopleAlt,
+    activeIcon: MdPeopleAlt,
   },
 ];

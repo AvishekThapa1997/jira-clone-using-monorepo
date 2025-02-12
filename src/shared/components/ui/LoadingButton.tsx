@@ -1,22 +1,22 @@
-import { ButtonProps, Button } from '@chakra-ui/react';
+import { cn } from '@/shared/util/class';
+import { Button, ButtonProps } from './button';
+import { Loader2 } from 'lucide-react';
 
 const LoadingButton = ({
   children,
-  loading,
   disabled,
-  colorPalette = 'blue',
-  variant = 'solid',
-  size = 'xl',
+  size = 'lg',
+  className,
   ...props
 }: ButtonProps) => {
   return (
     <Button
       {...props}
-      colorPalette={colorPalette}
-      variant={variant}
+      disabled={disabled}
+      className={cn(className)}
       size={size}
-      letterSpacing={2}
     >
+      {disabled && <Loader2 className='animate-spin ' />}
       {children}
     </Button>
   );

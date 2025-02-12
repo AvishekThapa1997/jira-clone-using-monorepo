@@ -1,34 +1,27 @@
 import { SignInForm } from '../../features/auth/components';
 import { Link } from 'react-router';
-import {
-  Box,
-  Heading,
-  HStack,
-  Separator,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Separator } from '@/shared/components/ui/separator';
 
 const SignInPage = () => {
   return (
-    <Box>
-      <Box textAlign='center'>
-        <Heading size='4xl'> Welcome back!</Heading>
-        <Text marginBlockStart={1} textStyle='sm' color='gray.500'>
+    <div>
+      <div className='text-center'>
+        <h2 className='text-3xl'>Welcome back!</h2>
+        <p className='text-muted-foreground'>
           Enter your email and password to sign in
-        </Text>
-      </Box>
-      <Separator marginBlock={4} />
-      <VStack alignItems='stretch' gap={4}>
+        </p>
+      </div>
+      <Separator />
+      <div className='space-y-4'>
         <SignInForm />
-        <HStack justifyContent='center'>
-          <Text textAlign='center'>Don't have an account?</Text>
+        <div className='flex items-center gap-2 justify-center'>
+          <p>Don't have an account?</p>
           <Link className='underline' to='/auth/sign-up'>
             Sign up
           </Link>
-        </HStack>
-      </VStack>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

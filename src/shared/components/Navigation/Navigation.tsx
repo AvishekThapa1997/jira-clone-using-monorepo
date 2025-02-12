@@ -1,64 +1,44 @@
-import { Box, List } from '@mui/material';
+import { navigationRoutes } from '@/shared/constants';
+import { cn } from '@/shared/util/class';
+import { Link, useLocation } from 'react-router';
 
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import HomeIcon from '@mui/icons-material/Home';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import GroupIcon from '@mui/icons-material/Group';
-import { NavigationItem } from './NavigationItem';
+interface NavigationProps {
+  className?: string;
+  navItemClassName?: string;
+}
 
-const routes = [
-  {
-    label: 'Home',
-    href: '/dashboard',
-    icon: HomeOutlinedIcon,
-    activeIcon: HomeIcon,
-  },
-  {
-    label: 'Task',
-    href: '/tasks',
-    icon: CheckCircleOutlineOutlinedIcon,
-    activeIcon: CheckCircleIcon,
-  },
-  {
-    label: 'Settings',
-    href: '/settings',
-    icon: SettingsOutlinedIcon,
-    activeIcon: SettingsIcon,
-  },
-  {
-    label: 'Members',
-    href: '/members',
-    icon: GroupOutlinedIcon,
-    activeIcon: GroupIcon,
-  },
-];
+const Navigation = ({ className, navItemClassName }: NavigationProps) => {
+  const location = useLocation();
 
-const Navigation = () => {
   return (
-    <Box component='nav'>
-      <List
-        sx={{
-          marginTop: 2,
-        }}
-        disablePadding
-      >
-        {routes.map(({ activeIcon, href, icon, label }) => {
+    <nav>
+      <div className={cn(className, 'max-lg:px-2')}>
+        {navigationRoutes.map(({ activeIcon, href, icon, label }) => {
+          const isActive = location.pathname === href;
+          console.log({ isActive, path: location.pathname });
+          const Icon = isActive ? activeIcon : icon;
           return (
-            <NavigationItem
-              key={label}
-              href={href}
-              activeIcon={activeIcon}
-              icon={icon}
-              label={label}
-            />
+            <Link
+              key={href}
+              to={href}
+              className={cn(
+                'hover:bg-stone-200 flex  p-2 max-lg:rounded  no-underline',
+                navItemClassName,
+              )}
+            >
+              <Icon
+                className={cn('text-muted-foreground text-2xl md:text-2xl ', {
+                  'text-primary': isActive,
+                })}
+              />
+              <span className='text-muted-foreground max-md:text-xs md:hidden lg:block tracking-wider'>
+                {label}
+              </span>
+            </Link>
           );
         })}
-      </List>
-    </Box>
+      </div>
+    </nav>
   );
 };
 

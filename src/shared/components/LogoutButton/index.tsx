@@ -14,7 +14,6 @@ const LogoutButton = ({ className }: LogoutButtonProps) => {
   return (
     <LoadingButton
       type='button'
-      loading={isPending}
       disabled={isPending}
       className={cn(className)}
       onClick={handleClick}

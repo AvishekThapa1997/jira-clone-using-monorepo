@@ -1,28 +1,20 @@
-import { Box, Divider, Drawer } from '@mui/material';
-import { Navigation } from '../../../shared/components/Navigation';
-import { AppLogo } from '../../../shared/components/AppLogo';
+import { LargeDeviceNavigation } from '../../../shared/components/Navigation';
+import { LargeDeviceLogo, SmallLogo } from '../../../shared/components/AppLogo';
 import { Link } from 'react-router';
+import { Separator } from '@/shared/components/ui/separator';
 
 const DashboardNavigation = () => {
   return (
-    <Box component='aside'>
-      <Drawer
-        variant='permanent'
-        PaperProps={{
-          sx: {
-            width: 'var(--sidebar-width)',
-          },
-        }}
-      >
-        <Box paddingX={2} paddingTop={1.5}>
-          <Link to='/' replace>
-            <AppLogo width={160} />
-          </Link>
-        </Box>
-        <Divider />
-        <Navigation />
-      </Drawer>
-    </Box>
+    <aside className='md:w-sidebar-width fixed hidden md:block bg-stone-50 border-r h-svh shadow-sm'>
+      <div className='flex p-2 justify-center items-center'>
+        <Link to='/' replace>
+          <LargeDeviceLogo width={160} />
+          <SmallLogo width={35} />
+        </Link>
+      </div>
+      <Separator className='mt-0 mb-4' />
+      <LargeDeviceNavigation />
+    </aside>
   );
 };
 

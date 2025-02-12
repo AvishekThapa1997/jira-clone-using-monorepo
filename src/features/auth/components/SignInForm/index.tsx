@@ -1,8 +1,8 @@
 import { Form, useNavigation } from 'react-router';
 import { LoadingButton } from '../../../../shared/components/ui';
 import { SIGNIN_FORM_FIELDS } from '../../constants';
-import { Box, Input, VStack } from '@chakra-ui/react';
-import { PasswordInput } from '../PasswordInput';
+
+import { Input } from '@/shared/components/ui/input';
 
 const SignInForm = () => {
   const navigation = useNavigation();
@@ -10,32 +10,24 @@ const SignInForm = () => {
 
   return (
     <Form name='sign-in' action='/auth/sign-in' method='POST'>
-      <VStack gap={3} alignItems='stretch'>
+      <div className='space-y-3'>
         {SIGNIN_FORM_FIELDS.map((formField, index) => {
-          if (formField.type === 'password') {
-            return (
-              <Box key={index}>
-                <PasswordInput {...formField} disabled={isSubmitting} />
-              </Box>
-            );
-          }
           return (
-            <Box key={index}>
-              <Input size='lg' {...formField} disabled={isSubmitting} />
-            </Box>
+            <div key={index}>
+              <Input className='h-12' {...formField} disabled={isSubmitting} />
+            </div>
           );
         })}
-      </VStack>
-      <Box marginBlockStart={5}>
+      </div>
+      <div className='mt-5'>
         <LoadingButton
-          loadingText='Login'
-          loading={isSubmitting}
+          disabled={isSubmitting}
           type='submit'
-          width='full'
+          className='w-full tracking-wider text-base '
         >
           Login
         </LoadingButton>
-      </Box>
+      </div>
     </Form>
   );
 };

@@ -1,17 +1,15 @@
-import {
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import React from 'react';
-import { Link, useLocation } from 'react-router';
+import { cn } from '@/shared/util/class';
+
+import { useLocation, Link } from 'react-router';
 
 interface NavigationItemProps {
   label: string;
   href: string;
   icon: React.ElementType;
   activeIcon: React.ElementType;
+  className?: string;
+  iconClassName?: string;
+  labelClassName?: string;
 }
 
 const NavigationItem = ({
@@ -25,23 +23,24 @@ const NavigationItem = ({
   const Icon = isActive ? activeIcon : icon;
 
   return (
-    <ListItemButton
-      sx={{ padding: 0.4 }}
-      component={Link}
-      selected={isActive}
+    <Link
       to={href}
+      className={cn(
+        'flex flex-col transition-colors justify-center p-2 hover:bg-gray-200 no-underline items-center gap-1',
+        {
+          'bg-gray-200': isActive,
+        },
+      )}
     >
-      <ListItem>
-        <ListItemIcon
-          sx={{
-            minWidth: 48,
-          }}
-        >
-          <Icon />
-        </ListItemIcon>
-        <ListItemText primary={label} />
-      </ListItem>
-    </ListItemButton>
+      <Icon
+        className={cn('text-2xl md:text-2xl ', {
+          'text-stone-400': !isActive,
+        })}
+      />
+      <span className='text-muted-foreground max-md:text-xs md:hidden lg:block tracking-wider'>
+        {label}
+      </span>
+    </Link>
   );
 };
 

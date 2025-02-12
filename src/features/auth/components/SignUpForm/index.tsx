@@ -2,9 +2,7 @@ import { Form, useActionData, useNavigation } from 'react-router';
 import { LoadingButton } from '../../../../shared/components/ui';
 import type { SignUpAction } from '../../action';
 import { SIGNUP_FORM_FIELDS } from '../../constants';
-
-import { Box, Input, VStack } from '@chakra-ui/react';
-import { PasswordInput } from '../PasswordInput';
+import { Input } from '@/shared/components/ui/input';
 
 const SignUpForm = () => {
   const result = useActionData<SignUpAction>();
@@ -14,32 +12,24 @@ const SignUpForm = () => {
   console.log({ isSubmitting });
   return (
     <Form method='post' action='/auth/sign-up'>
-      <VStack gap={3} alignItems='stretch'>
+      <div className='space-y-3'>
         {SIGNUP_FORM_FIELDS.map(({ ...formField }, index) => {
-          if (formField.type === 'password') {
-            return (
-              <Box key={index}>
-                <PasswordInput {...formField} />
-              </Box>
-            );
-          }
           return (
-            <Box key={index}>
-              <Input {...formField} />
-            </Box>
+            <div key={index}>
+              <Input className='h-12' {...formField} />
+            </div>
           );
         })}
-      </VStack>
-      <Box marginBlockStart={5}>
+      </div>
+      <div className='mt-5'>
         <LoadingButton
           type='submit'
-          loading={isSubmitting}
-          loadingText='Register'
-          width='full'
+          disabled={isSubmitting}
+          className='w-full tracking-wider text-base'
         >
           Register
         </LoadingButton>
-      </Box>
+      </div>
     </Form>
   );
 };
