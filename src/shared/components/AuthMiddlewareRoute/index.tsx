@@ -1,9 +1,10 @@
+import { UserSessionProvider } from '@/features/auth/provider/UserSessionProvider';
+import { useAuthStatus } from '@/shared/hooks';
 import { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router';
-import { useAuth } from '../../hooks/useAuth';
 
 export const AuthMiddlewareRoute = ({ children }: PropsWithChildren) => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuthStatus();
   const { pathname } = useLocation();
 
   if (isLoading) {
@@ -11,7 +12,7 @@ export const AuthMiddlewareRoute = ({ children }: PropsWithChildren) => {
   }
   const isAuthPage =
     pathname.includes('/auth/sign-in') || pathname.includes('/auth/sign-up');
-  const isUserLoggedIn = user && !isLoading;
+  const isUserLoggedIn = !!user && !isLoading;
   if (!isUserLoggedIn) {
     if (isAuthPage) {
       return children;
@@ -22,5 +23,6 @@ export const AuthMiddlewareRoute = ({ children }: PropsWithChildren) => {
   if (pathname === '/' || isAuthPage) {
     return <Navigate to='/dashboard' replace={true} />;
   }
-  return children;
+
+  return <UserSessionProvider user={user}>{children}</UserSessionProvider>;
 };

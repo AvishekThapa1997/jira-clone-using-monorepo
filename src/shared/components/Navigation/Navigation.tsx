@@ -9,13 +9,11 @@ interface NavigationProps {
 
 const Navigation = ({ className, navItemClassName }: NavigationProps) => {
   const location = useLocation();
-
   return (
     <nav>
       <div className={cn(className, 'max-lg:px-2')}>
         {navigationRoutes.map(({ activeIcon, href, icon, label }) => {
           const isActive = location.pathname === href;
-          console.log({ isActive, path: location.pathname });
           const Icon = isActive ? activeIcon : icon;
           return (
             <Link
@@ -24,6 +22,9 @@ const Navigation = ({ className, navItemClassName }: NavigationProps) => {
               className={cn(
                 'hover:bg-stone-200 flex  p-2 max-lg:rounded  no-underline',
                 navItemClassName,
+                {
+                  'bg-stone-200': isActive,
+                },
               )}
             >
               <Icon

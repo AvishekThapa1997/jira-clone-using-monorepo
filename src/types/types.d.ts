@@ -4,16 +4,10 @@ export interface UserDto {
   name: string;
 }
 
-export type SignUpUserArg = Pick<UserDto, 'email' | 'name'> & {
-  password: string;
-};
-
-export type SignInUserArg = Pick<UserDto, 'email'> & { password: string };
-
 export interface ErrorResult<T = any> {
-  code: number;
+  code?: number;
   message: string;
-  validationErrors?: T;
+  validationErrors?: ValidationError<T>;
 }
 
 export type ValidationError<T> = {
@@ -22,7 +16,7 @@ export type ValidationError<T> = {
   };
 };
 
-export interface Result<Data> {
+export interface Result<Data, ValidationErrorSchema = any> {
   data?: Data;
-  error?: ErrorResult;
+  error?: ErrorResult<ValidationErrorSchema>;
 }

@@ -1,24 +1,35 @@
 import { createBrowserRouter, Navigate } from 'react-router';
-import { signInAction, signUpAction } from '../features/auth/action';
-import { AuthLayout } from '../features/auth/layout';
-import { DashboardLayout } from '../features/dashboard/layout/DashboardLayout';
-import { SignInPage, SignUpPage } from '../pages';
-import { HomePage } from '../pages/home';
-import { AuthMiddlewareRoute } from '../shared/components/AuthMiddlewareRoute';
-import { RootLayout } from '../shared/layout';
-import { AuthProvider } from '../features/auth/provider';
+
+import { AuthLayout } from '@/features/auth/layout';
+import { AuthServiceProvider } from '@/features/auth/provider';
+import { AuthMiddlewareRoute } from '@/shared/components/AuthMiddlewareRoute';
+
+import { RootLayout } from '@/shared/layout';
+
+import { SignInPage, SignUpPage } from '@/pages';
+import { AuthErrorBoundary } from '@/features/auth/components';
+import { HomePage } from '@/pages/home';
+import { AuthStatusProvider } from '@/features/auth/provider/AuthStatusProvider';
+import { DashboardLayout } from '@/shared/components/Dashboard';
+
 const routes = createBrowserRouter([
   {
     path: '/',
     element: (
-      <AuthProvider>
-        <RootLayout />
-      </AuthProvider>
+      <AuthErrorBoundary>
+        <AuthStatusProvider>
+          <RootLayout />
+        </AuthStatusProvider>
+      </AuthErrorBoundary>
     ),
     children: [
       {
         path: '/',
-        element: <DashboardLayout />,
+        element: (
+          <AuthMiddlewareRoute>
+            <DashboardLayout />
+          </AuthMiddlewareRoute>
+        ),
         children: [
           {
             path: '/',
@@ -37,19 +48,19 @@ const routes = createBrowserRouter([
       {
         element: (
           <AuthMiddlewareRoute>
-            <AuthLayout />
+            <AuthServiceProvider>
+              <AuthLayout />
+            </AuthServiceProvider>
           </AuthMiddlewareRoute>
         ),
         children: [
           {
             path: '/auth/sign-in',
             element: <SignInPage />,
-            action: signInAction,
           },
           {
             path: '/auth/sign-up',
             element: <SignUpPage />,
-            action: signUpAction,
           },
         ],
       },

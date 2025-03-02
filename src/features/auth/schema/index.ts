@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { ERROR_MESSAGES, PASSWORD_LENGTH } from '../constants';
 
-// Sign In Schema (email + password)
 const signInSchema = z.object({
   email: z
     .string()

@@ -1,22 +1,19 @@
-import { Form, useActionData, useNavigation } from 'react-router';
-import { LoadingButton } from '../../../../shared/components/ui';
-import type { SignUpAction } from '../../action';
-import { SIGNUP_FORM_FIELDS } from '../../constants';
 import { Input } from '@/shared/components/ui/input';
+import { useAuthService } from '@/shared/hooks';
+import { LoadingButton } from '../../../../shared/components/ui';
+import { SIGNUP_FORM_FIELDS } from '../../constants';
 
 const SignUpForm = () => {
-  const result = useActionData<SignUpAction>();
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === 'submitting';
-  ({ result });
-  console.log({ isSubmitting });
+  const { signUpAction } = useAuthService();
+  const { data, isPending, operation } = signUpAction;
+  console.log({ data });
   return (
-    <Form method='post' action='/auth/sign-up'>
+    <form action={operation}>
       <div className='space-y-3'>
         {SIGNUP_FORM_FIELDS.map(({ ...formField }, index) => {
           return (
             <div key={index}>
-              <Input className='h-12' {...formField} />
+              <Input className='h-10 px-4' {...formField} />
             </div>
           );
         })}
@@ -24,13 +21,13 @@ const SignUpForm = () => {
       <div className='mt-5'>
         <LoadingButton
           type='submit'
-          disabled={isSubmitting}
+          disabled={isPending}
           className='w-full tracking-wider text-base'
         >
           Register
         </LoadingButton>
       </div>
-    </Form>
+    </form>
   );
 };
 

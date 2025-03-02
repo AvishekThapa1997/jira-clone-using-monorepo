@@ -1,26 +1,24 @@
 import { Button } from '@/shared/components/ui/button';
-import { useAuth } from '../../../../shared/hooks/useAuth';
+import { useAuthService } from '@/shared/hooks/useAuthService';
 
 const OAuthButtonSection = () => {
-  const { isAuthInProgress } = useAuth();
-  ({ isAuthInProgress });
+  const { isAuthInProgress } = useAuthService();
+
   return (
     <div className='space-y-3 flex flex-col'>
       <Button
         variant='outline'
-        size='lg'
         type='button'
         disabled={isAuthInProgress}
-        className='text-base tracking-wider'
+        className='tracking-wider'
       >
         Login with Google
       </Button>
       <Button
         variant='outline'
-        size='lg'
         type='button'
         disabled={isAuthInProgress}
-        className='text-base tracking-wider'
+        className='tracking-wider'
       >
         Login with Github
       </Button>

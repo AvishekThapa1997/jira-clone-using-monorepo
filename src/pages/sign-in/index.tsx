@@ -6,17 +6,20 @@ const SignInPage = () => {
   return (
     <div>
       <div className='text-center'>
-        <h2 className='text-3xl'>Welcome back!</h2>
-        <p className='text-muted-foreground'>
+        <h2 className='text-2xl font-medium'>Welcome back!</h2>
+        <p className='text-muted-foreground text-sm'>
           Enter your email and password to sign in
         </p>
       </div>
       <Separator />
-      <div className='space-y-4'>
+      <div className='space-y-4 text-sm'>
         <SignInForm />
         <div className='flex items-center gap-2 justify-center'>
           <p>Don't have an account?</p>
-          <Link className='underline' to='/auth/sign-up'>
+          <Link
+            className='underline font-medium text-primary'
+            to='/auth/sign-up'
+          >
             Sign up
           </Link>
         </div>

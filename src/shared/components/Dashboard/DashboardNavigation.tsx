@@ -1,7 +1,8 @@
-import { LargeDeviceNavigation } from '../../../shared/components/Navigation';
-import { LargeDeviceLogo, SmallLogo } from '../../../shared/components/AppLogo';
-import { Link } from 'react-router';
 import { Separator } from '@/shared/components/ui/separator';
+import { Link } from 'react-router';
+import { LargeDeviceLogo, SmallLogo } from '../../../shared/components/AppLogo';
+import { LargeDeviceNavigation } from '../../../shared/components/Navigation';
+import { WorkspaceSwitchWrapper } from '@/features/workspaces/components/WorkspaceSwitcherSection';
 
 const DashboardNavigation = () => {
   return (
@@ -13,6 +14,9 @@ const DashboardNavigation = () => {
         </Link>
       </div>
       <Separator className='mt-0 mb-4' />
+      <div className='my-4 px-4'>
+        <WorkspaceSwitchWrapper />
+      </div>
       <LargeDeviceNavigation />
     </aside>
   );

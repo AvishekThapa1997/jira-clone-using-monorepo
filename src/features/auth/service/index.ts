@@ -1,39 +1,38 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth, getFunctions } from '../../../config/firebase';
 import { handleError } from '../../../shared/util/handleError';
-import {
-  Result,
-  SignInUserArg,
-  SignUpUserArg,
-  UserDto,
-} from '../../../types/types';
-import { auth } from '../../../config/firebase';
+import { Result, UserDto } from '../../../types/types';
+
+import { parseSchema } from '@/shared/util/parseSchema';
+import { signUpSchema } from '../schema';
+import { SignInSchema, SignUpSchema } from '../types';
 
 export const signUpUser = async ({
   email,
   name,
   password,
-}: SignUpUserArg): Promise<Result<UserDto>> => {
+}: SignUpSchema): Promise<Result<UserDto>> => {
   try {
-    // use zod parse for validation
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    const { user } = userCredential;
-    await updateProfile(user, {
-      displayName: name,
-    });
+    const parsedResult = parseSchema(signUpSchema, { email, name, password });
+    if (parsedResult.data) {
+      const { httpsCallable, firebaseFunction } = await getFunctions();
+      const _signUpUser = httpsCallable<SignUpSchema, UserDto>(
+        firebaseFunction,
+        'signUpUser',
+      );
+      const userCallable = await _signUpUser({
+        ...parsedResult.data,
+      });
+      const user = userCallable.data;
+      if (user) {
+        return signInUser({ email, password });
+      }
+    }
     return {
-      data: {
-        id: user.uid,
-        email,
-        name,
+      error: {
+        code: 400,
+        message: 'ValidationError',
+        validationErrors: parsedResult.errors,
       },
     };
   } catch (err) {
@@ -46,7 +45,7 @@ export const signUpUser = async ({
 export const signInUser = async ({
   email,
   password,
-}: SignInUserArg): Promise<Result<UserDto>> => {
+}: SignInSchema): Promise<Result<UserDto>> => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,

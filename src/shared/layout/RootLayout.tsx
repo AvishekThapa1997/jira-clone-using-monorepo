@@ -1,11 +1,19 @@
 import { Outlet } from 'react-router';
-import { useAuth } from '../hooks/useAuth';
+import { Toaster } from '../components/ui/toaster';
+import { useAuthStatus } from '../hooks';
 
 const RootLayout = () => {
-  const { isLoading } = useAuth();
+  const { isLoading } = useAuthStatus();
   return (
     <div className='max-w-[1600px] mx-auto '>
-      {isLoading ? <p>Loading...</p> : <Outlet />}
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <Outlet />
+        </>
+      )}
+      <Toaster />
     </div>
   );
 };
