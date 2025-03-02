@@ -3,3 +3,4 @@ export * from './useImageUploader';
 export * from './useToast';
 export * from './useUserSession';
 export * from './useAuthStatus';
+export * from './useCustomEvent';

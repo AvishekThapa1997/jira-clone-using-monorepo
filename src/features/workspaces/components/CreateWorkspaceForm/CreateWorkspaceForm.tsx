@@ -4,7 +4,7 @@ import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
-import { useImageUploader } from '@/shared/hooks';
+import { useCustomEvent, useImageUploader } from '@/shared/hooks';
 
 import { cn } from '@/shared/util/class';
 import { Upload, X } from 'lucide-react';
@@ -18,6 +18,7 @@ import {
 } from 'react';
 import { WORKSPACE_CONSTANTS } from '../../constants';
 import { useCreateWorkspace } from '../../hooks';
+import { CUSTOM_EVENT } from '@/shared/constants';
 
 interface CreateWorkspaceFormProps
   extends Omit<ComponentProps<'form'>, 'onSubmit'> {
@@ -26,6 +27,7 @@ interface CreateWorkspaceFormProps
 
 interface WorkspaceIconUploadSectionProps {
   onImageSelected: (downloadUrl?: string) => void;
+  handledIconUploadStatus: (isUploading: boolean) => void;
 }
 
 const CreateWorkspaceForm = ({
@@ -39,7 +41,10 @@ const CreateWorkspaceForm = ({
   >();
   const keyRef = useRef<number>(0);
   const nameFieldId = useId();
-
+  const [isIconUploading, setIconUploading] = useState(false);
+  const { dispatch } = useCustomEvent<boolean>({
+    eventName: CUSTOM_EVENT.WORKSPACE_CREATED,
+  });
   const {
     mutate,
     isPending,
@@ -52,6 +57,7 @@ const CreateWorkspaceForm = ({
       }
       keyRef.current += 1;
       setUploadedWorkspaceIconUrl(undefined);
+      dispatch(true);
     },
   });
   const error = data?.error;
@@ -63,11 +69,13 @@ const CreateWorkspaceForm = ({
     const workSpaceName = nameFieldRef.current?.value;
     mutate({ name: workSpaceName, imageUrl: uploadedWorkspaceIconUrl });
   };
-  console.log({ data });
+
   const handleWorkspaceIconUpload = (downloadUrl?: string) => {
     setUploadedWorkspaceIconUrl(downloadUrl);
   };
-
+  const handledIconUploadStatus = (isUploading: boolean) => {
+    setIconUploading(isUploading);
+  };
   return (
     <form
       className={cn('space-y-4 border p-4 rounded-md shadow', className)}
@@ -92,6 +100,7 @@ const CreateWorkspaceForm = ({
       <div>
         <WorkspaceIconUploadSection
           onImageSelected={handleWorkspaceIconUpload}
+          handledIconUploadStatus={handledIconUploadStatus}
           key={keyRef.current}
         />
       </div>
@@ -101,11 +110,11 @@ const CreateWorkspaceForm = ({
           type='button'
           variant='secondary'
           onClick={() => handleCancel()}
+          disabled={isPending || isIconUploading}
         >
           Cancel
         </Button>
-        {/* // TODO : Disable button while uploading icon for workspace */}
-        <LoadingButton disabled={isPending} type='submit'>
+        <LoadingButton disabled={isPending || isIconUploading} type='submit'>
           Create Workspace
         </LoadingButton>
       </div>
@@ -115,6 +124,7 @@ const CreateWorkspaceForm = ({
 
 const WorkspaceIconUploadSection = ({
   onImageSelected,
+  handledIconUploadStatus,
 }: WorkspaceIconUploadSectionProps) => {
   const iconFieldId = useId();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -137,6 +147,9 @@ const WorkspaceIconUploadSection = ({
       isValidFile: (file) => file.size <= 1 * 1024 * 1024, // Max 1MB
       onSuccess: (downloadUrl) => {
         onImageSelected(downloadUrl);
+      },
+      onUploadStatusChange: (status) => {
+        handledIconUploadStatus(status);
       },
     });
 

@@ -9,6 +9,7 @@ import {
 } from '../dto/workspace-member-dto';
 import { createWorkspaceSchema } from '../schema';
 import { CreateWorkspaceSchema, WorkspaceMemberRole } from '../types';
+import { orderBy } from 'firebase/firestore';
 
 type GetFirestoreReturnResult = Awaited<ReturnType<typeof getFirestore>>;
 
@@ -36,7 +37,7 @@ export const createWorkspace = async (
       const workspaceData: CreateWorkspaceSchema = {
         ...result.data,
         creatorId: loggedInUser.id,
-        adminMembers: [loggedInUser.id],
+        members: [loggedInUser.id],
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
@@ -56,6 +57,7 @@ export const createWorkspace = async (
       };
       const workspaceMemberRef = doc(
         getWorkspaceMemberCollection(firestoreResult),
+        `${workspaceRef.id}-${loggedInUser.id}`,
       );
       batch.set(workspaceRef, workspaceData);
       batch.set(workspaceMemberRef, workspaceMemberData);
@@ -88,14 +90,15 @@ export const getWorkspaces = async (
     const { query, where, getDocs } = firestoreResult;
     const dbQuery = query(
       getWorkspaceCollection(firestoreResult),
-      where('creatorId', '==', userId),
+      where('members', 'array-contains', userId),
+      orderBy('createdAt', 'desc'),
     );
     const querySnapshot = await getDocs(dbQuery);
     if (querySnapshot.size > 0) {
-      const workspaces = Array.from(querySnapshot.docs).map((snapshot) =>
+      const userWorkspaces = Array.from(querySnapshot.docs).map((snapshot) =>
         snapshot.data(),
       );
-      result.data = workspaces;
+      result.data = userWorkspaces;
     }
   } catch (err) {
     result.error = handleError(err);

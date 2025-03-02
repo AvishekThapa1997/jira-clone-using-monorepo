@@ -9,12 +9,14 @@ import {
 import { ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/button';
-import { cn } from '@/shared/util/class';
-import { WorkspaceItem } from '../WorkspaceItem';
-import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
+import { CUSTOM_EVENT } from '@/shared/constants';
+import { useCustomEvent } from '@/shared/hooks';
 import { useToggle } from '@/shared/hooks/useToggle';
+import { cn } from '@/shared/util/class';
+import { useCallback } from 'react';
 import { WorkspaceDto } from '../../dto/workspace-dto';
-import { AvatarWithTextSkeleton } from '@/shared/components/AvatarWithText/AvatarWithTextSkeleton';
+import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
+import { WorkspaceItem } from '../WorkspaceItem';
 import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
 
 interface WorkspaceSwitcherProps {
@@ -38,6 +40,19 @@ const WorkspaceSwitcher = ({
   const handleWorkspaceDialogCancel = () => {
     toggle(false);
   };
+  const onSuccessfulWorkspaceCreation = useCallback(
+    (isCreatedSuccessfully: boolean) => {
+      if (isCreatedSuccessfully) {
+        toggle(false);
+      }
+    },
+    [toggle],
+  );
+  useCustomEvent<boolean>({
+    eventName: CUSTOM_EVENT.WORKSPACE_CREATED,
+    listenOnMount: true,
+    onListen: onSuccessfulWorkspaceCreation,
+  });
   return (
     <>
       <DropdownMenu onOpenChange={handleOpenChange}>
@@ -59,7 +74,10 @@ const WorkspaceSwitcher = ({
                       key={workspace.id}
                       className='cursor-pointer'
                     >
-                      <WorkspaceItem workspace={workspace} />
+                      <WorkspaceItem
+                        workspaceName={workspace.name}
+                        workspaceImageUrl={workspace.imageUrl}
+                      />
                     </DropdownMenuItem>
                   );
                 })}

@@ -35,3 +35,7 @@ export const navigationRoutes = [
     activeIcon: MdPeopleAlt,
   },
 ];
+
+export const CUSTOM_EVENT = {
+  WORKSPACE_CREATED: 'workspacecreated',
+};

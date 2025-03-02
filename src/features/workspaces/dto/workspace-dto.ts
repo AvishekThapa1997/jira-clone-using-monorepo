@@ -11,7 +11,7 @@ export interface WorkspaceDto {
   createdAt: string;
   creatorId: string;
   updatedAt: string;
-  adminMembers: string[];
+  members?: string[];
 }
 
 export const workspaceConverter: FirestoreDataConverter<
@@ -23,7 +23,9 @@ export const workspaceConverter: FirestoreDataConverter<
       name: options.name,
       creatorId: options.creatorId,
       imageUrl: options.imageUrl ?? '',
-      adminMembers: options.adminMembers,
+      members: options.members,
+      createdAt: options.createdAt,
+      updatedAt: options.updatedAt,
     };
   },
   fromFirestore(snapshot, options): WorkspaceDto {
@@ -35,7 +37,7 @@ export const workspaceConverter: FirestoreDataConverter<
       createdAt: (data?.createdAt?.toDate() as Date)?.toISOString(),
       updatedAt: (data?.updatedAt?.toDate() as Date)?.toISOString(),
       creatorId: data?.creatorId,
-      adminMembers: data?.adminMembers,
+      members: data?.members,
     };
   },
 };

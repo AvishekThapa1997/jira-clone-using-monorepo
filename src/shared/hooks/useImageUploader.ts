@@ -39,6 +39,7 @@ interface UseImageUploaderOptions {
   isValidFile?: (file: File | Blob) => boolean;
   dirName: string;
   onSuccess?: (downloadUrl: string) => void;
+  onUploadStatusChange?: (status: boolean) => void;
 }
 
 interface ImageUploaderResult {
@@ -93,6 +94,7 @@ const imageUploaderReducer: Reducer<
 export const useImageUploader = ({
   dirName,
   onSuccess = () => {},
+  onUploadStatusChange = () => {},
 }: UseImageUploaderOptions) => {
   const [state, dispatch] = useReducer(
     imageUploaderReducer,
@@ -123,6 +125,7 @@ export const useImageUploader = ({
   };
   const handleUploadError: (err: StorageError) => unknown = async (err) => {
     dispatchError(err);
+    onUploadStatusChange?.(false);
   };
   const handleUploadSuccess = async (
     uploadTask: UploadTask,
@@ -138,6 +141,7 @@ export const useImageUploader = ({
     } catch (err) {
       dispatchError(err);
     }
+    onUploadStatusChange(false);
   };
   const uploadFile = async (file: File) => {
     try {
@@ -155,6 +159,7 @@ export const useImageUploader = ({
         handleUploadError,
         handleUploadSuccess.bind(this, uploadTask, getDownloadURL),
       );
+      onUploadStatusChange?.(true);
     } catch (err) {
       dispatchError(err);
     }

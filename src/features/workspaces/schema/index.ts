@@ -14,5 +14,5 @@ export const createWorkspaceSchema = zod.object({
   creatorId: zod.string().optional(),
   createdAt: zod.any().optional(),
   updatedAt: zod.any().optional(),
-  adminMembers: zod.array(zod.string()).optional(),
+  members: zod.array(zod.string()).optional(),
 });
