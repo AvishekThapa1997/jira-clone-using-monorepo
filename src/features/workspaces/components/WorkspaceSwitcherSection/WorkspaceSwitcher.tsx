@@ -10,44 +10,37 @@ import { ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/button';
 import { CUSTOM_EVENT } from '@/shared/constants';
-import { useCustomEvent } from '@/shared/hooks';
-import { useToggle } from '@/shared/hooks/useToggle';
+import { useCustomEvent, useDialog } from '@/shared/hooks';
 import { cn } from '@/shared/util/class';
-import { useCallback } from 'react';
-import { WorkspaceDto } from '../../dto/workspace-dto';
+import { useGetWorkspaces } from '../../hooks';
+import { useCreateWorkspaceDialog } from '../../hooks/useCreateWorkspaceDialog';
 import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
 import { WorkspaceItem } from '../WorkspaceItem';
 import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
 
 interface WorkspaceSwitcherProps {
   className?: string;
-  handleOpenChange: (open: boolean) => void;
-  workspaces?: WorkspaceDto[];
-  isFetching: boolean;
 }
 
-const WorkspaceSwitcher = ({
-  className,
-  handleOpenChange,
-  workspaces,
-  isFetching,
-}: WorkspaceSwitcherProps) => {
-  const { toggle, toggleValue } = useToggle();
-
-  const hanldeWorkspaceDialogOpenChange = (open: boolean) => {
-    toggle(open);
-  };
-  const handleWorkspaceDialogCancel = () => {
-    toggle(false);
-  };
-  const onSuccessfulWorkspaceCreation = useCallback(
-    (isCreatedSuccessfully: boolean) => {
-      if (isCreatedSuccessfully) {
-        toggle(false);
-      }
-    },
-    [toggle],
+const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
+  const {
+    isOpen: isWorkspaceSwitcherOpen,
+    handleOpenChange: handleWorkspaceSwitcherOpenChange,
+  } = useDialog();
+  const {
+    isCreateWorkspaceDialogOpen,
+    handleCreateWorkspaceDialogCancel,
+    handleCreateWorkspaceDialogOpenChange,
+    closeCreateWorkspaceDialog,
+  } = useCreateWorkspaceDialog();
+  const { isFetching, workspaces } = useGetWorkspaces(
+    /*enabled*/ !!isWorkspaceSwitcherOpen,
   );
+  const onSuccessfulWorkspaceCreation = (isCreatedSuccessfully: boolean) => {
+    if (isCreatedSuccessfully) {
+      closeCreateWorkspaceDialog();
+    }
+  };
   useCustomEvent<boolean>({
     eventName: CUSTOM_EVENT.WORKSPACE_CREATED,
     listenOnMount: true,
@@ -55,7 +48,10 @@ const WorkspaceSwitcher = ({
   });
   return (
     <>
-      <DropdownMenu onOpenChange={handleOpenChange}>
+      <DropdownMenu
+        open={isWorkspaceSwitcherOpen}
+        onOpenChange={handleWorkspaceSwitcherOpenChange}
+      >
         <DropdownMenuTrigger className='w-full outline-none  focus-visible:ring-transparent flex py-3 px-2 border rounded-md items-center justify-between'>
           <span>Select Workspace</span>
           <ChevronsUpDownIcon size={20} className='text-muted-foreground' />
@@ -87,9 +83,9 @@ const WorkspaceSwitcher = ({
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <CreateWorkspaceFormDialog
-              open={toggleValue}
-              onOpenChange={hanldeWorkspaceDialogOpenChange}
-              handleCancel={handleWorkspaceDialogCancel}
+              open={isCreateWorkspaceDialogOpen}
+              onOpenChange={handleCreateWorkspaceDialogOpenChange}
+              handleCancel={handleCreateWorkspaceDialogCancel}
               trigger={
                 <Button variant='ghost' className='w-full'>
                   <PlusCircleIcon className='text-muted-foreground' />

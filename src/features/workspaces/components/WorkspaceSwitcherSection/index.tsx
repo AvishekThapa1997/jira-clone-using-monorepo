@@ -2,18 +2,20 @@ import { lazy, Suspense } from 'react';
 
 import { WorkspaceSwitcherSkeleton } from './WorkspaceSwitcherSkeleton';
 
-const WorkspaceSwitcherSection = lazy(() =>
-  import('./WorkspaceSwitcherSection').then((module) => ({
-    default: module.WorkspaceSwitcherSection,
+const WorkspaceSwitcher = lazy(() =>
+  import('./WorkspaceSwitcher').then((module) => ({
+    default: module.WorkspaceSwitcher,
   })),
 );
 
-const WorkspaceSwitchWrapper = () => {
+const WorkspaceSwitchSection = () => {
   return (
-    <Suspense fallback={<WorkspaceSwitcherSkeleton />}>
-      <WorkspaceSwitcherSection />
-    </Suspense>
+    <div className='hidden lg:block'>
+      <Suspense fallback={<WorkspaceSwitcherSkeleton />}>
+        <WorkspaceSwitcher />
+      </Suspense>
+    </div>
   );
 };
 
-export { WorkspaceSwitchWrapper };
+export { WorkspaceSwitchSection };

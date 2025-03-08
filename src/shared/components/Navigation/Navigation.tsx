@@ -1,5 +1,6 @@
 import { navigationRoutes } from '@/shared/constants';
 import { cn } from '@/shared/util/class';
+import { Suspense } from 'react';
 import { Link, useLocation } from 'react-router';
 
 interface NavigationProps {
@@ -27,11 +28,13 @@ const Navigation = ({ className, navItemClassName }: NavigationProps) => {
                 },
               )}
             >
-              <Icon
-                className={cn('text-muted-foreground text-2xl md:text-2xl ', {
-                  'text-primary': isActive,
-                })}
-              />
+              <Suspense fallback={<p>icon loading</p>}>
+                <Icon
+                  className={cn('text-muted-foreground text-2xl md:text-2xl ', {
+                    'text-primary': isActive,
+                  })}
+                />
+              </Suspense>
               <span className='text-muted-foreground max-md:text-xs md:hidden lg:block tracking-wider'>
                 {label}
               </span>

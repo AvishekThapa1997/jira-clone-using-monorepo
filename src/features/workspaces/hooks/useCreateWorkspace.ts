@@ -1,8 +1,14 @@
-import { useToast } from '@/shared/hooks/useToast';
 import { useUserSession } from '@/shared/hooks/';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import { useToast } from '@/shared/hooks/useToast';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { createWorkspace } from '../service';
 import { CreateWorkspaceSchema } from '../types';
+import { WORKSPACES_QUERY_KEYS } from '../util/queryKey';
 
 export const useCreateWorkspace = (
   options?: UseMutationOptions<
@@ -14,6 +20,32 @@ export const useCreateWorkspace = (
   const { toast } = useToast();
   const { onSuccess, ...otherOptions } = options ?? {};
   const { user } = useUserSession();
+  const queryClient = useQueryClient();
+  const updateCache = useCallback(() => {
+    const queryKey = [...WORKSPACES_QUERY_KEYS.getWorkspaces(user.id)];
+    queryClient.invalidateQueries({
+      queryKey,
+    });
+    // queryClient.cancelQueries({
+    //   queryKey,
+    // });
+    // const previousData =
+    //   queryClient.getQueryData<Result<WorkspaceDto[]>>(queryKey);
+    // if (!result.data) {
+    //   return;
+    // }
+    // let workspaces: WorkspaceDto[] = [];
+    // if (previousData) {
+    //   const previousWorkspaces = previousData.data ?? [];
+    //   workspaces.push(result.data, ...previousWorkspaces);
+    // } else {
+    //   workspaces.push(result.data);
+    // }
+    // queryClient.setQueryData<Result<WorkspaceDto[]>>(queryKey, {
+    //   ...previousData,
+    //   data: workspaces,
+    // });
+  }, []);
   return useMutation<
     Awaited<ReturnType<typeof createWorkspace>>,
     Error,
@@ -27,6 +59,7 @@ export const useCreateWorkspace = (
         title: 'Workspace created successfully.',
       });
       onSuccess?.(...args);
+      updateCache();
     },
     ...(otherOptions ?? {}),
   });

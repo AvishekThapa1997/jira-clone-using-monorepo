@@ -1,5 +1,4 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -14,7 +13,11 @@ const firebaseConfig = {
 const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
+const getAuth = () =>
+  import('firebase/auth').then(({ getAuth, ...remainining }) => {
+    const auth = getAuth(app);
+    return { auth, ...remainining };
+  });
 
 // // TODO : How to handle failure in lazy loading of firestore
 const getFirestore = () =>
@@ -42,4 +45,4 @@ const getFunctions = () =>
       ...remaining,
     };
   });
-export { auth, getFirestore, getFunctions, getStorage };
+export { getAuth, getFirestore, getFunctions, getStorage };

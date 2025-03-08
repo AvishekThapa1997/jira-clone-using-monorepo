@@ -38,7 +38,7 @@ export const handleError = (err: unknown): ErrorResult => {
     return {
       message: err.message,
     };
-  } else if (err instanceof OperationalError) {
+  } else if (err instanceof OperationalError || err instanceof Error) {
     return {
       message: err.message,
     };

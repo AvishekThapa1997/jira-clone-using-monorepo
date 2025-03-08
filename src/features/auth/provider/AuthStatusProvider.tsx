@@ -1,11 +1,11 @@
-import { auth } from '@/config/firebase';
+import { getAuth } from '@/config/firebase';
 import { UserDto } from '@/types/types';
-import { useQuery } from '@tanstack/react-query';
+
 import {
-  getIdTokenResult,
-  NextOrObserver,
-  onAuthStateChanged,
-  User,
+  //getIdTokenResult,
+  type Unsubscribe,
+  type NextOrObserver,
+  type User,
 } from 'firebase/auth';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
@@ -36,25 +36,35 @@ const useAuth = () => {
     }
   };
   useEffect(() => {
-    const unsuscribe = onAuthStateChanged(auth, handleAuth);
+    let unsuscribe: Unsubscribe | undefined;
+    async function loadFirebaseAuth() {
+      try {
+        const { auth, onAuthStateChanged } = await getAuth();
+        unsuscribe = onAuthStateChanged(auth, handleAuth);
+      } catch (err) {
+        console.error(err);
+        setUser({ isLoading: false });
+      }
+    }
+    loadFirebaseAuth();
     return () => {
-      unsuscribe();
+      unsuscribe?.();
     };
   }, []);
   return { ...user };
 };
 
-const useGetToken = (user?: User) => {
-  return useQuery({
-    queryKey: ['fetch token'],
-    queryFn: () => getIdTokenResult(user!),
-    enabled: !!user?.uid,
-  });
-};
+// const useGetToken = (user?: User) => {
+//   return useQuery({
+//     queryKey: ['fetch token'],
+//     queryFn: () => getIdTokenResult(user!),
+//     enabled: !!user?.uid,
+//   });
+// };
 export const AuthStatusProvider = ({ children }: PropsWithChildren) => {
   const { isLoading, user } = useAuth();
-  const { data, isFetching: isFetchingToken } = useGetToken(user);
-  console.log({ data, isFetchingToken, isLoading });
+  //const { data, isFetching: isFetchingToken } = useGetToken(user);
+  // console.log({ data, isFetchingToken, isLoading });
   return (
     <AuthStatusContext.Provider
       value={{

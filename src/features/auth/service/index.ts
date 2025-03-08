@@ -1,5 +1,4 @@
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth, getFunctions } from '../../../config/firebase';
+import { getAuth, getFunctions } from '../../../config/firebase';
 import { handleError } from '../../../shared/util/handleError';
 import { Result, UserDto } from '../../../types/types';
 
@@ -47,6 +46,7 @@ export const signInUser = async ({
   password,
 }: SignInSchema): Promise<Result<UserDto>> => {
   try {
+    const { signInWithEmailAndPassword, auth } = await getAuth();
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -69,6 +69,7 @@ export const signInUser = async ({
 
 export const signOutUser = async (): Promise<Result<void>> => {
   try {
+    const { auth, signOut } = await getAuth();
     await signOut(auth);
     return {};
   } catch (err) {

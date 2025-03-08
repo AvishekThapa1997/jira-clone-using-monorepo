@@ -13,6 +13,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      treeshake: true,
       output: {
         manualChunks: {
           'react-icons/md': ['react-icons/md'],
@@ -20,6 +21,9 @@ export default defineConfig({
           'firebase-firestore': ['firebase/firestore'],
           'firebase-storage': ['firebase/storage'],
           'firebase-functions': ['firebase/functions'],
+          lazyDashboard: [
+            './src/shared/components/Dashboard/LazyDashboard.tsx',
+          ],
         },
       },
     },

@@ -15,7 +15,6 @@ export const signUpAction = async (
     password,
   });
   if (data?.id) {
-    window.location.href = '/dashboard';
     state.data = data;
   }
   if (error) {
@@ -40,7 +39,6 @@ export const signInAction = async (
     password,
   });
   if (data?.id) {
-    window.location.href = '/dashboard';
     state.data = data;
   }
   if (error) {
