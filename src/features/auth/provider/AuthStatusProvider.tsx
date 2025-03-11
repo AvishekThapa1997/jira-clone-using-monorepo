@@ -1,16 +1,11 @@
-import { getAuth } from '@/config/firebase';
-import { UserDto } from '@/types/types';
+import { getAuth } from '@jira-clone/firebase';
+import { handleAuth } from '@jira-clone/firebase/utils';
+import type { UserDto } from '@jira-clone/core/types';
 
-import {
-  //getIdTokenResult,
-  type Unsubscribe,
-  type NextOrObserver,
-  type User,
-} from 'firebase/auth';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 type AuthStatus = {
-  user?: User;
+  user?: UserDto;
   isLoading: boolean;
 };
 
@@ -28,19 +23,28 @@ const useAuth = () => {
     isLoading: true,
   });
 
-  const handleAuth: NextOrObserver<User> = (user) => {
-    if (user) {
-      setUser({ user, isLoading: false });
-    } else {
-      setUser({ isLoading: false });
-    }
-  };
   useEffect(() => {
-    let unsuscribe: Unsubscribe | undefined;
+    let unsuscribe: Function | undefined;
     async function loadFirebaseAuth() {
       try {
         const { auth, onAuthStateChanged } = await getAuth();
-        unsuscribe = onAuthStateChanged(auth, handleAuth);
+        const authStatus = handleAuth({
+          onAuthStatusChanged: (user) => {
+            let userDto: UserDto | undefined;
+            if (user) {
+              userDto = {
+                id: user.uid,
+                email: user.email,
+                name: user.displayName,
+              };
+            }
+            setUser({
+              isLoading: false,
+              user: userDto,
+            });
+          },
+        });
+        unsuscribe = onAuthStateChanged(auth, authStatus);
       } catch (err) {
         console.error(err);
         setUser({ isLoading: false });
@@ -69,13 +73,7 @@ export const AuthStatusProvider = ({ children }: PropsWithChildren) => {
     <AuthStatusContext.Provider
       value={{
         isLoading,
-        user: user
-          ? {
-              email: user.email ?? '',
-              id: user.uid,
-              name: user.displayName ?? '',
-            }
-          : undefined,
+        user: user,
       }}
     >
       {children}

@@ -1,0 +1,10 @@
+{
+  "extends": ["../typescript/tsconfig.base.json"],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "baseUrl": ".",
+    "paths": {
+      "@/": ["./"]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { cn } from '@/shared/util/class';
+import { cn } from '@jira-clone/core/utils';
 import { ComponentProps } from 'react';
 
 const LargeDeviceLogo = ({ className, ...props }: ComponentProps<'svg'>) => {

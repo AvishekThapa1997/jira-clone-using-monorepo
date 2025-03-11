@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import { Toaster } from '../components/ui/toaster';
-import { useAuthStatus } from '../hooks';
+import { useAuthStatus } from '../hooks/useAuthStatus';
 
 const RootLayout = () => {
   const { isLoading } = useAuthStatus();

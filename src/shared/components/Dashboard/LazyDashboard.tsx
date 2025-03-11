@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { DashboardSkeleton } from './DashboardSkeleton';
 const Dashboard = lazy(() =>
-  import('./Dashboard').then((module) => ({
+  import('./index').then((module) => ({
     default: module.Dashboard,
   })),
 );

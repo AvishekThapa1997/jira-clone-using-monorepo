@@ -1,5 +1,5 @@
 import { WorkspaceSwitcherSkeleton } from '@/features/workspaces/components/WorkspaceSwitcherSection/WorkspaceSwitcherSkeleton';
-import { NavigationSkeleton } from '../Navigation';
+import { NavigationSkeleton } from '../Navigation/NavigationSkeleton';
 import { Skeleton } from '../ui/skeleton';
 import {
   DashboardLayout,

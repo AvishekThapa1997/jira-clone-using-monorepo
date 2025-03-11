@@ -1,28 +1,46 @@
-import { cn } from '@/shared/util/class';
+import { cn } from '@jira-clone/core/utils';
 
-import { AvatarWithText } from '@/shared/components/AvatarWithText';
-import { AvatarProps } from '@/shared/components/ui/avatar';
+import {
+  AvatarLabel,
+  AvatarWithLabel,
+} from '@/shared/components/AvatarWithLabel';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  AvatarProps,
+  AvatarTextInitial,
+} from '@/shared/components/ui/avatar';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 
 interface WorkspaceItemProps {
   className?: string;
-  avatarProps?: AvatarProps;
-  workspaceName: string;
-  workspaceImageUrl?: string;
+  name: string;
+  imageUrl?: string;
 }
 
 const WorkspaceItem = ({
   className,
-  workspaceName,
-  workspaceImageUrl,
-  avatarProps,
+  name: workspaceName,
+  imageUrl: workspaceImageUrl,
 }: WorkspaceItemProps) => {
   return (
-    <AvatarWithText
-      src={workspaceImageUrl}
-      text={workspaceName}
-      avatarProps={avatarProps}
-      className={cn('px-2', className)}
-    />
+    <AvatarWithLabel className={cn(className)}>
+      <Avatar className='flex-row-reverse'>
+        <AvatarImage src={workspaceImageUrl} />
+        <AvatarFallback
+          render={(status) => {
+            if (status === 'loading') {
+              return <Skeleton className='h-full w-full' />;
+            }
+            if (status === 'error') {
+              return <AvatarTextInitial text={workspaceName} />;
+            }
+          }}
+        />
+      </Avatar>
+      <AvatarLabel>{workspaceName}</AvatarLabel>
+    </AvatarWithLabel>
   );
 };
 

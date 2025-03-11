@@ -5,9 +5,13 @@ import {
   useMemo,
 } from 'react';
 
-import { Result, UserDto, ValidationError } from '../../../types/types';
+import type {
+  Result,
+  UserDto,
+  ValidationError,
+  SignUpSchema,
+} from '@jira-clone/core/types';
 import { signInAction, signUpAction } from '../action';
-import { SignUpSchema } from '../types';
 
 interface AuthAction<Data> {
   operation: (payload: FormData) => void;

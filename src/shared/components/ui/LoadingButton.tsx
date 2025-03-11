@@ -1,4 +1,4 @@
-import { cn } from '@/shared/util/class';
+import { cn } from '@jira-clone/core/utils';
 import { Button, ButtonProps } from './button';
 import { Loader2 } from 'lucide-react';
 

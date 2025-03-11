@@ -1,12 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 
-import { AuthLayout } from '@/features/auth/layout';
-import { AuthServiceProvider } from '@/features/auth/provider';
 import { AuthMiddlewareRoute } from '@/shared/components/AuthMiddlewareRoute';
 
 import { RootLayout } from '@/shared/layout';
 
-import { AuthErrorBoundary } from '@/features/auth/components';
+import { AuthErrorBoundary } from '@/features/auth/components/AuthErrorBoundary';
 import { AuthStatusProvider } from '@/features/auth/provider/AuthStatusProvider';
 
 import { Dashboard } from '@/shared/components/Dashboard';
@@ -17,14 +15,21 @@ const HomePage = lazy(() =>
     default: module.HomePage,
   })),
 );
+
+const AuthLayout = lazy(() =>
+  import('@/features/auth/layout/AuthLayout').then((module) => ({
+    default: module.AuthLayout,
+  })),
+);
+
 const SignInPage = lazy(() =>
-  import('@/pages').then(({ SignInPage }) => ({
+  import('@/pages/sign-in').then(({ SignInPage }) => ({
     default: SignInPage,
   })),
 );
 
 const SignUpPage = lazy(() =>
-  import('@/pages').then(({ SignUpPage }) => ({
+  import('@/pages/sign-up').then(({ SignUpPage }) => ({
     default: SignUpPage,
   })),
 );
@@ -112,11 +117,12 @@ const routes = createBrowserRouter([
         ],
       },
       {
+        path: '/auth',
         element: (
           <AuthMiddlewareRoute>
-            <AuthServiceProvider>
+            <Suspense fallback={<p>Auth layout loading..</p>}>
               <AuthLayout />
-            </AuthServiceProvider>
+            </Suspense>
           </AuthMiddlewareRoute>
         ),
         children: [

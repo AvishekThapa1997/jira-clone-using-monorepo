@@ -1,4 +1,4 @@
-import { AvatarWithTextSkeleton } from '@/shared/components/AvatarWithText/AvatarWithTextSkeleton';
+import { AvatarWithLabelSkeleton } from '@/shared/components/AvatarWithLabel/AvatarWithLabelSkeleton';
 
 interface WorkspaceItemSkeletonProps {
   noOfItem: number;
@@ -7,7 +7,7 @@ interface WorkspaceItemSkeletonProps {
 const WorkspaceItemSkeleton = ({ noOfItem }: WorkspaceItemSkeletonProps) => {
   return Array(noOfItem)
     .fill('')
-    .map((_, index) => <AvatarWithTextSkeleton key={index} />);
+    .map((_, index) => <AvatarWithLabelSkeleton key={index} />);
 };
 
 export { WorkspaceItemSkeleton };

@@ -1,4 +1,4 @@
-import { cn } from "@/shared/util/class"
+import { cn } from '@jira-clone/core/utils';
 
 function Skeleton({
   className,
@@ -6,10 +6,10 @@ function Skeleton({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("animate-pulse rounded-md bg-primary/10", className)}
+      className={cn('animate-pulse rounded-md bg-primary/10', className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Skeleton }
+export { Skeleton };

@@ -1,4 +1,4 @@
-import { useUserSession } from '@/shared/hooks/';
+import { useUserSession } from '@/shared/hooks/useUserSession';
 import { useToast } from '@/shared/hooks/useToast';
 import {
   useMutation,
@@ -7,8 +7,8 @@ import {
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { createWorkspace } from '../service';
-import { CreateWorkspaceSchema } from '../types';
-import { WORKSPACES_QUERY_KEYS } from '../util/queryKey';
+import { CreateWorkspaceSchema } from '@jira-clone/core/types';
+import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys';
 
 export const useCreateWorkspace = (
   options?: UseMutationOptions<

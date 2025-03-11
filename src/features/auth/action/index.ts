@@ -1,6 +1,10 @@
-import { Result, UserDto, ValidationError } from '@/types/types';
+import type {
+  UserDto,
+  Result,
+  ValidationError,
+  SignUpSchema,
+} from '@jira-clone/core/types';
 import { signInUser, signUpUser } from '../service';
-import { SignUpSchema } from '../types';
 
 export const signUpAction = async (
   state: Result<UserDto, ValidationError<SignUpSchema>>,

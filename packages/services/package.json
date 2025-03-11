@@ -1,0 +1,19 @@
+{
+  "name": "@jira-clone/services",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "dependencies": {
+    "@jira-clone/firebase": "*"
+  },
+  "exports": {
+    "./auth": "./auth.ts",
+    "./workspaces": "./workspace.ts"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

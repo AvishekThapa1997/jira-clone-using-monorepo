@@ -1,6 +1,6 @@
 import { useSignOut } from '../../../features/auth/hooks/useSignOut';
-import { cn } from '../../util/class';
-import { LoadingButton } from '../ui';
+import { cn } from '@jira-clone/core/utils';
+import { LoadingButton } from '../ui/LoadingButton';
 
 export interface LogoutButtonProps {
   className?: string;

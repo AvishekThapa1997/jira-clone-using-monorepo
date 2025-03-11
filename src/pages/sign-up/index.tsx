@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { SignUpForm } from '../../features/auth/components';
+import { SignUpForm } from '../../features/auth/components/SignUpForm';
 import { Separator } from '@/shared/components/ui/separator';
 
 const SignUpPage = () => {

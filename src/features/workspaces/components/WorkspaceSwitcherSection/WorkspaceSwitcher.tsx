@@ -9,9 +9,11 @@ import {
 import { ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/button';
-import { CUSTOM_EVENT } from '@/shared/constants';
-import { useCustomEvent, useDialog } from '@/shared/hooks';
-import { cn } from '@/shared/util/class';
+import { CUSTOM_EVENT } from '@jira-clone/core/constants/shared';
+
+import { useDialog } from '@/shared/hooks/useDialog';
+import { useCustomEvent } from '@/shared/hooks/useCustomEvent';
+import { cn } from '@jira-clone/core/utils';
 import { useGetWorkspaces } from '../../hooks';
 import { useCreateWorkspaceDialog } from '../../hooks/useCreateWorkspaceDialog';
 import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
@@ -71,8 +73,8 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
                       className='cursor-pointer'
                     >
                       <WorkspaceItem
-                        workspaceName={workspace.name}
-                        workspaceImageUrl={workspace.imageUrl}
+                        name={workspace.name}
+                        imageUrl={workspace.imageUrl}
                       />
                     </DropdownMenuItem>
                   );

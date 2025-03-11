@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { cn } from '@/shared/util/class';
+import { cn } from '@jira-clone/core/utils';
 import { cva } from 'class-variance-authority';
 
 const inputVariants = cva(

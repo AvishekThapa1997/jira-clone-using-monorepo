@@ -21,9 +21,6 @@ export default defineConfig({
           'firebase-firestore': ['firebase/firestore'],
           'firebase-storage': ['firebase/storage'],
           'firebase-functions': ['firebase/functions'],
-          lazyDashboard: [
-            './src/shared/components/Dashboard/LazyDashboard.tsx',
-          ],
         },
       },
     },

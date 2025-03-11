@@ -1,5 +1,5 @@
 import { UserSessionProvider } from '@/features/auth/provider/UserSessionProvider';
-import { useAuthStatus } from '@/shared/hooks';
+import { useAuthStatus } from '@/shared/hooks/useAuthStatus';
 import { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router';
 

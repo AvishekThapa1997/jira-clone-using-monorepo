@@ -1,5 +1,5 @@
-import { cn } from '@/shared/util/class';
-import { PropsWithChildren } from 'react';
+import { cn } from '@jira-clone/core/utils';
+import type { PropsWithChildren } from 'react';
 
 interface DashboardProps extends PropsWithChildren {
   className?: string;

@@ -1,5 +1,5 @@
 import { PageTitleAndDescription } from '../PageTitleAndDescription';
-import { cn } from '../../util/class';
+import { cn } from '@jira-clone/core/utils';
 
 interface PageHeaderProps {
   className?: string;

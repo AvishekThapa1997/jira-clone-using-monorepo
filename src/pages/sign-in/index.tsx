@@ -1,4 +1,4 @@
-import { SignInForm } from '../../features/auth/components';
+import { SignInForm } from '../../features/auth/components/SignInForm';
 import { Link } from 'react-router';
 import { Separator } from '@/shared/components/ui/separator';
 

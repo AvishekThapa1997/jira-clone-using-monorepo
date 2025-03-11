@@ -1,4 +1,4 @@
-import { useIsMounted } from '@/shared/hooks';
+import { useIsMounted } from '@/shared/hooks/useIsMounted';
 import { PropsWithChildren } from 'react';
 
 const LoadOnMount = ({ children }: PropsWithChildren) => {

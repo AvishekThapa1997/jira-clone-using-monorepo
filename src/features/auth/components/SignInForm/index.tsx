@@ -1,8 +1,8 @@
-import { LoadingButton } from '../../../../shared/components/ui';
-import { SIGNIN_FORM_FIELDS } from '../../constants';
+import { LoadingButton } from '../../../../shared/components/ui/LoadingButton';
+import { SIGNIN_FORM_FIELDS } from '@jira-clone/core/constants/auth';
 
 import { Input } from '@/shared/components/ui/input';
-import { useAuthService } from '@/shared/hooks';
+import { useAuthService } from '@/shared/hooks/useAuthService';
 
 const SignInForm = () => {
   const { signInAction } = useAuthService();

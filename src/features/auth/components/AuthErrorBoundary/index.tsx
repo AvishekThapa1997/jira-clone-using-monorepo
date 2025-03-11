@@ -1,4 +1,4 @@
-import { handleError } from '@/shared/util/handleError';
+import { handleError } from '@jira-clone/core/utils';
 import React, { PropsWithChildren } from 'react';
 
 interface AuthBoundaryProps extends PropsWithChildren {

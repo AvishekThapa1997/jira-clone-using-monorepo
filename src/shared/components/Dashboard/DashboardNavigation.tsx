@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { LargeDeviceLogo, SmallLogo } from '../../../shared/components/AppLogo';
 
 import { WorkspaceSwitchSection } from '@/features/workspaces/components/WorkspaceSwitcherSection';
-import { LargeDeviceNavigation } from '../Navigation';
+import { LargeDeviceNavigation } from '../Navigation/LargeDeviceNavigation';
 
 const DashboardNavigation = () => {
   return (

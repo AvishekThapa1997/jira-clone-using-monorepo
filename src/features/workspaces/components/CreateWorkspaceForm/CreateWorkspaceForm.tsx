@@ -1,12 +1,13 @@
-import { LoadingButton } from '@/shared/components/ui';
+import { LoadingButton } from '@/shared/components/ui/LoadingButton';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
-import { useCustomEvent, useImageUploader } from '@/shared/hooks';
+import { useCustomEvent } from '@/shared/hooks/useCustomEvent';
+import { useImageUploader } from '@/shared/hooks/useImageUploader';
 
-import { cn } from '@/shared/util/class';
+import { cn } from '@jira-clone/core/utils';
 import { Upload, X } from 'lucide-react';
 import {
   ComponentProps,
@@ -16,9 +17,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { WORKSPACE_CONSTANTS } from '../../constants';
+import { WORKSPACE_CONSTANTS } from '@jira-clone/core/constants/workspace';
 import { useCreateWorkspace } from '../../hooks';
-import { CUSTOM_EVENT } from '@/shared/constants';
+import { CUSTOM_EVENT } from '@jira-clone/core/constants/shared';
 
 interface CreateWorkspaceFormProps
   extends Omit<ComponentProps<'form'>, 'onSubmit'> {
@@ -134,7 +135,6 @@ const WorkspaceIconUploadSection = ({
     function cleanUpObjectUrl() {
       return () => {
         if (objectUrlRef.current && selectedFile) {
-          console.log('CLEANUP');
           URL.revokeObjectURL(objectUrlRef.current);
         }
       };
@@ -223,7 +223,7 @@ const WorkspaceIconUploadSection = ({
 
         {selectedFilePreviewUrl && (
           <img
-            src={selectedFilePreviewUrl}
+            src={objectUrlRef.current}
             alt='Selected file'
             className='max-h-full max-w-full'
           />
@@ -246,7 +246,7 @@ const WorkspaceIconUploadSection = ({
           onClick={() => workspaceIconFieldRef.current?.click()}
           disabled={isUploading}
         >
-          Upload Image
+          Choose Image
         </Button>
       </div>
     </div>
