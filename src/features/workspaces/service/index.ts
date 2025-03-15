@@ -1,1 +1,1 @@
-export * from '@jira-clone/services/workspaces';
+export * from '@jira-clone/services/workspace';

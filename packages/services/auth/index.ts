@@ -1,4 +1,5 @@
-import { getAuth, getFunctions } from '@jira-clone/firebase';
+import { getFunctions } from '@jira-clone/firebase/functions';
+import { getAuth } from '@jira-clone/firebase/auth';
 import { parseSchema, handleError } from '@jira-clone/core/utils';
 import { signUpSchema } from '@jira-clone/core/schema/auth';
 import type {
@@ -15,7 +16,7 @@ export const signUpUser = async ({
   try {
     const parsedResult = parseSchema(signUpSchema, { email, name, password });
     if (parsedResult.data) {
-      const { httpsCallable, firebaseFunction } = await getFunctions();
+      const { firebaseFunction, httpsCallable } = await getFunctions();
       const _signUpUser = httpsCallable<SignUpSchema, UserDto>(
         firebaseFunction,
         'signUpUser',

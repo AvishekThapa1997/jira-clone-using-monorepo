@@ -7,12 +7,18 @@
     "@jira-clone/firebase": "*"
   },
   "exports": {
-    "./auth": "./auth.ts",
-    "./workspaces": "./workspace.ts"
+    "./auth": {
+      "import": "./dist/auth/index.js",
+      "types": "./dist/auth/index.d.ts"
+    },
+    "./workspace": {
+      "import": "./dist/workspace/index.js",
+      "types": "./dist/workspace/index.d.ts"
+    }
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run build --workspace=@jira-clone/firebase && tsc --build"
   },
   "author": "",
   "license": "ISC"

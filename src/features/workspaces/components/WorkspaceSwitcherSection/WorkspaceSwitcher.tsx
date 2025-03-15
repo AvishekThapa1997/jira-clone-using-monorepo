@@ -19,6 +19,8 @@ import { useCreateWorkspaceDialog } from '../../hooks/useCreateWorkspaceDialog';
 import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
 import { WorkspaceItem } from '../WorkspaceItem';
 import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
+import { RenderList } from '@/shared/components/RenderList';
+import { Show } from '@/shared/components/Show';
 
 interface WorkspaceSwitcherProps {
   className?: string;
@@ -60,10 +62,13 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className={cn('w-workspace-switcher', className)}>
           <DropdownMenuGroup className='max-h-56 overflow-auto'>
-            {isFetching && <WorkspaceItemSkeleton noOfItem={3} />}
-            {workspaces && workspaces.length > 0 ? (
-              <>
-                {workspaces.map((workspace) => {
+            <Show show={isFetching}>
+              <WorkspaceItemSkeleton noOfItem={3} />
+            </Show>
+            <Show show={workspaces && workspaces.length > 0}>
+              <RenderList
+                data={workspaces}
+                render={(workspace) => {
                   return (
                     <DropdownMenuItem
                       onSelect={(e) => {
@@ -78,9 +83,9 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
                       />
                     </DropdownMenuItem>
                   );
-                })}
-              </>
-            ) : null}
+                }}
+              />
+            </Show>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>

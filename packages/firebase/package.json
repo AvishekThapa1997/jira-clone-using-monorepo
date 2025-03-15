@@ -4,13 +4,38 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build --workspace=@jira-clone/core && tsc --build"
   },
   "exports": {
-    ".": "./index.ts",
-    "./utils": "./util/index.ts",
-    "./converters": "./converters/index.ts",
-    "./types": "./types/index.d.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    },
+    "./converters/workspace": {
+      "import": "./dist/converters/workspace/index.js",
+      "types": "./dist/converters/workspace/index.d.ts"
+    },
+    "./auth": {
+      "import": "./dist/auth/index.js",
+      "types": "./dist/auth/index.d.ts"
+    },
+    "./store": {
+      "import": "./dist/store/index.js",
+      "types": "./dist/store/index.d.ts"
+    },
+    "./storage": {
+      "import": "./dist/storage/index.js",
+      "types": "./dist/storage/index.d.ts"
+    },
+    "./functions": {
+      "import": "./dist/functions/index.js",
+      "types": "./dist/functions/index.d.ts"
+    }
   },
   "author": "",
   "license": "ISC",

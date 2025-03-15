@@ -1,4 +1,4 @@
-import { BaseProps } from '@jira-clone/core/types';
+import type { BaseProps } from '@jira-clone/core/types';
 import { cn } from '@jira-clone/core/utils';
 import { PropsWithChildren } from 'react';
 import { AvatarProps } from '../ui/avatar';

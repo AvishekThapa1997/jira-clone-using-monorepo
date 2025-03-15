@@ -9,18 +9,20 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // '@jira-clone/core': path.resolve(__dirname, './packages/core'),
+      // '@jira-clone/firebase': path.resolve(__dirname, './packages/firebase'),
+      // '@jira-clone/services': path.resolve(__dirname, './packages/services'),
     },
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       treeshake: true,
+
       output: {
         manualChunks: {
-          'react-icons/md': ['react-icons/md'],
-          'firebase-auth': ['firebase/auth'],
-          'firebase-firestore': ['firebase/firestore'],
-          'firebase-storage': ['firebase/storage'],
-          'firebase-functions': ['firebase/functions'],
+          'react-dom/client': ['react-dom/client'],
+          'firebase-app': ['firebase/app'],
         },
       },
     },

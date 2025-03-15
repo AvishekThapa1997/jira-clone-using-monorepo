@@ -7,8 +7,13 @@ import { RootLayout } from '@/shared/layout';
 import { AuthErrorBoundary } from '@/features/auth/components/AuthErrorBoundary';
 import { AuthStatusProvider } from '@/features/auth/provider/AuthStatusProvider';
 
-import { Dashboard } from '@/shared/components/Dashboard';
 import { lazy, Suspense } from 'react';
+
+const Dashboard = lazy(() =>
+  import('@/shared/components/Dashboard').then((module) => ({
+    default: module.Dashboard,
+  })),
+);
 
 const HomePage = lazy(() =>
   import('@/pages/home').then((module) => ({
@@ -66,7 +71,9 @@ const routes = createBrowserRouter([
         path: '/',
         element: (
           <AuthMiddlewareRoute>
-            <Dashboard />
+            <Suspense fallback={<p>Dashboard loading....</p>}>
+              <Dashboard />
+            </Suspense>
           </AuthMiddlewareRoute>
         ),
         children: [

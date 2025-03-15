@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
 import { cn } from '@jira-clone/core/utils';
-import { BaseProps } from '@jira-clone/core/types';
+import type { BaseProps } from '@jira-clone/core/types';
+import { Show } from '../Show';
+import { Skeleton } from './skeleton';
 
 export interface AvatarProps {
   baseClasses?: string;
@@ -76,16 +78,10 @@ const AvatarImage = React.forwardRef<
 });
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 
-interface AvatarStatusProps extends BaseProps {
-  render?: (status: ImageLoadingStatus) => React.ReactNode;
-}
-
 const AvatarFallback = React.forwardRef<
   React.ComponentRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback> &
-    AvatarStatusProps
->(({ className, children, render, ...props }, ref) => {
-  const { loadingStatus } = useAvatarLoadingStatus();
+  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
+>(({ className, children, ...props }, ref) => {
   return (
     <AvatarPrimitive.Fallback
       ref={ref}
@@ -95,24 +91,29 @@ const AvatarFallback = React.forwardRef<
       )}
       {...props}
     >
-      {render ? render(loadingStatus) : children}
+      {children}
     </AvatarPrimitive.Fallback>
   );
 });
 
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
-interface AvatarTextInitialProps extends BaseProps {
-  text: string;
-}
-
-export const AvatarTextInitial = ({
-  className,
-  text,
-}: AvatarTextInitialProps) => {
-  const textInitials = text.length > 1 ? text.slice(0, 2) : text;
+const AvatarLoading = ({ children }: React.PropsWithChildren) => {
+  const { loadingStatus } = useAvatarLoadingStatus();
   return (
-    <p className={cn('uppercase tracking-wider', className)}>{textInitials}</p>
+    <Show show={loadingStatus === 'loading'}>
+      {children ?? <Skeleton className='h-full w-full' />}
+    </Show>
   );
 };
-export { Avatar, AvatarImage, AvatarFallback };
+
+AvatarLoading.displayName = 'AvatarLoading';
+
+const AvatarError = ({ children }: React.PropsWithChildren) => {
+  const { loadingStatus } = useAvatarLoadingStatus();
+  return <Show show={loadingStatus === 'error'}>{children}</Show>;
+};
+
+AvatarError.displayName = 'AvatarError';
+
+export { Avatar, AvatarImage, AvatarFallback, AvatarLoading, AvatarError };

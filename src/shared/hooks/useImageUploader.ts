@@ -1,13 +1,13 @@
 import type { ErrorResult } from '@jira-clone/core/types';
+import { Reducer, useReducer, useRef } from 'react';
+import { handleError } from '@jira-clone/core/utils';
 import {
+  getStorage,
   type UploadTaskSnapshot,
   type StorageError,
   type UploadTask,
   type StorageReference,
-} from 'firebase/storage';
-import { Reducer, useReducer, useRef } from 'react';
-import { handleError } from '@jira-clone/core/utils';
-import { getStorage } from '@jira-clone/firebase';
+} from '@jira-clone/firebase/storage';
 
 enum ImageUploaderActionType {
   DOWNLOAD_PROGRESS = 'DOWNLOAD_PROGRESS',

@@ -3,17 +3,38 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build"
   },
   "exports": {
-    "./constants/auth": "./constants/auth.ts",
-    "./constants/workspace": "./constants/workspace.ts",
-    "./constants/shared": "./constants/shared.ts",
-    "./types": "./types/index.d.ts",
-    "./utils": "./utils/index.ts",
-    "./keys": "./keys/index.ts",
-    "./schema/auth": "./schema/auth.ts",
-    "./schema/workspace": "./schema/workspace.ts"
+    "./constants/auth": {
+      "import": "./dist/constants/auth.js",
+      "types": "./dist/constants/auth.d.ts"
+    },
+    "./constants/workspace": {
+      "import": "./dist/constants/workspace.js",
+      "types": "./dist/constants/workspace.d.ts"
+    },
+    "./constants/shared": {
+      "import": "./dist/constants/shared.js",
+      "types": "./dist/constants/shared.d.ts"
+    },
+    "./types": "./dist/types/index.d.ts",
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    },
+    "./keys/workspace": {
+      "import": "./dist/keys/workspace.js",
+      "types": "./dist/keys/workspace.d.ts"
+    },
+    "./schema/auth": {
+      "import": "./dist/schema/auth.js",
+      "types": "./dist/schema/auth.d.ts"
+    },
+    "./schema/workspace": {
+      "import": "./dist/schema/workspace.js",
+      "types": "./dist/schema/workspace.d.ts"
+    }
   },
   "author": "",
   "license": "ISC",

@@ -7,8 +7,8 @@ import {
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { createWorkspace } from '../service';
-import { CreateWorkspaceSchema } from '@jira-clone/core/types';
-import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys';
+import type { CreateWorkspaceSchema } from '@jira-clone/core/types';
+import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys/workspace';
 
 export const useCreateWorkspace = (
   options?: UseMutationOptions<

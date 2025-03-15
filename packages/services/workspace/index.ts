@@ -1,4 +1,7 @@
-import { getFirestore } from '@jira-clone/firebase';
+import {
+  getFirestore,
+  type GetFirestoreResult,
+} from '@jira-clone/firebase/store';
 import { handleError, parseSchema } from '@jira-clone/core/utils';
 import type {
   Result,
@@ -8,10 +11,9 @@ import type {
 } from '@jira-clone/core/types';
 
 import { createWorkspaceSchema } from '@jira-clone/core/schema/workspace';
-import { workspaceConverter } from '@jira-clone/firebase/converters';
-import { GetFirestoreReturnResult } from '@jira-clone/firebase/types';
+import { workspaceConverter } from '@jira-clone/firebase/converters/workspace';
 
-const getWorkspaceCollection = (result: GetFirestoreReturnResult) => {
+const getWorkspaceCollection = (result: GetFirestoreResult) => {
   const { collection, firestore } = result;
   return collection(firestore, 'workspaces').withConverter(workspaceConverter);
 };

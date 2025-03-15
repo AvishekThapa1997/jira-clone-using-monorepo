@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run build --workspace=@jira-clone/services && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "chakra:add": "npx @chakra-ui/cli snippet add",

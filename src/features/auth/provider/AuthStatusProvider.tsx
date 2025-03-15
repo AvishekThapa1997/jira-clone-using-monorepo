@@ -1,4 +1,4 @@
-import { getAuth } from '@jira-clone/firebase';
+import { getAuth } from '@jira-clone/firebase/auth';
 import { handleAuth } from '@jira-clone/firebase/utils';
 import type { UserDto } from '@jira-clone/core/types';
 

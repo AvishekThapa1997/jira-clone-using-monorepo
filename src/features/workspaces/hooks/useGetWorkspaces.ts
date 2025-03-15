@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getWorkspaces } from '../service';
-import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys';
+import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys/workspace';
 import { useUserSession } from '@/shared/hooks/useUserSession';
 
 export const useGetWorkspaces = (enabled: boolean = false) => {

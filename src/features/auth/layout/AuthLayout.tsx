@@ -5,18 +5,18 @@ import { AuthServiceProvider } from '@/features/auth/provider/AuthServiceProvide
 
 const AuthLayout = () => {
   return (
-    <AuthServiceProvider>
-      <div className='h-svh flex justify-center px-4 items-center'>
-        <div className='basis-96'>
-          <Card>
-            <CardContent className='p-4 space-y-4'>
+    <div className='h-svh flex justify-center px-4 items-center'>
+      <div className='basis-96'>
+        <Card>
+          <CardContent className='p-4 space-y-4'>
+            <AuthServiceProvider>
               <Outlet />
               <OAuthButtonSection />
-            </CardContent>
-          </Card>
-        </div>
+            </AuthServiceProvider>
+          </CardContent>
+        </Card>
       </div>
-    </AuthServiceProvider>
+    </div>
   );
 };
 

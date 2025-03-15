@@ -8,6 +8,7 @@ import {
 import { lazy, Suspense } from 'react';
 import { MobileNavigation } from '../Navigation/MobileNavigation';
 import { DashboardLeftSkeleton } from './DashboardSkeleton';
+import { ReactQueryClientProvider } from '@/shared/provider/ReactQueryClientProvider';
 
 const DashboardNavigation = lazy(() =>
   import('./DashboardNavigation').then((module) => ({
@@ -16,7 +17,7 @@ const DashboardNavigation = lazy(() =>
 );
 const Dashboard = () => {
   return (
-    <>
+    <ReactQueryClientProvider>
       <DashboardLayout>
         <DashboardLeft>
           <Suspense fallback={<DashboardLeftSkeleton />}>
@@ -28,7 +29,7 @@ const Dashboard = () => {
         </DashboardRight>
       </DashboardLayout>
       <MobileNavigation />
-    </>
+    </ReactQueryClientProvider>
   );
 };
 

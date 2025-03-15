@@ -1,4 +1,3 @@
-/// <reference types="vite/client" />
 import { getApps, initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
@@ -10,40 +9,6 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_APP_ID,
 };
 
-// Initialize Firebase
 const app = getApps()[0] ?? initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and get a reference to the service
-const getAuth = () =>
-  import('firebase/auth').then(({ getAuth, ...remainining }) => {
-    const auth = getAuth(app);
-    return { auth, ...remainining };
-  });
-
-// // TODO : How to handle failure in lazy loading of firestore
-const getFirestore = () =>
-  import('firebase/firestore').then(({ getFirestore, ...remaining }) => ({
-    firestore: getFirestore(app),
-    ...remaining,
-  }));
-
-// // TODO : How to handle failure in lazy loading of storage
-const getStorage = () =>
-  import('firebase/storage').then(({ getStorage, ref, ...remaining }) => {
-    const storage = getStorage(app);
-    return {
-      storage,
-      ref,
-      ...remaining,
-    };
-  });
-
-const getFunctions = () =>
-  import('firebase/functions').then(({ getFunctions, ...remaining }) => {
-    const firebaseFunction = getFunctions(app);
-    return {
-      firebaseFunction,
-      ...remaining,
-    };
-  });
-export { getAuth, getFirestore, getFunctions, getStorage, app };
+export { app };
