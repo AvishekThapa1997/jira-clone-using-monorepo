@@ -1,11 +1,11 @@
-import * as zod from 'zod';
-import { createWorkspaceSchema } from '../schema/workspace';
+import * as zod from "zod";
+import { createWorkspaceSchema } from "../schema/workspace";
 
 export type CreateWorkspaceSchema = zod.infer<typeof createWorkspaceSchema>;
 
 export enum WorkspaceMemberRole {
-  ADMIN = 'admin',
-  MEMBER = 'member',
+  ADMIN = "admin",
+  MEMBER = "member",
 }
 
 export interface WorkspaceDto {
@@ -19,9 +19,13 @@ export interface WorkspaceDto {
 }
 
 export interface WorkspaceMemberDto {
-  workspaceDetails: Pick<WorkspaceDto, 'id' | 'name' | 'imageUrl'>;
+  workspaceDetails: Pick<WorkspaceDto, "id" | "name" | "imageUrl">;
   memberName: string;
   emailId: string;
   memberId: string;
   role: WorkspaceMemberRole;
+}
+
+export interface WorkspaceCreatedEvent {
+  data?: WorkspaceDto;
 }

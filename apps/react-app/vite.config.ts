@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           'react-dom/client': ['react-dom/client'],
+          'react-router': ['react-router'],
         },
       },
     },

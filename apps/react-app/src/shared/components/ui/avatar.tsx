@@ -3,7 +3,7 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
 import { cn } from '@jira-clone/core/utils';
 import type { BaseProps } from '@jira-clone/core/types';
-import { Show } from '../Show';
+import { If } from '../If';
 import { Skeleton } from './skeleton';
 
 export interface AvatarProps {
@@ -101,9 +101,9 @@ AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 const AvatarLoading = ({ children }: React.PropsWithChildren) => {
   const { loadingStatus } = useAvatarLoadingStatus();
   return (
-    <Show show={loadingStatus === 'loading'}>
+    <If check={loadingStatus === 'loading'}>
       {children ?? <Skeleton className='h-full w-full' />}
-    </Show>
+    </If>
   );
 };
 
@@ -111,7 +111,7 @@ AvatarLoading.displayName = 'AvatarLoading';
 
 const AvatarError = ({ children }: React.PropsWithChildren) => {
   const { loadingStatus } = useAvatarLoadingStatus();
-  return <Show show={loadingStatus === 'error'}>{children}</Show>;
+  return <If check={loadingStatus === 'error'}>{children}</If>;
 };
 
 AvatarError.displayName = 'AvatarError';

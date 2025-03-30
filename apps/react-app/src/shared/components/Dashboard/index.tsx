@@ -1,36 +1,17 @@
-import { Outlet } from 'react-router';
-import {
-  DashboardLayout,
-  DashboardLeft,
-  DashboardRight,
-} from './DashboardLayout';
-
+import { useGetWorkspaces } from '@/features/workspaces/hooks/useGetWorkspaces';
 import { SelectWorkspaceProvider } from '@/features/workspaces/provider/SelectWorkspaceProvider';
-import { ReactQueryClientProvider } from '@/shared/provider/ReactQueryClientProvider';
-import { lazy } from 'react';
-import { MobileNavigation } from '../Navigation/MobileNavigation';
+import { If } from '../If';
+import { LazyDashboard } from './LazyDashboard';
 
-const DashboardNavigation = lazy(() =>
-  import('./DashboardNavigation').then((module) => ({
-    default: module.DashboardNavigation,
-  })),
-);
-const Dashboard = () => {
+const DashboardRootLayout = () => {
+  const { workspaces } = useGetWorkspaces();
   return (
-    <ReactQueryClientProvider>
-      <SelectWorkspaceProvider>
-        <DashboardLayout>
-          <DashboardLeft>
-            <DashboardNavigation />
-          </DashboardLeft>
-          <DashboardRight>
-            <Outlet />
-          </DashboardRight>
-        </DashboardLayout>
-        <MobileNavigation />
-      </SelectWorkspaceProvider>
-    </ReactQueryClientProvider>
+    <SelectWorkspaceProvider>
+      <If check={workspaces?.length > 0}>
+        <LazyDashboard />
+      </If>
+    </SelectWorkspaceProvider>
   );
 };
 
-export { Dashboard };
+export { DashboardRootLayout };

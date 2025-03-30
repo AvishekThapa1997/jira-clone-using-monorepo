@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { useIsActiveRoute } from '@/shared/hooks/useIsActiveRoute';
 import { cn } from '@jira-clone/core/utils';
-import { Show } from '../Show';
+import { If } from '../If';
 import { Slot } from '@radix-ui/react-slot';
 import { Link } from 'react-router';
 import { Box } from './box';
@@ -88,8 +88,8 @@ const NavigationItemIcon = ({
   const { isActive } = useNavigationContext();
   return (
     <Box className={cn('flex justify-center text-gray-600', className)}>
-      <Show show={isActive}>{activeIcon}</Show>
-      <Show show={!isActive}>{defaultIcon}</Show>
+      <If check={isActive}>{activeIcon}</If>
+      <If check={!isActive}>{defaultIcon}</If>
     </Box>
   );
 };

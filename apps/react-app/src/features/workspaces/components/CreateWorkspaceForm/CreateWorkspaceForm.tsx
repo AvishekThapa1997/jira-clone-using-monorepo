@@ -20,6 +20,12 @@ import {
   useState,
 } from 'react';
 import { useCreateWorkspace } from '../../hooks/useCreateWorkspace';
+import { If } from '@/shared/components/If';
+import { useNavigate } from 'react-router';
+import type { WorkspaceCreatedEvent } from '@jira-clone/core/types';
+import { useSelectWorkspace } from '../../hooks/useSelectWorkspace';
+import { useNewWorkspaceDispatcher } from '../../hooks/useNewWorkspaceDispatcher';
+import { useLocalStorage } from '@uidotdev/usehooks';
 
 interface CreateWorkspaceFormProps
   extends Omit<ComponentProps<'form'>, 'onSubmit'> {
@@ -33,32 +39,38 @@ interface WorkspaceIconUploadSectionProps {
 
 const CreateWorkspaceForm = ({
   className,
-  handleCancel = () => {},
+  handleCancel,
   ...props
 }: CreateWorkspaceFormProps) => {
+  const [_, addItem] = useLocalStorage(
+    WORKSPACE_CONSTANTS.LAST_SELECTED_WORKSPACE_KEY,
+  );
   const nameFieldRef = useRef<HTMLInputElement | null>(null);
   const [uploadedWorkspaceIconUrl, setUploadedWorkspaceIconUrl] = useState<
     string | undefined
-  >();
+  >(() => {
+    return undefined;
+  });
   const keyRef = useRef<number>(0);
   const nameFieldId = useId();
   const [isIconUploading, setIconUploading] = useState(false);
-  const { dispatch } = useEventDispatcher<boolean>({
-    eventName: CUSTOM_EVENT.WORKSPACE_CREATED,
-  });
+  const dispatch = useNewWorkspaceDispatcher();
   const {
     mutate,
     isPending,
     data,
     error: err,
   } = useCreateWorkspace({
-    onSuccess: () => {
+    onSuccess: (result) => {
       if (nameFieldRef.current) {
         nameFieldRef.current.value = '';
       }
       keyRef.current += 1;
       setUploadedWorkspaceIconUrl(undefined);
-      dispatch(true);
+      dispatch({
+        data: result.data,
+      });
+      addItem(result.data);
     },
   });
   const error = data?.error;
@@ -107,14 +119,16 @@ const CreateWorkspaceForm = ({
       </div>
       <Separator />
       <div className='flex gap-4 justify-end'>
-        <Button
-          type='button'
-          variant='secondary'
-          onClick={() => handleCancel()}
-          disabled={isPending || isIconUploading}
-        >
-          Cancel
-        </Button>
+        <If check={!!handleCancel}>
+          <Button
+            type='button'
+            variant='secondary'
+            onClick={() => handleCancel()}
+            disabled={isPending || isIconUploading}
+          >
+            Cancel
+          </Button>
+        </If>
         <LoadingButton disabled={isPending || isIconUploading} type='submit'>
           Create Workspace
         </LoadingButton>

@@ -1,15 +1,11 @@
 import { WorkspaceSwitcherSkeleton } from '@/features/workspaces/components/WorkspaceSwitcherSection/WorkspaceSwitcherSkeleton';
 import { NavigationSkeleton } from '../Navigation/NavigationSkeleton';
 import { Skeleton } from '../ui/skeleton';
-import {
-  DashboardLayout,
-  DashboardLeft,
-  DashboardRight,
-} from './DashboardLayout';
+import { Dashboard, DashboardLeft, DashboardRight } from './Dashboard';
 
 const DashboardSkeleton = () => {
   return (
-    <DashboardLayout>
+    <Dashboard>
       <DashboardLeft>
         <DashboardLeftSkeleton />
       </DashboardLeft>
@@ -19,7 +15,7 @@ const DashboardSkeleton = () => {
           <Skeleton className='w-full max-w-80 h-5 rounded-sm' />
         </div>
       </DashboardRight>
-    </DashboardLayout>
+    </Dashboard>
   );
 };
 

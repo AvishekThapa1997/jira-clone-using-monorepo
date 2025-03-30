@@ -1,33 +1,28 @@
-import { cn } from '@jira-clone/core/utils';
-import type { PropsWithChildren } from 'react';
+import { Outlet } from 'react-router';
+import { MobileNavigation } from '../Navigation/MobileNavigation';
+import { Dashboard, DashboardLeft, DashboardRight } from './Dashboard';
+import { lazy } from 'react';
+const DashboardNavigation = lazy(() =>
+  import('./DashboardNavigation').then((module) => ({
+    default: module.DashboardNavigation,
+  })),
+);
 
-interface DashboardProps extends PropsWithChildren {
-  className?: string;
-}
-
-const DashboardLayout = ({ children, className }: DashboardProps) => {
-  return <div className={cn(className)}>{children}</div>;
-};
-
-const DashboardLeft = ({ children, className }: DashboardProps) => {
+const DashboardLayout = () => {
   return (
-    <aside
-      className={cn(
-        'md:w-sidebar-width bg-stone-50 fixed hidden md:block border-r h-svh shadow-sm',
-        className,
-      )}
-    >
-      {children}
-    </aside>
+    <>
+      <Dashboard>
+        <DashboardLeft>
+          <DashboardNavigation />
+        </DashboardLeft>
+        <DashboardRight>
+          <Outlet />
+        </DashboardRight>
+      </Dashboard>
+      <MobileNavigation />
+    </>
   );
 };
 
-const DashboardRight = ({ children, className }: DashboardProps) => {
-  return (
-    <main className={cn('md:ml-[var(--sidebar-width)] p-2 md:p-4', className)}>
-      {children}
-    </main>
-  );
-};
+export { DashboardLayout };
 
-export { DashboardLayout, DashboardLeft, DashboardRight };

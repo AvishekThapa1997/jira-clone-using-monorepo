@@ -5,8 +5,7 @@ import { SIGNUP_FORM_FIELDS } from '@jira-clone/core/constants/auth';
 
 const SignUpForm = () => {
   const { signUpAction } = useAuthService();
-  const { data, isPending, operation } = signUpAction;
-  console.log({ data });
+  const { isPending, operation } = signUpAction;
   return (
     <form action={operation}>
       <div className='space-y-3'>

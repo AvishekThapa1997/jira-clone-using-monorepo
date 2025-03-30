@@ -7,7 +7,11 @@ import {
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { createWorkspace } from '../service';
-import type { CreateWorkspaceSchema } from '@jira-clone/core/types';
+import type {
+  CreateWorkspaceSchema,
+  Result,
+  WorkspaceDto,
+} from '@jira-clone/core/types';
 import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys/workspace';
 
 export const useCreateWorkspace = (
@@ -18,33 +22,23 @@ export const useCreateWorkspace = (
   >,
 ) => {
   const { toast } = useToast();
-  const { onSuccess, ...otherOptions } = options ?? {};
+  const { onSuccess, onSettled, ...otherOptions } = options ?? {};
   const { user } = useUserSession();
   const queryClient = useQueryClient();
-  const updateCache = useCallback(() => {
+  const updateCache = useCallback(async (newWorkspace: WorkspaceDto) => {
     const queryKey = [...WORKSPACES_QUERY_KEYS.getWorkspaces(user.id)];
+    await queryClient.cancelQueries({ queryKey });
+    const previousResult =
+      queryClient.getQueryData<Result<WorkspaceDto[]>>(queryKey);
+    if (previousResult.data) {
+      const updatedResult: Result<WorkspaceDto[]> = {
+        data: [newWorkspace, ...previousResult.data],
+      };
+      queryClient.setQueryData(queryKey, updatedResult);
+    }
     queryClient.invalidateQueries({
       queryKey,
     });
-    // queryClient.cancelQueries({
-    //   queryKey,
-    // });
-    // const previousData =
-    //   queryClient.getQueryData<Result<WorkspaceDto[]>>(queryKey);
-    // if (!result.data) {
-    //   return;
-    // }
-    // let workspaces: WorkspaceDto[] = [];
-    // if (previousData) {
-    //   const previousWorkspaces = previousData.data ?? [];
-    //   workspaces.push(result.data, ...previousWorkspaces);
-    // } else {
-    //   workspaces.push(result.data);
-    // }
-    // queryClient.setQueryData<Result<WorkspaceDto[]>>(queryKey, {
-    //   ...previousData,
-    //   data: workspaces,
-    // });
   }, []);
   return useMutation<
     Awaited<ReturnType<typeof createWorkspace>>,
@@ -55,12 +49,14 @@ export const useCreateWorkspace = (
       return createWorkspace({ name, imageUrl }, user);
     },
     onSuccess: (...args) => {
+      const result = args[0];
       toast({
         title: 'Workspace created successfully.',
       });
       onSuccess?.(...args);
-      updateCache();
+      updateCache(result.data);
     },
+    onSettled: () => {},
     ...(otherOptions ?? {}),
   });
 };

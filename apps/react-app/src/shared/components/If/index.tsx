@@ -1,14 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 
 interface ShowProps extends PropsWithChildren {
-  show: (() => boolean) | boolean;
+  check: (() => boolean) | boolean;
 }
-const Show = ({ show, children }: ShowProps) => {
-  const canShow = typeof show === 'function' ? show() : show;
+const If = ({ check, children }: ShowProps) => {
+  const canShow = typeof check === 'function' ? check() : check;
   if (canShow) {
     return children;
   }
   return null;
 };
 
-export { Show };
+export { If };

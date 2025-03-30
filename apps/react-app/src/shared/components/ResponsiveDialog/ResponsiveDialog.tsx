@@ -1,13 +1,12 @@
+import { useScreenSize } from '@/shared/hooks/useScreenSize';
+import { DialogTrigger } from '@radix-ui/react-dialog';
 import React, { PropsWithChildren } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import { DialogTrigger } from '@radix-ui/react-dialog';
-import { CreateWorkspaceForm } from '@/features/workspaces/components/CreateWorkspaceForm/CreateWorkspaceForm';
 import {
   Drawer,
   DrawerContent,
@@ -15,8 +14,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer';
-import { Show } from '../Show';
-import { useScreenSize } from '@/shared/hooks/useScreenSize';
+import { If } from '../If';
 
 interface ResponsiveDialogProps extends PropsWithChildren {
   trigger?: React.ReactNode;
@@ -45,9 +43,9 @@ const ResponsiveDialog = ({
   if (isLargeDevice || isExtraLargeDevice) {
     return (
       <Dialog open={open} onOpenChange={handleOpen}>
-        <Show show={!!trigger}>
+        <If check={!!trigger}>
           <DialogTrigger asChild={!!triggerAsChild}>{trigger}</DialogTrigger>
-        </Show>
+        </If>
         <DialogContent onInteractOutside={(e) => e.preventDefault()}>
           {renderTitle(DialogTitle)}
           {renderDescription(DialogDescription)}
@@ -58,9 +56,9 @@ const ResponsiveDialog = ({
   }
   return (
     <Drawer open={open} onOpenChange={handleOpen}>
-      <Show show={!!trigger}>
+      <If check={!!trigger}>
         <DrawerTrigger asChild={!!triggerAsChild}>{trigger}</DrawerTrigger>
-      </Show>
+      </If>
       <DrawerContent>
         {renderTitle(DrawerTitle)}
         {renderDescription(DrawerDescription)}

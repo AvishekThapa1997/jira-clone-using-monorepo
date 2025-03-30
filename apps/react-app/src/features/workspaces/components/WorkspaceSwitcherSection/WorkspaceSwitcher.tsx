@@ -9,21 +9,20 @@ import {
 import { ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/button';
-import { CUSTOM_EVENT } from '@jira-clone/core/constants/shared';
 
 import { RenderList } from '@/shared/components/RenderList';
-import { Show } from '@/shared/components/Show';
+import { If } from '@/shared/components/If';
+import { Box } from '@/shared/components/ui/box';
 import { useDialog } from '@/shared/hooks/useDialog';
-import { useEventSuscriber } from '@/shared/hooks/useEventSubscriber';
+import type { WorkspaceCreatedEvent } from '@jira-clone/core/types';
 import { cn } from '@jira-clone/core/utils';
 import { useCreateWorkspaceDialog } from '../../hooks/useCreateWorkspaceDialog';
 import { useGetWorkspaces } from '../../hooks/useGetWorkspaces';
+import { useNewWorkspaceSubscriber } from '../../hooks/useNewWorkspaceSubscriber';
 import { useSelectWorkspace } from '../../hooks/useSelectWorkspace';
 import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
 import { WorkspaceItem } from '../WorkspaceItem';
 import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
-import { Box } from '@/shared/components/ui/box';
-import { ResponsiveDialog } from '@/shared/components/ResponsiveDialog/ResponsiveDialog';
 
 interface WorkspaceSwitcherProps {
   className?: string;
@@ -40,13 +39,14 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
     handleCreateWorkspaceDialogOpenChange,
     closeCreateWorkspaceDialog,
   } = useCreateWorkspaceDialog();
-  const { isFetching, workspaces } = useGetWorkspaces(
-    /*enabled*/ !!isWorkspaceSwitcherOpen,
-  );
+  const { isFetching, workspaces } = useGetWorkspaces({
+    enabled: isWorkspaceSwitcherOpen,
+  });
   const { selectWorkspace, selectedWorkspace } = useSelectWorkspace();
-  const onSuccessfulWorkspaceCreation = (isCreatedSuccessfully: boolean) => {
-    if (isCreatedSuccessfully) {
+  const onSuccessfulWorkspaceCreation = (event: WorkspaceCreatedEvent) => {
+    if (event.data?.id) {
       closeCreateWorkspaceDialog();
+      selectWorkspace(event.data);
     }
   };
   const isWorkspaceSelected = !!selectedWorkspace;
@@ -54,8 +54,7 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
   const selectedItemStyle = {
     'bg-muted order-1': isWorkspaceSelected,
   };
-  useEventSuscriber<boolean>({
-    eventName: CUSTOM_EVENT.WORKSPACE_CREATED,
+  useNewWorkspaceSubscriber({
     subscriber: onSuccessfulWorkspaceCreation,
   });
 
@@ -70,23 +69,23 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
             'w-full outline-none focus-visible:ring-transparent px-3 py-1.5  flex border rounded-md items-center justify-between',
           )}
         >
-          <Show show={!isWorkspaceSelected}>
+          <If check={!isWorkspaceSelected}>
             <Box className='min-h-10 flex items-center'>Select Workspace</Box>
-          </Show>
-          <Show show={isWorkspaceSelected}>
+          </If>
+          <If check={isWorkspaceSelected}>
             <WorkspaceItem
               name={selectedWorkspace?.name}
               imageUrl={selectedWorkspace?.imageUrl}
             />
-          </Show>
+          </If>
           <ChevronsUpDownIcon size={20} className='text-muted-foreground' />
         </DropdownMenuTrigger>
         <DropdownMenuContent className={cn('w-workspace-switcher', className)}>
           <DropdownMenuGroup className='max-h-56 flex flex-col overflow-auto'>
-            <Show show={isFetching}>
+            <If check={isFetching && workspaces?.length === 0}>
               <WorkspaceItemSkeleton noOfItem={3} />
-            </Show>
-            <Show show={workspaces && workspaces.length > 0}>
+            </If>
+            <If check={workspaces && workspaces.length > 0}>
               <RenderList
                 data={workspaces}
                 render={(workspace) => {
@@ -115,7 +114,7 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
                   );
                 }}
               />
-            </Show>
+            </If>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>

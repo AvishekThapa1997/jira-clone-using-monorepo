@@ -6,10 +6,8 @@ import { useAuthService } from '@/shared/hooks/useAuthService';
 
 const SignInForm = () => {
   const { signInAction } = useAuthService();
-  const { data, isPending, operation } = signInAction;
-  console.log({ data });
+  const { isPending, operation } = signInAction;
   return (
-    // <Form name='sign-in' action='/auth/sign-in' method='POST'>
     <form action={operation}>
       <div className='space-y-3'>
         {SIGNIN_FORM_FIELDS.map((formField, index) => {

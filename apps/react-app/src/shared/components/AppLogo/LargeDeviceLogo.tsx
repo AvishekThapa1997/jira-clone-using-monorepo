@@ -10,7 +10,7 @@ const LargeDeviceLogo = ({ className, ...props }: ComponentProps<'svg'>) => {
       height='40'
       viewBox='0 0 202 40'
       fill='none'
-      className={cn('hidden lg:block')}
+      className={cn('hidden lg:block', className)}
       {...props}
     >
       <path

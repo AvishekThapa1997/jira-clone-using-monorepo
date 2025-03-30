@@ -1,14 +1,14 @@
 import { lazy, Suspense } from 'react';
 import { DashboardSkeleton } from './DashboardSkeleton';
-const Dashboard = lazy(() =>
-  import('./index').then((module) => ({
-    default: module.Dashboard,
+const DashboardLayout = lazy(() =>
+  import('./DashboardLayout').then((module) => ({
+    default: module.DashboardLayout,
   })),
 );
 const LazyDashboard = () => {
   return (
     <Suspense fallback={<DashboardSkeleton />}>
-      <Dashboard />
+      <DashboardLayout />
     </Suspense>
   );
 };

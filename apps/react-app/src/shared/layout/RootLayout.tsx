@@ -1,13 +1,17 @@
 import { Outlet } from 'react-router';
 import { Toaster } from '../components/ui/toaster';
-import { useAuthStatus } from '../hooks/useAuthStatus';
+import { ReactQueryClientProvider } from '../provider/ReactQueryClientProvider';
+import { UserSessionProvider } from '@/features/auth/provider/UserSessionProvider';
 
 const RootLayout = () => {
-  const { isLoading } = useAuthStatus();
   return (
     <div className='max-w-[1600px] mx-auto '>
-      <Outlet />
-      <Toaster />
+      <UserSessionProvider>
+        <ReactQueryClientProvider>
+          <Outlet />
+        </ReactQueryClientProvider>
+        <Toaster />
+      </UserSessionProvider>
     </div>
   );
 };
