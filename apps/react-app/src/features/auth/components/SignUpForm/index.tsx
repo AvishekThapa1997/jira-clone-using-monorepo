@@ -2,22 +2,23 @@ import { Input } from '@/shared/components/ui/input';
 import { useAuthService } from '@/shared/hooks/useAuthService';
 import { LoadingButton } from '../../../../shared/components/ui/LoadingButton';
 import { SIGNUP_FORM_FIELDS } from '@jira-clone/core/constants/auth';
+import { Box } from '@/shared/components/ui/box';
 
 const SignUpForm = () => {
   const { signUpAction } = useAuthService();
   const { isPending, operation } = signUpAction;
   return (
     <form action={operation}>
-      <div className='space-y-3'>
+      <Box className='space-y-3'>
         {SIGNUP_FORM_FIELDS.map(({ ...formField }, index) => {
           return (
-            <div key={index}>
-              <Input className='h-10 px-4' {...formField} />
-            </div>
+            <Box key={index}>
+              <Input className='h-10 px-4' {...formField} autoComplete='on' />
+            </Box>
           );
         })}
-      </div>
-      <div className='mt-5'>
+      </Box>
+      <Box className='mt-5'>
         <LoadingButton
           type='submit'
           disabled={isPending}
@@ -25,7 +26,7 @@ const SignUpForm = () => {
         >
           Register
         </LoadingButton>
-      </div>
+      </Box>
     </form>
   );
 };

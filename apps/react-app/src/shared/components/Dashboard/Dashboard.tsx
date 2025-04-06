@@ -1,12 +1,13 @@
 import { cn } from '@jira-clone/core/utils';
 import type { PropsWithChildren } from 'react';
+import { Box } from '../ui/box';
 
 interface DashboardProps extends PropsWithChildren {
   className?: string;
 }
 
 const Dashboard = ({ children, className }: DashboardProps) => {
-  return <div className={cn(className)}>{children}</div>;
+  return <Box className={cn(className)}>{children}</Box>;
 };
 
 const DashboardLeft = ({ children, className }: DashboardProps) => {

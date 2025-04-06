@@ -1,3 +1,4 @@
+import { Box } from '@/shared/components/ui/box';
 import { Button } from '@/shared/components/ui/button';
 import { useAuthService } from '@/shared/hooks/useAuthService';
 
@@ -5,7 +6,7 @@ const OAuthButtonSection = () => {
   const { isAuthInProgress } = useAuthService();
 
   return (
-    <div className='space-y-3 flex flex-col'>
+    <Box className='space-y-3 flex flex-col'>
       <Button
         variant='outline'
         type='button'
@@ -22,7 +23,7 @@ const OAuthButtonSection = () => {
       >
         Login with Github
       </Button>
-    </div>
+    </Box>
   );
 };
 

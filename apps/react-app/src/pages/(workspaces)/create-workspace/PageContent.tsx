@@ -12,7 +12,7 @@ const PageContent = () => {
   const handleNewWorkspaceCreation = (event: WorkspaceCreatedEvent) => {
     const newWorkspaceId = event.data?.id;
     if (newWorkspaceId) {
-      navigate(`/dashboard/workspaces/${newWorkspaceId}`, {
+      navigate(`/workspace=${newWorkspaceId}`, {
         replace: true,
       });
     }

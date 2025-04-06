@@ -10,6 +10,7 @@ import {
 } from '../ui/navigation-menu';
 import { useIsActiveRoute } from '@/shared/hooks/useIsActiveRoute';
 import { cn } from '@jira-clone/core/utils';
+import { useSearchParams } from 'react-router';
 
 export interface BaseNavigationProps {
   isMobile?: boolean;
@@ -32,7 +33,7 @@ const BaseNavigation = ({ isMobile }: BaseNavigationProps) => {
     : 'max-md:text-xs md:hidden lg:block';
 
   const iconSize = isMobile ? 20 : 24;
-
+  const [searchParams] = useSearchParams();
   return (
     <NavigationMenu className={containerStyle}>
       <NavigationMenuList className={listStyle}>
@@ -50,7 +51,10 @@ const BaseNavigation = ({ isMobile }: BaseNavigationProps) => {
                 <NavigationMenuLink
                   className={cn(linkStyle)}
                   asChild
-                  href={href}
+                  href={
+                    href +
+                    `?workspace=${encodeURI(searchParams.get('workspace'))}`
+                  }
                 >
                   <NavigationItemIcon
                     defaultIcon={<DefaultIcon size={iconSize} />}

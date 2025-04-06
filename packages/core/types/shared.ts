@@ -24,3 +24,8 @@ export interface Result<Data, ValidationErrorSchema = any> {
 export interface BaseProps {
   className?: string;
 }
+
+export interface BaseQueryResult<ID extends string | number | symbol, Data> {
+  allIds: ID[];
+  data: Record<ID, Data>;
+}

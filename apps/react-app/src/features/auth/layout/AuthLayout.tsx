@@ -2,11 +2,12 @@ import { AuthServiceProvider } from '@/features/auth/provider/AuthServiceProvide
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { PropsWithChildren } from 'react';
 import { OAuthButtonSection } from '../components/OAuthButtonSection';
+import { Box } from '@/shared/components/ui/box';
 
 const AuthLayout = ({ children }: PropsWithChildren) => {
   return (
-    <div className='h-svh flex justify-center px-4 items-center'>
-      <div className='basis-96'>
+    <Box className='h-svh flex justify-center px-4 items-center'>
+      <Box className='basis-96'>
         <Card>
           <CardContent className='p-4 space-y-4'>
             <AuthServiceProvider>
@@ -15,8 +16,8 @@ const AuthLayout = ({ children }: PropsWithChildren) => {
             </AuthServiceProvider>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

@@ -3,26 +3,28 @@ import { SIGNIN_FORM_FIELDS } from '@jira-clone/core/constants/auth';
 
 import { Input } from '@/shared/components/ui/input';
 import { useAuthService } from '@/shared/hooks/useAuthService';
+import { Box } from '@/shared/components/ui/box';
 
 const SignInForm = () => {
   const { signInAction } = useAuthService();
   const { isPending, operation } = signInAction;
   return (
     <form action={operation}>
-      <div className='space-y-3'>
+      <Box className='space-y-3'>
         {SIGNIN_FORM_FIELDS.map((formField, index) => {
           return (
-            <div key={index}>
+            <Box key={index}>
               <Input
                 className='h-10 px-4'
                 {...formField}
                 disabled={isPending}
+                autoComplete='on'
               />
-            </div>
+            </Box>
           );
         })}
-      </div>
-      <div className='mt-5'>
+      </Box>
+      <Box className='mt-5'>
         <LoadingButton
           disabled={isPending}
           type='submit'
@@ -30,7 +32,7 @@ const SignInForm = () => {
         >
           Login
         </LoadingButton>
-      </div>
+      </Box>
     </form>
     // </Form>
   );

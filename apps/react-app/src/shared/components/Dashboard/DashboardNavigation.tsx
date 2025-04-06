@@ -6,19 +6,20 @@ import { WorkspaceSwitchSection } from '@/features/workspaces/components/Workspa
 import { LoadOnMount } from '../LoadOnMount';
 import { LargeDeviceNavigation } from '../Navigation/LargeDeviceNavigation';
 import { AppLogo } from '../AppLogo';
+import { Box } from '../ui/box';
 
 const DashboardNavigation = () => {
   return (
     <>
-      <div className='flex p-2 justify-center items-center'>
+      <Box className='flex p-2 justify-center items-center'>
         <Link to='/' replace>
           <AppLogo />
         </Link>
-      </div>
+      </Box>
       <Separator className='m-0 lg:mb-4 ' />
-      <div className='my-4 px-4 hidden lg:block'>
+      <Box className='my-4 px-4 hidden lg:block'>
         <WorkspaceSwitchSection />
-      </div>
+      </Box>
       <LoadOnMount>
         <LargeDeviceNavigation />
       </LoadOnMount>

@@ -1,4 +1,6 @@
 import { LoadOnMount } from '@/shared/components/LoadOnMount';
+import { Box } from '@/shared/components/ui/box';
+import { Text } from '@/shared/components/ui/text';
 import { lazy, Suspense } from 'react';
 
 const TaskPageContent = lazy(() =>
@@ -8,14 +10,14 @@ const TaskPageContent = lazy(() =>
 );
 const TaskPage = () => {
   return (
-    <div>
-      <p>Task Page</p>
+    <Box>
+      <Text>Task Page</Text>
       <LoadOnMount>
         <Suspense fallback={<p>Task page content loading...</p>}>
           <TaskPageContent />
         </Suspense>
       </LoadOnMount>
-    </div>
+    </Box>
   );
 };
 

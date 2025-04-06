@@ -2,6 +2,7 @@ import { WorkspaceSwitcherSkeleton } from '@/features/workspaces/components/Work
 import { NavigationSkeleton } from '../Navigation/NavigationSkeleton';
 import { Skeleton } from '../ui/skeleton';
 import { Dashboard, DashboardLeft, DashboardRight } from './Dashboard';
+import { Box } from '../ui/box';
 
 const DashboardSkeleton = () => {
   return (
@@ -10,10 +11,10 @@ const DashboardSkeleton = () => {
         <DashboardLeftSkeleton />
       </DashboardLeft>
       <DashboardRight>
-        <div className='space-y-4'>
+        <Box className='space-y-4'>
           <Skeleton className='w-full max-w-16 h-6 rounded-sm' />
           <Skeleton className='w-full max-w-80 h-5 rounded-sm' />
-        </div>
+        </Box>
       </DashboardRight>
     </Dashboard>
   );
@@ -22,15 +23,15 @@ const DashboardSkeleton = () => {
 const DashboardLeftSkeleton = () => {
   return (
     <>
-      <div className='p-2 border-b'>
+      <Box className='p-2 border-b'>
         <Skeleton className='h-10 max-w-40 mx-auto' />
-      </div>
-      <div className='p-4 hidden lg:block'>
+      </Box>
+      <Box className='p-4 hidden lg:block'>
         <WorkspaceSwitcherSkeleton />
-      </div>
-      <div className='px-4'>
+      </Box>
+      <Box className='px-4'>
         <NavigationSkeleton />
-      </div>
+      </Box>
     </>
   );
 };

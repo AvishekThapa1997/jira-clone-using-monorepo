@@ -1,3 +1,4 @@
+import { Choose } from '@/shared/components/Choose';
 import { DashboardSkeleton } from '@/shared/components/Dashboard/DashboardSkeleton';
 import { If } from '@/shared/components/If';
 import type { UserDto } from '@jira-clone/core/types';
@@ -71,7 +72,7 @@ interface UserSessionProviderProps extends PropsWithChildren {}
 export const UserSessionProvider = ({ children }: UserSessionProviderProps) => {
   const { isLoading, user } = useAuth();
   return (
-    <>
+    <Choose>
       <If check={isLoading}>
         <DashboardSkeleton />
       </If>
@@ -84,6 +85,6 @@ export const UserSessionProvider = ({ children }: UserSessionProviderProps) => {
           {children}
         </UserSessionContext.Provider>
       </If>
-    </>
+    </Choose>
   );
 };

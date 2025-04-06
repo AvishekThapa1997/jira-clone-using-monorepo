@@ -1,5 +1,6 @@
 import * as zod from "zod";
 import { createWorkspaceSchema } from "../schema/workspace";
+import { BaseQueryResult } from "./shared";
 
 export type CreateWorkspaceSchema = zod.infer<typeof createWorkspaceSchema>;
 
@@ -29,3 +30,5 @@ export interface WorkspaceMemberDto {
 export interface WorkspaceCreatedEvent {
   data?: WorkspaceDto;
 }
+
+export type WorkspaceQueryResult = BaseQueryResult<string, WorkspaceDto>;

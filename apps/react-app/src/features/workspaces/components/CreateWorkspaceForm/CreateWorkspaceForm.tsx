@@ -6,10 +6,12 @@ import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
 import { useImageUploader } from '@/shared/hooks/useImageUploader';
 
-import { useEventDispatcher } from '@/shared/hooks/useEventDispatcher';
-import { CUSTOM_EVENT } from '@jira-clone/core/constants/shared';
+import { If } from '@/shared/components/If';
+import { Box } from '@/shared/components/ui/box';
+import { Text } from '@/shared/components/ui/text';
 import { WORKSPACE_CONSTANTS } from '@jira-clone/core/constants/workspace';
 import { cn } from '@jira-clone/core/utils';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import { Upload, X } from 'lucide-react';
 import {
   ComponentProps,
@@ -20,12 +22,7 @@ import {
   useState,
 } from 'react';
 import { useCreateWorkspace } from '../../hooks/useCreateWorkspace';
-import { If } from '@/shared/components/If';
-import { useNavigate } from 'react-router';
-import type { WorkspaceCreatedEvent } from '@jira-clone/core/types';
-import { useSelectWorkspace } from '../../hooks/useSelectWorkspace';
 import { useNewWorkspaceDispatcher } from '../../hooks/useNewWorkspaceDispatcher';
-import { useLocalStorage } from '@uidotdev/usehooks';
 
 interface CreateWorkspaceFormProps
   extends Omit<ComponentProps<'form'>, 'onSubmit'> {
@@ -95,7 +92,7 @@ const CreateWorkspaceForm = ({
       onSubmit={submitHandler}
       {...props}
     >
-      <div className='space-y-2'>
+      <Box className='space-y-2'>
         <Label htmlFor={nameFieldId}>Workspace Name</Label>
         <Input
           variant='lg'
@@ -109,16 +106,16 @@ const CreateWorkspaceForm = ({
           isError={!!error?.validationErrors?.name}
           errorMessage={error?.validationErrors?.name?.message}
         />
-      </div>
-      <div>
+      </Box>
+      <Box>
         <WorkspaceIconUploadSection
           onImageSelected={handleWorkspaceIconUpload}
           handledIconUploadStatus={handledIconUploadStatus}
           key={keyRef.current}
         />
-      </div>
+      </Box>
       <Separator />
-      <div className='flex gap-4 justify-end'>
+      <Box className='flex gap-4 justify-end'>
         <If check={!!handleCancel}>
           <Button
             type='button'
@@ -132,7 +129,7 @@ const CreateWorkspaceForm = ({
         <LoadingButton disabled={isPending || isIconUploading} type='submit'>
           Create Workspace
         </LoadingButton>
-      </div>
+      </Box>
     </form>
   );
 };
@@ -193,8 +190,8 @@ const WorkspaceIconUploadSection = ({
   const canRemoveSelectedFile =
     (isUploadSuccess || isUploading) && selectedFilePreviewUrl;
   return (
-    <div className='flex gap-4'>
-      <div className='relative size-14 bg-muted flex items-center justify-center overflow-hidden rounded-sm'>
+    <Box className='flex gap-4'>
+      <Box className='relative size-14 bg-muted flex items-center justify-center overflow-hidden rounded-sm'>
         {isUploading && (
           <Progress
             value={uploadProgress}
@@ -242,18 +239,19 @@ const WorkspaceIconUploadSection = ({
             className='max-h-full max-w-full'
           />
         )}
-      </div>
+      </Box>
 
-      <div className='text-sm font-semibold space-y-2'>
-        <div>
-          <p>Workspace Icon</p>
-          <p className='text-muted-foreground font-normal'>
+      <Box className='text-sm font-semibold space-y-2'>
+        <Box>
+          <Text>Workspace Icon</Text>
+
+          <Text className='text-muted-foreground font-normal'>
             <span className='uppercase'>
               {WORKSPACE_CONSTANTS.WORKSPACE_ICON_SUPPORTED_FORMATS.join(', ')}
             </span>
             , max 1MB
-          </p>
-        </div>
+          </Text>
+        </Box>
         <Button
           type='button'
           className='h-7 font-normal text-xs tracking-wider'
@@ -262,9 +260,10 @@ const WorkspaceIconUploadSection = ({
         >
           Choose Image
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
 export { CreateWorkspaceForm };
+

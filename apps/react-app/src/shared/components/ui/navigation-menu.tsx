@@ -9,6 +9,7 @@ import { If } from '../If';
 import { Slot } from '@radix-ui/react-slot';
 import { Link } from 'react-router';
 import { Box } from './box';
+import { Choose } from '../Choose';
 
 type ActionNavigationMenuItemType = {
   isActive: boolean;
@@ -88,8 +89,10 @@ const NavigationItemIcon = ({
   const { isActive } = useNavigationContext();
   return (
     <Box className={cn('flex justify-center text-gray-600', className)}>
-      <If check={isActive}>{activeIcon}</If>
-      <If check={!isActive}>{defaultIcon}</If>
+      <Choose>
+        <If check={isActive}>{activeIcon}</If>
+        <If check={!isActive}>{defaultIcon}</If>
+      </Choose>
     </Box>
   );
 };

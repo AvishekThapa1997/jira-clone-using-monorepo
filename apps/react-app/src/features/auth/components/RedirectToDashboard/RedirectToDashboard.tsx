@@ -1,3 +1,4 @@
+import { Choose } from '@/shared/components/Choose';
 import { If } from '@/shared/components/If';
 import { useUserSession } from '@/shared/hooks/useUserSession';
 import { PropsWithChildren } from 'react';
@@ -7,12 +8,12 @@ const RedirectToDashboard = ({ children }: PropsWithChildren) => {
   const { user } = useUserSession();
 
   return (
-    <>
+    <Choose>
       <If check={Boolean(user?.id)}>
-        <Navigate to='/dashboard' replace />
+        <Navigate to='/' replace />
       </If>
       <If check={Boolean(!user?.id)}>{children}</If>
-    </>
+    </Choose>
   );
 };
 

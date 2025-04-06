@@ -23,6 +23,7 @@ import { useSelectWorkspace } from '../../hooks/useSelectWorkspace';
 import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
 import { WorkspaceItem } from '../WorkspaceItem';
 import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
+import { Choose } from '@/shared/components/Choose';
 
 interface WorkspaceSwitcherProps {
   className?: string;
@@ -39,7 +40,7 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
     handleCreateWorkspaceDialogOpenChange,
     closeCreateWorkspaceDialog,
   } = useCreateWorkspaceDialog();
-  const { isFetching, workspaces } = useGetWorkspaces({
+  const { isFetching, workspaceResult } = useGetWorkspaces({
     enabled: isWorkspaceSwitcherOpen,
   });
   const { selectWorkspace, selectedWorkspace } = useSelectWorkspace();
@@ -69,52 +70,56 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
             'w-full outline-none focus-visible:ring-transparent px-3 py-1.5  flex border rounded-md items-center justify-between',
           )}
         >
-          <If check={!isWorkspaceSelected}>
-            <Box className='min-h-10 flex items-center'>Select Workspace</Box>
-          </If>
-          <If check={isWorkspaceSelected}>
-            <WorkspaceItem
-              name={selectedWorkspace?.name}
-              imageUrl={selectedWorkspace?.imageUrl}
-            />
-          </If>
+          <Choose>
+            <If check={!isWorkspaceSelected}>
+              <Box className='min-h-10 flex items-center'>Select Workspace</Box>
+            </If>
+            <If check={isWorkspaceSelected}>
+              <WorkspaceItem
+                name={selectedWorkspace?.name}
+                imageUrl={selectedWorkspace?.imageUrl}
+              />
+            </If>
+          </Choose>
           <ChevronsUpDownIcon size={20} className='text-muted-foreground' />
         </DropdownMenuTrigger>
         <DropdownMenuContent className={cn('w-workspace-switcher', className)}>
           <DropdownMenuGroup className='max-h-56 flex flex-col overflow-auto'>
-            <If check={isFetching && workspaces?.length === 0}>
-              <WorkspaceItemSkeleton noOfItem={3} />
-            </If>
-            <If check={workspaces && workspaces.length > 0}>
-              <RenderList
-                data={workspaces}
-                render={(workspace) => {
-                  const isSelectedWorkspace =
-                    workspace.id === selectedWorkspace?.id;
-                  return (
-                    <DropdownMenuItem
-                      onSelect={(e) => {
-                        console.log(e);
-                      }}
-                      key={workspace.id}
-                      className={cn(
-                        'cursor-pointer order-2',
-                        isSelectedWorkspace ? selectedItemStyle : '',
-                      )}
-                      onClick={() => selectWorkspace(workspace)}
-                      asChild
-                    >
-                      <Box>
-                        <WorkspaceItem
-                          name={workspace.name}
-                          imageUrl={workspace.imageUrl}
-                        />
-                      </Box>
-                    </DropdownMenuItem>
-                  );
-                }}
-              />
-            </If>
+            <Choose>
+              <If check={isFetching && workspaceResult?.allIds?.length === 0}>
+                <WorkspaceItemSkeleton noOfItem={3} />
+              </If>
+              <If check={workspaceResult?.allIds?.length > 0}>
+                <RenderList
+                  data={Object.values(workspaceResult?.data)}
+                  render={(workspace) => {
+                    const isSelectedWorkspace =
+                      workspace.id === selectedWorkspace?.id;
+                    return (
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          console.log(e);
+                        }}
+                        key={workspace.id}
+                        className={cn(
+                          'cursor-pointer order-2',
+                          isSelectedWorkspace ? selectedItemStyle : '',
+                        )}
+                        onClick={() => selectWorkspace(workspace)}
+                        asChild
+                      >
+                        <Box>
+                          <WorkspaceItem
+                            name={workspace.name}
+                            imageUrl={workspace.imageUrl}
+                          />
+                        </Box>
+                      </DropdownMenuItem>
+                    );
+                  }}
+                />
+              </If>
+            </Choose>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>

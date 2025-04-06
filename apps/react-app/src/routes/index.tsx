@@ -1,17 +1,14 @@
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from '@/shared/layout';
 
 import { AuthErrorBoundary } from '@/features/auth/components/AuthErrorBoundary';
 
+import RedirectToDashboard from '@/features/auth/components/RedirectToDashboard/RedirectToDashboard';
+import { dashboardLoader } from '@/shared/components/Dashboard/dashboard-loader';
 import { DashboardSkeleton } from '@/shared/components/Dashboard/DashboardSkeleton';
-import { lazy, Suspense } from 'react';
-
-const AuthMiddlewareRoute = lazy(() =>
-  import('@/shared/components/RouteMiddleware').then((module) => ({
-    default: module.RouteMiddleware,
-  })),
-);
+import { SuspenseWrapper } from '@/shared/components/SuspenseWrapper';
+import { lazy } from 'react';
 
 const Dashboard = lazy(async () =>
   import('@/shared/components/Dashboard').then((module) => ({
@@ -23,14 +20,6 @@ const HomePage = lazy(() =>
   import('@/pages/home').then((module) => ({
     default: module.HomePage,
   })),
-);
-
-const WorkspacePage = lazy(() =>
-  import('@/pages/(workspaces)/workspace-details').then(
-    ({ WorkspacePage }) => ({
-      default: WorkspacePage,
-    }),
-  ),
 );
 
 const CreateWorkspacePage = lazy(() =>
@@ -71,107 +60,139 @@ const SettingsPage = lazy(() =>
   })),
 );
 
-const routes = createBrowserRouter([
+const RequireAuth = lazy(() =>
+  import('@/shared/components/RequireAuth').then((module) => ({
+    default: module.RequireAuth,
+  })),
+);
+
+/**
+ * Defines the application's routing structure using `createBrowserRouter`.
+ *
+ * The routes are organized into the following categories:
+ *
+ * - **Protected Routes**: These routes are accessible only to authenticated users.
+ *   - `/`: The root route containing the main layout and dashboard.
+ *     - `HomePage`: The default page under the dashboard.
+ *     - `/tasks`: Displays the TaskPage.
+ *     - `/members`: Displays the MembersPage (currently reuses TaskPage).
+ *     - `/settings`: Displays the SettingsPage.
+ *   - `/workspaces/create`: A route for creating a new workspace.
+ *
+ * - **Authentication Pages**: These routes are for user authentication.
+ *   - `/auth/sign-in`: The sign-in page, redirects to the dashboard if already authenticated.
+ *   - `/auth/sign-up`: The sign-up page, redirects to the dashboard if already authenticated.
+ *
+ * Each route is wrapped with appropriate components for functionality:
+ * - `AuthErrorBoundary`: Handles authentication-related errors.
+ * - `SuspenseWrapper`: Provides fallback UI while components are loading.
+ * - `ProtectedRoute`: Ensures the route is accessible only to authenticated users.
+ * - `RedirectToDashboard`: Redirects authenticated users away from authentication pages.
+ */
+export const routes = createBrowserRouter([
   {
-    path: '/',
     element: (
       <AuthErrorBoundary>
         <RootLayout />
       </AuthErrorBoundary>
     ),
+    /*PROTECTED ROUTES STARTS*/
     children: [
       {
-        path: '/',
-        element: <Navigate to='/dashboard' replace={true} />,
-      },
-      {
-        path: '/workspaces/create',
         element: (
-          <AuthMiddlewareRoute>
-            <Suspense fallback={<p>loading...</p>}>
-              <CreateWorkspacePage />
-            </Suspense>
-          </AuthMiddlewareRoute>
+          <SuspenseWrapper fallback={<DashboardSkeleton />}>
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          </SuspenseWrapper>
         ),
-      },
-      {
-        path: '/dashboard',
-        element: (
-          <AuthMiddlewareRoute>
-            <Dashboard />
-          </AuthMiddlewareRoute>
-        ),
+        HydrateFallback: DashboardSkeleton,
+        loader: dashboardLoader,
         children: [
           {
-            path: '/dashboard/',
+            index: true,
             element: (
-              <AuthMiddlewareRoute>
-                <Suspense fallback={<p>Home page loading...</p>}>
+              <SuspenseWrapper fallback={<p>Home page loading...</p>}>
+                <RequireAuth>
                   <HomePage />
-                </Suspense>
-              </AuthMiddlewareRoute>
+                </RequireAuth>
+              </SuspenseWrapper>
             ),
           },
           {
-            path: '/dashboard/tasks',
+            path: 'tasks',
             element: (
-              <AuthMiddlewareRoute>
-                <Suspense fallback={<p>task page loading...</p>}>
+              <SuspenseWrapper fallback={<p>Task page loading...</p>}>
+                <RequireAuth>
                   <TaskPage />
-                </Suspense>
-              </AuthMiddlewareRoute>
+                </RequireAuth>
+              </SuspenseWrapper>
             ),
           },
           {
-            path: '/dashboard/members',
+            path: 'members',
             element: (
-              <AuthMiddlewareRoute>
-                <Suspense fallback={<p>members page loading...</p>}>
+              <SuspenseWrapper fallback={<p>Members page loading...</p>}>
+                <RequireAuth>
                   <MembersPage />
-                </Suspense>
-              </AuthMiddlewareRoute>
+                </RequireAuth>
+              </SuspenseWrapper>
             ),
           },
           {
-            path: '/dashboard/settings',
+            path: 'settings',
             element: (
-              <AuthMiddlewareRoute>
-                <Suspense fallback={<p>setting page loading...</p>}>
+              <SuspenseWrapper fallback={<p>Settings page loading...</p>}>
+                <RequireAuth>
                   <SettingsPage />
-                </Suspense>
-              </AuthMiddlewareRoute>
-            ),
-          },
-          {
-            path: '/dashboard/workspaces/:workspaceId',
-            element: (
-              <AuthMiddlewareRoute>
-                <Suspense fallback={<p>workspace page loading...</p>}>
-                  <WorkspacePage />
-                </Suspense>
-              </AuthMiddlewareRoute>
+                </RequireAuth>
+              </SuspenseWrapper>
             ),
           },
         ],
       },
       {
-        path: '/auth/sign-in',
-        element: (
-          <Suspense fallback={<DashboardSkeleton />}>
-            <SignInPage />,
-          </Suspense>
-        ),
+        children: [
+          {
+            path: '/workspaces/create',
+            element: (
+              <SuspenseWrapper fallback={<DashboardSkeleton />}>
+                <RequireAuth>
+                  <CreateWorkspacePage />
+                </RequireAuth>
+              </SuspenseWrapper>
+            ),
+          },
+        ],
       },
+      /*PROTECTED ROUTES END*/
+      /*AUTH PAGES*/
       {
-        path: '/auth/sign-up',
-        element: (
-          <Suspense fallback={<DashboardSkeleton />}>
-            <SignUpPage />,
-          </Suspense>
-        ),
+        path: 'auth',
+        children: [
+          {
+            path: 'sign-in',
+            element: (
+              <SuspenseWrapper fallback={<DashboardSkeleton />}>
+                <RedirectToDashboard>
+                  <SignInPage />
+                </RedirectToDashboard>
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: 'sign-up',
+            element: (
+              <SuspenseWrapper fallback={<DashboardSkeleton />}>
+                <RedirectToDashboard>
+                  <SignUpPage />
+                </RedirectToDashboard>
+              </SuspenseWrapper>
+            ),
+          },
+        ],
       },
+      /*AUTH PAGES*/
     ],
   },
 ]);
-
-export { routes };

@@ -12,25 +12,25 @@ import {
 export const navigationRoutes = [
   {
     label: 'Home',
-    href: '/dashboard',
+    href: '/',
     icon: MdOutlineHome,
     activeIcon: MdHome,
   },
   {
     label: 'Task',
-    href: '/dashboard/tasks',
+    href: '/tasks',
     icon: MdCheckCircleOutline,
     activeIcon: MdCheckCircle,
   },
   {
     label: 'Settings',
-    href: '/dashboard/settings',
+    href: '/settings',
     icon: MdOutlineSettings,
     activeIcon: MdSettings,
   },
   {
     label: 'Members',
-    href: '/dashboard/members',
+    href: '/members',
     icon: MdOutlinePeopleAlt,
     activeIcon: MdPeopleAlt,
   },

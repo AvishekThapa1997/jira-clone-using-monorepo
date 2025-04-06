@@ -1,5 +1,9 @@
+import { useSelectWorkspace } from '@/features/workspaces/hooks/useSelectWorkspace';
+import { Box } from '@/shared/components/ui/box';
+
 const SettingsPageContent = () => {
-  return <div>SettingsPageContent</div>;
+  const { selectedWorkspace } = useSelectWorkspace();
+  return <Box>SettingsPageContent - {selectedWorkspace.id}</Box>;
 };
 
 export { SettingsPageContent };

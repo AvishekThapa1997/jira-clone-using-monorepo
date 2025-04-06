@@ -1,4 +1,6 @@
 import { cn } from '@jira-clone/core/utils';
+import { Box } from '../ui/box';
+import { Text } from '../ui/text';
 
 interface PageTitleAndDescriptionProps {
   className?: string;
@@ -19,21 +21,21 @@ const PageTitleAndDescription = ({
     return null;
   }
   return (
-    <div className={cn(className)}>
+    <Box className={cn(className)}>
       <h1 className={cn('text-2xl font-semibold', titleStyleClassName)}>
         {title}
       </h1>
       {description && (
-        <p
+        <Text
           className={cn(
             'text-muted-foreground text-base',
             descriptionClassName,
           )}
         >
           {description}
-        </p>
+        </Text>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -14,7 +14,7 @@ export const RouteMiddleware = ({ children }: PropsWithChildren) => {
   }
   const shouldRedirectToDashboard = pathname === '/' || isAuthPage;
   if (shouldRedirectToDashboard) {
-    return <Navigate to='/dashboard' replace />;
+    return <Navigate to='/' replace />;
   }
   return <WorkspaceMembershipCheck>{children}</WorkspaceMembershipCheck>;
 };
