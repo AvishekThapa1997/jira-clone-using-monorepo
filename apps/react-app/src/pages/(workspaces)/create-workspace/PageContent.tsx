@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router';
 const PageContent = () => {
   const navigate = useNavigate();
   const handleNewWorkspaceCreation = (event: WorkspaceCreatedEvent) => {
-    const newWorkspaceId = event.data?.id;
-    if (newWorkspaceId) {
-      navigate(`/workspace=${newWorkspaceId}`, {
+    const workspace = event.data?.name;
+    if (workspace) {
+      navigate(`/?workspace=${workspace}`, {
         replace: true,
       });
     }

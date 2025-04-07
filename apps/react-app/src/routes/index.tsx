@@ -66,6 +66,12 @@ const RequireAuth = lazy(() =>
   })),
 );
 
+const WorkspaceMembershipCheck = lazy(() =>
+  import('@/shared/components/RouteMiddleware/WorkspaceMembershipCheck').then(
+    (module) => ({ default: module.WorkspaceMembershipCheck }),
+  ),
+);
+
 /**
  * Defines the application's routing structure using `createBrowserRouter`.
  *
@@ -102,7 +108,9 @@ export const routes = createBrowserRouter([
         element: (
           <SuspenseWrapper fallback={<DashboardSkeleton />}>
             <RequireAuth>
-              <Dashboard />
+              <WorkspaceMembershipCheck>
+                <Dashboard />
+              </WorkspaceMembershipCheck>
             </RequireAuth>
           </SuspenseWrapper>
         ),

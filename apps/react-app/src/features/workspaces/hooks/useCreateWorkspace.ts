@@ -11,6 +11,7 @@ import type {
   CreateWorkspaceSchema,
   Result,
   WorkspaceDto,
+  WorkspaceQueryResult,
 } from '@jira-clone/core/types';
 import { WORKSPACES_QUERY_KEYS } from '@jira-clone/core/keys/workspace';
 
@@ -29,10 +30,14 @@ export const useCreateWorkspace = (
     const queryKey = [...WORKSPACES_QUERY_KEYS.getWorkspaces(user.id)];
     await queryClient.cancelQueries({ queryKey });
     const previousResult =
-      queryClient.getQueryData<Result<WorkspaceDto[]>>(queryKey);
+      queryClient.getQueryData<WorkspaceQueryResult>(queryKey);
     if (previousResult.data) {
-      const updatedResult: Result<WorkspaceDto[]> = {
-        data: [newWorkspace, ...previousResult.data],
+      const updatedResult: WorkspaceQueryResult = {
+        allIds: [newWorkspace.id, ...previousResult.allIds],
+        data: {
+          [newWorkspace.id]: newWorkspace,
+          ...previousResult.data,
+        },
       };
       queryClient.setQueryData(queryKey, updatedResult);
     }

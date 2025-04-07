@@ -60,24 +60,27 @@ const SelectWorkspaceProvider = ({ children }: PropsWithChildren) => {
     );
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const workspaceIdFromUrl = searchParams.get('workspace');
-  const getWorkspaceById = useGetWorkspaceByIdFromCache(workspaceIdFromUrl);
+  const workspaceNameFromUrl = searchParams.get('workspace');
+  const getWorkspaceById = useGetWorkspaceByIdFromCache(workspaceNameFromUrl);
 
   const isLastSelectedWorkspaceIdSameAsWorkspaceIdFromUrl = Boolean(
-    workspaceIdFromUrl && workspaceIdFromUrl === lastSelectedWorkspace?.id,
+    workspaceNameFromUrl &&
+      workspaceNameFromUrl === lastSelectedWorkspace?.name,
   );
 
   const [selectedWorkspace, setWorkspace] = useState<WorkspaceDto | undefined>(
     () => {
       if (
         isLastSelectedWorkspaceIdSameAsWorkspaceIdFromUrl ||
-        !workspaceIdFromUrl
+        !workspaceNameFromUrl
       ) {
         return lastSelectedWorkspace;
       }
       return getWorkspaceById();
     },
   );
+
+  console.log({ selectedWorkspace });
 
   useSyncWorkspaceWithStorageAndUrl(
     selectedWorkspace,
@@ -89,7 +92,7 @@ const SelectWorkspaceProvider = ({ children }: PropsWithChildren) => {
       setWorkspace(workspace);
       setLastSelectedWorkspaceInStorage(workspace);
       setSearchParams({
-        workspace: workspace.id,
+        workspace: workspace.name,
       });
     },
     [setLastSelectedWorkspaceInStorage, setSearchParams],
@@ -141,7 +144,7 @@ const useSyncWorkspaceWithStorageAndUrl = (
     }
     if (selectedWorkspace?.id) {
       setSearchParams({
-        workspace: selectedWorkspace.id,
+        workspace: selectedWorkspace.name,
       });
     }
     // This effect should only run once when the component mounts
