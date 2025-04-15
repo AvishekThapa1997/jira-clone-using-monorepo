@@ -5,12 +5,12 @@ type Subscriber<Payload> = (payload: Payload) => void;
 interface UseEventSubscriberOptions<Payload> {
   eventName: string;
   subscribeOnMount?: boolean;
-  unsuscribeOnMount?: boolean;
+  unsuscribeOnUnmount?: boolean;
   subscriber: Subscriber<Payload>;
 }
 export const useEventSuscriber = <Payload>({
   subscribeOnMount = true,
-  unsuscribeOnMount = true,
+  unsuscribeOnUnmount = true,
   eventName,
   subscriber,
 }: UseEventSubscriberOptions<Payload>) => {
@@ -29,14 +29,16 @@ export const useEventSuscriber = <Payload>({
   );
   useEffect(() => {
     if (subscribeOnMount) {
+      console.log({ subscribeOnMount });
       document.addEventListener(eventName, listener);
     }
     return () => {
-      if (unsuscribeOnMount) {
+      console.log(unsuscribeOnUnmount);
+      if (unsuscribeOnUnmount) {
         document.removeEventListener(eventName, listener);
       }
     };
-  }, [subscribeOnMount, unsuscribeOnMount]);
+  }, [subscribeOnMount, unsuscribeOnUnmount]);
 
   const subscribe = () => {
     document.addEventListener(eventName, listener);

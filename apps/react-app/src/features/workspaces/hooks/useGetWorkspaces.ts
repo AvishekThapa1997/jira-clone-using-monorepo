@@ -1,7 +1,5 @@
 import { useUserSession } from '@/shared/hooks/useUserSession';
 import { useQuery } from '@tanstack/react-query';
-
-import { Result, WorkspaceDto } from '@jira-clone/core/types';
 import { workspaceQuery } from '../queries';
 
 interface UseGetWorkspacesOptions {

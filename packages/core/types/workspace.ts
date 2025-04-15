@@ -9,26 +9,34 @@ export enum WorkspaceMemberRole {
   MEMBER = "member",
 }
 
-export interface WorkspaceDto {
+export type WorkspaceDto = {
   id: string;
   name: string;
   imageUrl?: string;
-  createdAt: string;
+  createdAt: any;
   creatorId: string;
-  updatedAt: string;
+  updatedAt: any;
   members?: string[];
-}
+};
 
-export interface WorkspaceMemberDto {
+export type WorkspaceMemberDto = {
   workspaceDetails: Pick<WorkspaceDto, "id" | "name" | "imageUrl">;
   memberName: string;
   emailId: string;
   memberId: string;
   role: WorkspaceMemberRole;
-}
+};
 
-export interface WorkspaceCreatedEvent {
+export type WorkspaceEvent = {
   data?: WorkspaceDto;
-}
+};
+
+export type UseNewWorkspaceSubscriberOptions = {
+  onWorkspaceCreated: (event: WorkspaceEvent) => void;
+};
+
+export type UseWorkspaceSelectedEventSubscriberOptions = {
+  onWorkspaceSelected: (event: WorkspaceEvent) => void;
+};
 
 export type WorkspaceQueryResult = BaseQueryResult<string, WorkspaceDto>;

@@ -1,11 +1,11 @@
 import type {
   FirestoreDataConverter,
   WithFieldValue,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 import type {
   WorkspaceDto,
   CreateWorkspaceSchema,
-} from '@jira-clone/core/types';
+} from "@jira-clone/core/types";
 
 export const workspaceConverter: FirestoreDataConverter<
   WorkspaceDto,
@@ -15,7 +15,7 @@ export const workspaceConverter: FirestoreDataConverter<
     return {
       name: options.name,
       creatorId: options.creatorId,
-      imageUrl: options.imageUrl ?? '',
+      imageUrl: options.imageUrl ?? "",
       members: options.members,
       createdAt: options.createdAt,
       updatedAt: options.updatedAt,
@@ -23,14 +23,15 @@ export const workspaceConverter: FirestoreDataConverter<
   },
   fromFirestore(snapshot, options): WorkspaceDto {
     const data = snapshot.data(options);
+    const { name, imageUrl, createdAt, updatedAt, creatorId, members } = data;
     return {
       id: snapshot.id,
-      name: data?.name,
-      imageUrl: data?.imageUrl,
-      createdAt: (data?.createdAt?.toDate() as Date)?.toISOString(),
-      updatedAt: (data?.updatedAt?.toDate() as Date)?.toISOString(),
-      creatorId: data?.creatorId,
-      members: data?.members,
+      name,
+      imageUrl,
+      creatorId,
+      members,
+      createdAt: (createdAt?.toDate() as Date)?.toISOString(),
+      updatedAt: (updatedAt?.toDate() as Date)?.toISOString(),
     };
   },
 };

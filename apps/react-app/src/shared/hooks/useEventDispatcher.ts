@@ -7,13 +7,21 @@ interface EventDispatcherOptions {
 export const useEventDispatcher = <Payload>({
   eventName,
 }: EventDispatcherOptions) => {
-  const dispatch = useCallback((payload: Payload) => {
-    const event = new CustomEvent<Payload>(eventName, {
-      bubbles: false,
-      cancelable: true,
-      detail: payload,
-    });
-    document.dispatchEvent(event);
-  }, []);
+  const dispatch = useCallback(
+    (
+      payload: Payload,
+      options: CustomEventInit = {
+        bubbles: false,
+        cancelable: true,
+      },
+    ) => {
+      const event = new CustomEvent<Payload>(eventName, {
+        ...options,
+        detail: payload,
+      });
+      document.dispatchEvent(event);
+    },
+    [],
+  );
   return { dispatch };
 };

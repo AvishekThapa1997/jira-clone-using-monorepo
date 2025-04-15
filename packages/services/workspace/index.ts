@@ -27,7 +27,7 @@ export const createWorkspace = async (
     const { serverTimestamp, addDoc, getDoc } = firestoreResult;
     const result = parseSchema(createWorkspaceSchema, createWorkspace);
     if (result.data) {
-      const workspaceData: CreateWorkspaceSchema = {
+      const workspaceData: Omit<WorkspaceDto, "id"> = {
         ...result.data,
         creatorId: loggedInUser.id,
         members: [loggedInUser.id],
@@ -84,6 +84,38 @@ export const getWorkspaces = async (
     } else {
       result.data = [];
     }
+  } catch (err) {
+    result.error = handleError(err);
+  }
+  return result;
+};
+
+const _updateWorkspace = async (
+  workspaceId: WorkspaceDto["id"],
+  newData: Partial<WorkspaceDto>
+) => {
+  const { updateDoc, doc, firestore } = await getFirestore();
+  const docRef = doc(firestore, "workspaces", workspaceId);
+  updateDoc(docRef, newData);
+};
+
+export const updateWorkspace = async (
+  workspaceId: WorkspaceDto["id"],
+  newData: CreateWorkspaceSchema
+): Promise<Result<void, CreateWorkspaceSchema>> => {
+  const result: Result<void> = {};
+  try {
+    const parsedResult = parseSchema(createWorkspaceSchema, newData);
+    if (parsedResult.data) {
+      await _updateWorkspace(workspaceId, parsedResult.data);
+    }
+    return {
+      error: {
+        code: 422,
+        message: "Validation Error",
+        validationErrors: result.error?.validationErrors,
+      },
+    };
   } catch (err) {
     result.error = handleError(err);
   }

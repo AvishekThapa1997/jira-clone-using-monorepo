@@ -10,6 +10,8 @@ import {
 import React, { ComponentProps } from 'react';
 import { CreateWorkspaceForm } from './CreateWorkspaceForm';
 import { ResponsiveDialog } from '@/shared/components/ResponsiveDialog/ResponsiveDialog';
+import { Card, CardContent } from '@/shared/components/ui/card';
+import { WorkspaceDto } from '@jira-clone/core/types';
 
 interface CreateWorkspaceFormDialogProps {
   trigger?: React.ReactNode;
@@ -17,6 +19,7 @@ interface CreateWorkspaceFormDialogProps {
   handleCancel?: () => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onWorkspacedCreated?: (workspace: WorkspaceDto) => void;
 }
 
 const CreateWorkspaceFormDialog = ({
@@ -24,6 +27,7 @@ const CreateWorkspaceFormDialog = ({
   triggerAsChild = false,
   onOpenChange,
   handleCancel = () => {},
+  onWorkspacedCreated,
   open,
 }: CreateWorkspaceFormDialogProps) => {
   return (
@@ -35,7 +39,10 @@ const CreateWorkspaceFormDialog = ({
       renderTitle={(Comp) => <Comp>Create workspace</Comp>}
       renderDescription={(Comp) => <Comp className='sr-only' />}
     >
-      <CreateWorkspaceForm handleCancel={handleCancel} />
+      <CreateWorkspaceForm
+        handleCancel={handleCancel}
+        onWorkspaceCreated={onWorkspacedCreated}
+      />
     </ResponsiveDialog>
   );
 };

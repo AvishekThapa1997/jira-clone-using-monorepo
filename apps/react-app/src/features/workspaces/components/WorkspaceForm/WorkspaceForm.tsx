@@ -1,11 +1,12 @@
 import { LoadingButton } from '@/shared/components/ui/LoadingButton';
-import { Button } from '@/shared/components/ui/button';
+import { Button, type ButtonProps } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
 import { useImageUploader } from '@/shared/hooks/useImageUploader';
 
+import { Choose } from '@/shared/components/Choose';
 import { If } from '@/shared/components/If';
 import { Box } from '@/shared/components/ui/box';
 import { Text } from '@/shared/components/ui/text';
@@ -13,71 +14,49 @@ import { WORKSPACE_CONSTANTS } from '@jira-clone/core/constants/workspace';
 import { cn } from '@jira-clone/core/utils';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { Upload, X } from 'lucide-react';
-import {
-  ComponentProps,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useCreateWorkspace } from '../../hooks/useCreateWorkspace';
-import { useNewWorkspaceDispatcher } from '../../hooks/useNewWorkspaceDispatcher';
-
-interface CreateWorkspaceFormProps
-  extends Omit<ComponentProps<'form'>, 'onSubmit'> {
-  handleCancel?: () => void;
-}
+import { useId, useMemo, useRef, useState } from 'react';
+import { WorkspaceFormProps } from '../../types';
 
 interface WorkspaceIconUploadSectionProps {
   onImageSelected: (downloadUrl?: string) => void;
   handledIconUploadStatus: (isUploading: boolean) => void;
+  initialValue?: string;
 }
 
-const CreateWorkspaceForm = ({
+const WorkspaceForm = ({
   className,
   handleCancel,
+  selectedWorkspace,
+  onWorkspaceCreated,
+  handleSubmit,
+  errors,
+  isSubmitting = false,
   ...props
-}: CreateWorkspaceFormProps) => {
+}: WorkspaceFormProps) => {
   const [_, addItem] = useLocalStorage(
     WORKSPACE_CONSTANTS.LAST_SELECTED_WORKSPACE_KEY,
   );
   const nameFieldRef = useRef<HTMLInputElement | null>(null);
   const [uploadedWorkspaceIconUrl, setUploadedWorkspaceIconUrl] = useState<
     string | undefined
-  >(() => {
-    return undefined;
-  });
-  const keyRef = useRef<number>(0);
+  >();
+
   const nameFieldId = useId();
   const [isIconUploading, setIconUploading] = useState(false);
-  const dispatch = useNewWorkspaceDispatcher();
-  const {
-    mutate,
-    isPending,
-    data,
-    error: err,
-  } = useCreateWorkspace({
-    onSuccess: (result) => {
-      if (nameFieldRef.current) {
-        nameFieldRef.current.value = '';
-      }
-      keyRef.current += 1;
-      setUploadedWorkspaceIconUrl(undefined);
-      dispatch({
-        data: result.data,
-      });
-      addItem(result.data);
-    },
-  });
-  const error = data?.error;
-  if (err) {
-    throw err;
-  }
+
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const workSpaceName = nameFieldRef.current?.value;
-    mutate({ name: workSpaceName, imageUrl: uploadedWorkspaceIconUrl });
+    handleSubmit(event, {
+      onSuccess(result) {
+        if (nameFieldRef.current) {
+          nameFieldRef.current.value = '';
+        }
+        setUploadedWorkspaceIconUrl(undefined);
+        if (!selectedWorkspace.id) {
+          addItem(result.data);
+          onWorkspaceCreated?.(result.data);
+        }
+      },
+    });
   };
 
   const handleWorkspaceIconUpload = (downloadUrl?: string) => {
@@ -86,6 +65,10 @@ const CreateWorkspaceForm = ({
   const handledIconUploadStatus = (isUploading: boolean) => {
     setIconUploading(isUploading);
   };
+
+  const buttonLabel = selectedWorkspace?.id
+    ? 'Update Workspace'
+    : 'Create Workspace';
   return (
     <form
       className={cn('space-y-4', className)}
@@ -102,16 +85,18 @@ const CreateWorkspaceForm = ({
           required
           minLength={WORKSPACE_CONSTANTS.WORKSPACE_MIN_LENGTH}
           ref={nameFieldRef}
-          disabled={isPending}
-          isError={!!error?.validationErrors?.name}
-          errorMessage={error?.validationErrors?.name?.message}
+          disabled={isSubmitting}
+          isError={!!errors?.name}
+          errorMessage={errors?.name?.message}
+          defaultValue={selectedWorkspace?.name}
         />
       </Box>
+      <Input type='hidden' name='imageUrl' value={uploadedWorkspaceIconUrl} />
       <Box>
         <WorkspaceIconUploadSection
           onImageSelected={handleWorkspaceIconUpload}
           handledIconUploadStatus={handledIconUploadStatus}
-          key={keyRef.current}
+          initialValue={selectedWorkspace?.imageUrl}
         />
       </Box>
       <Separator />
@@ -121,13 +106,13 @@ const CreateWorkspaceForm = ({
             type='button'
             variant='secondary'
             onClick={() => handleCancel()}
-            disabled={isPending || isIconUploading}
+            disabled={isSubmitting || isIconUploading}
           >
             Cancel
           </Button>
         </If>
-        <LoadingButton disabled={isPending || isIconUploading} type='submit'>
-          Create Workspace
+        <LoadingButton disabled={isSubmitting || isIconUploading} type='submit'>
+          {buttonLabel}
         </LoadingButton>
       </Box>
     </form>
@@ -137,21 +122,13 @@ const CreateWorkspaceForm = ({
 const WorkspaceIconUploadSection = ({
   onImageSelected,
   handledIconUploadStatus,
+  initialValue,
 }: WorkspaceIconUploadSectionProps) => {
   const iconFieldId = useId();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const workspaceIconFieldRef = useRef<HTMLInputElement | null>(null);
-  const objectUrlRef = useRef<string | null>(null);
-  useEffect(
-    function cleanUpObjectUrl() {
-      return () => {
-        if (objectUrlRef.current && selectedFile) {
-          URL.revokeObjectURL(objectUrlRef.current);
-        }
-      };
-    },
-    [selectedFile],
-  );
+  const objectUrlRef = useRef<string | null>(initialValue || null);
+
   const { uploadFile, uploadProgress, cancel, isUploading, isUploadSuccess } =
     useImageUploader({
       dirName: 'workspaces',
@@ -178,30 +155,33 @@ const WorkspaceIconUploadSection = ({
       cancel();
     }
     setSelectedFile(null);
+    URL.revokeObjectURL(objectUrlRef.current);
+    objectUrlRef.current = null;
     onImageSelected();
   };
   const selectedFilePreviewUrl = useMemo(() => {
     if (selectedFile) {
       objectUrlRef.current = URL.createObjectURL(selectedFile);
       return objectUrlRef.current;
+    } else if (objectUrlRef.current) {
+      return objectUrlRef.current;
     }
-    return selectedFile;
-  }, [selectedFile]);
-  const canRemoveSelectedFile =
-    (isUploadSuccess || isUploading) && selectedFilePreviewUrl;
+    return null;
+  }, [selectedFile, objectUrlRef.current]);
+  const canRemoveSelectedFile = !!selectedFilePreviewUrl;
+
   return (
     <Box className='flex gap-4'>
       <Box className='relative size-14 bg-muted flex items-center justify-center overflow-hidden rounded-sm'>
-        {isUploading && (
+        <If check={isUploading}>
           <Progress
             value={uploadProgress}
             className='absolute inset-x-0 top-0 h-1 w-full'
           />
-        )}
-
-        <label htmlFor={iconFieldId} className='sr-only'>
+        </If>
+        <Label htmlFor={iconFieldId} className='sr-only'>
           Upload workspace icon
-        </label>
+        </Label>
         <Input
           type='file'
           id={iconFieldId}
@@ -212,44 +192,33 @@ const WorkspaceIconUploadSection = ({
           ).join(', ')}
           onChange={handleFileChange}
         />
-
-        {canRemoveSelectedFile ? (
-          <Button
-            size='icon'
-            className={cn(
-              'absolute rounded-full bg-muted-foreground/80 hover:bg-muted-foreground/80 flex items-center justify-center p-0.5 h-fit w-fit',
-              {
+        <Choose>
+          <If check={canRemoveSelectedFile}>
+            <RemoveWorkspaceIconButton
+              size='icon'
+              className={cn({
                 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2':
                   isUploading,
-                'top-0.5 right-0.5 z-50': isUploadSuccess,
-              },
-            )}
-            onClick={removeSelectedFile}
-          >
-            <X size={12} />
-          </Button>
-        ) : (
-          <Upload size={20} className='text-muted-foreground' />
-        )}
-
-        {selectedFilePreviewUrl && (
-          <img
-            src={objectUrlRef.current}
-            alt='Selected file'
-            className='max-h-full max-w-full'
-          />
-        )}
+                'top-0.5 right-0.5 z-50': isUploadSuccess || initialValue,
+              })}
+              onClick={removeSelectedFile}
+            />
+          </If>
+          <If check={!canRemoveSelectedFile}>
+            <Upload size={20} className='text-muted-foreground' />
+          </If>
+        </Choose>
+        <If check={!!selectedFilePreviewUrl}>
+          <WorkspaceIconPreview previewUrl={selectedFilePreviewUrl} />
+        </If>
       </Box>
 
       <Box className='text-sm font-semibold space-y-2'>
         <Box>
           <Text>Workspace Icon</Text>
-
           <Text className='text-muted-foreground font-normal'>
-            <span className='uppercase'>
-              {WORKSPACE_CONSTANTS.WORKSPACE_ICON_SUPPORTED_FORMATS.join(', ')}
-            </span>
-            , max 1MB
+            {WORKSPACE_CONSTANTS.WORKSPACE_ICON_SUPPORTED_FORMATS.join(', ')},
+            max 1MB
           </Text>
         </Box>
         <Button
@@ -265,5 +234,29 @@ const WorkspaceIconUploadSection = ({
   );
 };
 
-export { CreateWorkspaceForm };
+const WorkspaceIconPreview = ({ previewUrl }: { previewUrl: string }) => {
+  return (
+    <img
+      src={previewUrl}
+      alt='Selected file'
+      className='max-h-full max-w-full'
+    />
+  );
+};
 
+const RemoveWorkspaceIconButton = ({ className, ...props }: ButtonProps) => {
+  return (
+    <Button
+      size='icon'
+      className={cn(
+        'absolute rounded-full bg-muted-foreground/80 hover:bg-muted-foreground/80 flex items-center justify-center p-0.5 h-fit w-fit',
+        className,
+      )}
+      {...props}
+    >
+      <X size={12} />
+    </Button>
+  );
+};
+
+export { WorkspaceForm };

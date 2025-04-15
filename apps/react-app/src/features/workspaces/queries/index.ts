@@ -27,14 +27,13 @@ export const workspaceQuery = {
             JSON.stringify(_selectedWorkspace),
           );
         }
-        const workspaceIds = [];
+
         const workspaceRecord: Record<string, WorkspaceDto> = {};
         result.data?.forEach((workspace) => {
-          workspaceIds.push(workspace.id);
           workspaceRecord[workspace.id] = workspace;
         });
         return {
-          allIds: workspaceIds,
+          allIds: Object.keys(workspaceRecord),
           data: workspaceRecord,
         };
       },

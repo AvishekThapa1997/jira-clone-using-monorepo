@@ -1,13 +1,13 @@
 import { AvatarWithLabelSkeleton } from '@/shared/components/AvatarWithLabel/AvatarWithLabelSkeleton';
 
-interface WorkspaceItemSkeletonProps {
+interface WorkspaceSkeletonProps {
   noOfItem: number;
 }
 
-const WorkspaceItemSkeleton = ({ noOfItem }: WorkspaceItemSkeletonProps) => {
+const WorkspaceSkeleton = ({ noOfItem }: WorkspaceSkeletonProps) => {
   return Array(noOfItem)
     .fill('')
     .map((_, index) => <AvatarWithLabelSkeleton key={index} />);
 };
 
-export { WorkspaceItemSkeleton };
+export { WorkspaceSkeleton };

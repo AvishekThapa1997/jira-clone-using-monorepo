@@ -1,8 +1,8 @@
-import * as zod from 'zod';
+import * as zod from "zod";
 import {
   WORKSPACE_CONSTANTS,
   WORKSPACE_ERROR_MESSAGES,
-} from '../constants/workspace';
+} from "../constants/workspace";
 
 export const createWorkspaceSchema = zod.object({
   name: zod
@@ -14,8 +14,4 @@ export const createWorkspaceSchema = zod.object({
       message: WORKSPACE_ERROR_MESSAGES.WORKSPACE_NAME_MIN_LENGTH_REQUIRED,
     }),
   imageUrl: zod.string().url().optional(),
-  creatorId: zod.string().optional(),
-  createdAt: zod.any().optional(),
-  updatedAt: zod.any().optional(),
-  members: zod.array(zod.string()).optional(),
 });

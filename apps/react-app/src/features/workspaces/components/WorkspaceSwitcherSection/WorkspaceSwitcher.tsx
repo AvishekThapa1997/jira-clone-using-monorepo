@@ -10,30 +10,38 @@ import { ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui/button';
 
-import { RenderList } from '@/shared/components/RenderList';
+import { Choose } from '@/shared/components/Choose';
 import { If } from '@/shared/components/If';
+import { RenderList } from '@/shared/components/RenderList';
 import { Box } from '@/shared/components/ui/box';
 import { useDialog } from '@/shared/hooks/useDialog';
-import type { WorkspaceCreatedEvent } from '@jira-clone/core/types';
+import type { WorkspaceDto } from '@jira-clone/core/types';
 import { cn } from '@jira-clone/core/utils';
+import { startTransition, useCallback, useMemo } from 'react';
 import { useCreateWorkspaceDialog } from '../../hooks/useCreateWorkspaceDialog';
 import { useGetWorkspaces } from '../../hooks/useGetWorkspaces';
-import { useNewWorkspaceSubscriber } from '../../hooks/useNewWorkspaceSubscriber';
 import { useSelectWorkspace } from '../../hooks/useSelectWorkspace';
-import { CreateWorkspaceFormDialog } from '../CreateWorkspaceForm/CreateWorkspaceFormDialog';
-import { WorkspaceItem } from '../WorkspaceItem';
-import { WorkspaceItemSkeleton } from '../WorkspaceItem/WorkspaceItemSkeleton';
-import { Choose } from '@/shared/components/Choose';
+import { WorkspaceItem } from '../Workspace';
+import { WorkspaceSkeleton } from '../Workspace/WorkspaceSkeleton';
+import { CreateWorkspaceFormDialog } from '../WorkspaceForm/CreateWorkspaceFormDialog';
+import { useNewWorkspaceCreatedEventSubscriber } from '../../hooks/useWorkspacEvents';
 
 interface WorkspaceSwitcherProps {
   className?: string;
 }
 
-const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
+const useWorkspaceSwitcherDropdownHandler = () => {
   const {
     isOpen: isWorkspaceSwitcherOpen,
     handleOpenChange: handleWorkspaceSwitcherOpenChange,
+    close,
   } = useDialog();
+  return { isWorkspaceSwitcherOpen, handleWorkspaceSwitcherOpenChange, close };
+};
+
+const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
+  const { isWorkspaceSwitcherOpen, handleWorkspaceSwitcherOpenChange, close } =
+    useWorkspaceSwitcherDropdownHandler();
   const {
     isCreateWorkspaceDialogOpen,
     handleCreateWorkspaceDialogCancel,
@@ -44,20 +52,32 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
     enabled: isWorkspaceSwitcherOpen,
   });
   const { selectWorkspace, selectedWorkspace } = useSelectWorkspace();
-  const onSuccessfulWorkspaceCreation = (event: WorkspaceCreatedEvent) => {
-    if (event.data?.id) {
-      closeCreateWorkspaceDialog();
-      selectWorkspace(event.data);
-    }
-  };
-  const isWorkspaceSelected = !!selectedWorkspace;
 
-  const selectedItemStyle = {
-    'bg-muted order-1': isWorkspaceSelected,
-  };
-  useNewWorkspaceSubscriber({
-    subscriber: onSuccessfulWorkspaceCreation,
-  });
+  // useNewWorkspaceCreatedEventSubscriber({
+  //   onWorkspaceCreated(event) {
+  //     alert('WORKSPACE CREATED');
+  //   },
+  // });
+
+  const handleNewWorkspaceCreation = useCallback((workspace: WorkspaceDto) => {
+    selectWorkspace(workspace);
+    startTransition(() => {
+      closeCreateWorkspaceDialog();
+      close();
+    });
+  }, []);
+
+  const isWorkspaceSelected = !!selectedWorkspace?.id;
+
+  const renderedWorkspaces = useMemo(() => {
+    return (
+      <RenderWorkspaces
+        workspaces={Object.values(workspaceResult?.data)}
+        selectWorkspace={selectWorkspace}
+        selectedWorkspaceId={selectedWorkspace?.id}
+      />
+    );
+  }, [workspaceResult?.data, selectedWorkspace?.id]);
 
   return (
     <>
@@ -87,37 +107,10 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
           <DropdownMenuGroup className='max-h-56 flex flex-col overflow-auto'>
             <Choose>
               <If check={isFetching && workspaceResult?.allIds?.length === 0}>
-                <WorkspaceItemSkeleton noOfItem={3} />
+                <WorkspaceSkeleton noOfItem={3} />
               </If>
               <If check={workspaceResult?.allIds?.length > 0}>
-                <RenderList
-                  data={Object.values(workspaceResult?.data)}
-                  render={(workspace) => {
-                    const isSelectedWorkspace =
-                      workspace.id === selectedWorkspace?.id;
-                    return (
-                      <DropdownMenuItem
-                        onSelect={(e) => {
-                          console.log(e);
-                        }}
-                        key={workspace.id}
-                        className={cn(
-                          'cursor-pointer order-2',
-                          isSelectedWorkspace ? selectedItemStyle : '',
-                        )}
-                        onClick={() => selectWorkspace(workspace)}
-                        asChild
-                      >
-                        <Box>
-                          <WorkspaceItem
-                            name={workspace.name}
-                            imageUrl={workspace.imageUrl}
-                          />
-                        </Box>
-                      </DropdownMenuItem>
-                    );
-                  }}
-                />
+                {renderedWorkspaces}
               </If>
             </Choose>
           </DropdownMenuGroup>
@@ -133,6 +126,7 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
                   <span>Create Workspace</span>
                 </Button>
               }
+              onWorkspacedCreated={handleNewWorkspaceCreation}
               triggerAsChild
             />
           </DropdownMenuItem>
@@ -142,4 +136,45 @@ const WorkspaceSwitcher = ({ className }: WorkspaceSwitcherProps) => {
   );
 };
 
+type RenderWorkspaces = {
+  workspaces: WorkspaceDto[];
+  selectWorkspace: (workspace: WorkspaceDto) => void;
+  selectedWorkspaceId?: string;
+};
+
+const RenderWorkspaces = ({
+  workspaces,
+  selectWorkspace,
+  selectedWorkspaceId,
+}: RenderWorkspaces) => {
+  const selectedItemStyle = {
+    'bg-muted order-1': !!selectedWorkspaceId,
+  };
+  return (
+    <RenderList
+      data={workspaces}
+      render={(workspace) => {
+        const isSelectedWorkspace = workspace.id === selectedWorkspaceId;
+        return (
+          <DropdownMenuItem
+            key={workspace.id}
+            className={cn(
+              'cursor-pointer order-2',
+              isSelectedWorkspace ? selectedItemStyle : '',
+            )}
+            onSelect={selectWorkspace.bind(null, workspace)}
+            asChild
+          >
+            <Box>
+              <WorkspaceItem
+                name={workspace.name}
+                imageUrl={workspace.imageUrl}
+              />
+            </Box>
+          </DropdownMenuItem>
+        );
+      }}
+    />
+  );
+};
 export { WorkspaceSwitcher };
