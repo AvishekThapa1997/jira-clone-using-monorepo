@@ -1,3 +1,3 @@
-export * from './class';
-export * from './handleError';
-export * from './parseSchema';
+export * from "./class.js";
+export * from "./handleError.js";
+export * from "./parseSchema.js";

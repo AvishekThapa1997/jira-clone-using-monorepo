@@ -1,6 +1,6 @@
 import * as zod from "zod";
-import { createWorkspaceSchema } from "../schema/workspace";
-import { BaseQueryResult } from "./shared";
+import { createWorkspaceSchema } from "../schema/workspace.js";
+import { BaseQueryResult } from "./shared.js";
 
 export type CreateWorkspaceSchema = zod.infer<typeof createWorkspaceSchema>;
 

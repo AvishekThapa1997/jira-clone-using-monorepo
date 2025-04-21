@@ -1,9 +1,9 @@
-import { ErrorResult } from '../types';
+import { ErrorResult } from "../types/index.js";
 
 export class OperationalError extends Error {
   constructor(
     public code: number,
-    message: string,
+    message: string
   ) {
     super(message);
   }
@@ -35,14 +35,17 @@ export const handleError = (err: unknown): ErrorResult => {
     //   }
     // }
     return {
+      code: 0,
       message: err.message,
     };
   } else if (err instanceof OperationalError || err instanceof Error) {
     return {
+      code: 0,
       message: err.message,
     };
   }
   return {
-    message: 'Something went wrong',
+    code: 0,
+    message: "Something went wrong",
   };
 };

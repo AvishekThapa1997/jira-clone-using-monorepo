@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { ERROR_MESSAGES, PASSWORD_LENGTH } from '../constants/auth';
+import { z } from "zod";
+import { ERROR_MESSAGES, PASSWORD_LENGTH } from "../constants/auth.js";
 
 const signInSchema = z.object({
   email: z

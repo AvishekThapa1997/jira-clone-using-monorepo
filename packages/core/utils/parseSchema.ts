@@ -1,5 +1,5 @@
-import { ValidationError } from '../types';
-import { ZodSchema } from 'zod';
+import { ValidationError } from "../types/index.js";
+import { ZodSchema } from "zod";
 
 type ParseSchemaResult<Schema> = {
   data?: Schema;
@@ -8,7 +8,7 @@ type ParseSchemaResult<Schema> = {
 
 export const parseSchema = <Schema = ZodSchema>(
   schema: ZodSchema<Schema>,
-  data: Partial<Schema>,
+  data: Partial<Schema>
 ): ParseSchemaResult<Schema> => {
   const result = schema.safeParse(data);
   if (result.success) {
@@ -16,7 +16,7 @@ export const parseSchema = <Schema = ZodSchema>(
   }
   const fieldErrors = result.error.flatten().fieldErrors as any;
   const errors: ValidationError<Schema> = Object.entries<string[]>(
-    fieldErrors,
+    fieldErrors
   ).reduce(
     (cumm, [key, value]) => {
       return {
@@ -26,7 +26,7 @@ export const parseSchema = <Schema = ZodSchema>(
         },
       };
     },
-    {} as ValidationError<Schema>, // Type assertion for initial value
+    {} as ValidationError<Schema> // Type assertion for initial value
   );
 
   return {

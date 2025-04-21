@@ -1,8 +1,0 @@
-{
-  "extends": ["../../packages/typescript/tsconfig.base.json"],
-  "compilerOptions": {
-    "outDir": "dist",
-    "module": "CommonJS",
-    "moduleResolution": "node"
-  }
-}

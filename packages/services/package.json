@@ -16,7 +16,6 @@
       "types": "./dist/workspace/index.d.ts"
     }
   },
-  "devDependencies": {},
   "scripts": {
     "build": "npm run build --workspace=@jira-clone/firebase && tsc --build"
   },

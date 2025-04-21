@@ -2,7 +2,7 @@ import * as zod from "zod";
 import {
   WORKSPACE_CONSTANTS,
   WORKSPACE_ERROR_MESSAGES,
-} from "../constants/workspace";
+} from "../constants/workspace.js";
 
 export const createWorkspaceSchema = zod.object({
   name: zod

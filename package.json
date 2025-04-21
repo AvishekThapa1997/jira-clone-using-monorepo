@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy:react-app": "npm run deploy --workspace=apps/react-app"
+    "deploy:react-app": "npm run deploy --workspace=apps/react-app",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +16,12 @@
   "workspaces": [
     "packages/*",
     "apps/**"
-  ]
+  ],
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
+  },
+  "packageManager": "npm@10.2.4"
 }

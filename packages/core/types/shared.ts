@@ -1,11 +1,5 @@
-export type UserDto = {
-  id: string;
-  email: string;
-  name: string;
-};
-
 export type ErrorResult<T = any> = {
-  code?: number;
+  code: number;
   message: string;
   validationErrors?: ValidationError<T>;
 };
