@@ -1,10 +1,10 @@
 {
   "extends": ["../typescript/tsconfig.base.json"],
   "compilerOptions": {
-    "module": "ES2020",
-    "moduleResolution": "bundler",
     "baseUrl": ".",
     "outDir": "./dist",
+    "module": "Node16",
+    "moduleResolution": "node16",
     "declaration": true
   }
 }

@@ -7,5 +7,7 @@ export {
   where,
   getDocs,
   orderBy,
+  updateDoc,
   getFirestore,
-} from 'firebase/firestore';
+  doc,
+} from "firebase/firestore";

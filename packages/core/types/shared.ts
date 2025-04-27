@@ -1,14 +1,8 @@
-export interface UserDto {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface ErrorResult<T = any> {
-  code?: number;
+export type ErrorResult<T = any> = {
+  code: number;
   message: string;
   validationErrors?: ValidationError<T>;
-}
+};
 
 export type ValidationError<T> = {
   [Key in keyof T]: {
@@ -16,11 +10,26 @@ export type ValidationError<T> = {
   };
 };
 
-export interface Result<Data, ValidationErrorSchema = any> {
+export type Result<Data, ValidationErrorSchema = any> = {
   data?: Data;
   error?: ErrorResult<ValidationErrorSchema>;
-}
+};
 
-export interface BaseProps {
+export type BaseProps = {
   className?: string;
-}
+};
+
+export type BaseQueryResult<ID extends string | number | symbol, Data> = {
+  allIds: ID[];
+  data: Record<ID, Data>;
+};
+
+export type OnFormSubmitOptions<T> = {
+  onSuccess?: (data: T) => void;
+  onSubmit?: (data: T) => void;
+  onFail?: (error: Error) => void;
+};
+
+export type FormInput<T> = {
+  value?: T;
+};

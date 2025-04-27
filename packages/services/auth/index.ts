@@ -1,73 +1,20 @@
-import { getFunctions } from '@jira-clone/firebase/functions';
-import { getAuth } from '@jira-clone/firebase/auth';
-import { parseSchema, handleError } from '@jira-clone/core/utils';
-import { signUpSchema } from '@jira-clone/core/schema/auth';
+import { AUTH_API } from "@jira-clone/core/constants/auth";
 import type {
+  AuthResult,
+  Result,
   SignInSchema,
   SignUpSchema,
-  Result,
   UserDto,
-} from '@jira-clone/core/types';
-export const signUpUser = async ({
-  email,
-  name,
-  password,
-}: SignUpSchema): Promise<Result<UserDto>> => {
-  try {
-    const parsedResult = parseSchema(signUpSchema, { email, name, password });
-    if (parsedResult.data) {
-      const { firebaseFunction, httpsCallable } = await getFunctions();
-      const _signUpUser = httpsCallable<SignUpSchema, UserDto>(
-        firebaseFunction,
-        'signUpUser',
-      );
-      const userCallable = await _signUpUser({
-        ...parsedResult.data,
-      });
-      const user = userCallable.data;
-      if (user) {
-        return signInUser({ email, password });
-      }
-    }
-    return {
-      error: {
-        code: 400,
-        message: 'ValidationError',
-        validationErrors: parsedResult.errors,
-      },
-    };
-  } catch (err) {
-    return {
-      error: handleError(err),
-    };
-  }
-};
-
-export const signInUser = async ({
-  email,
-  password,
-}: SignInSchema): Promise<Result<UserDto>> => {
-  try {
-    const { signInWithEmailAndPassword, auth } = await getAuth();
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    const { user } = userCredential;
-    return {
-      data: {
-        email: user.email ?? '',
-        id: user.uid,
-        name: user.displayName ?? '',
-      },
-    };
-  } catch (err) {
-    return {
-      error: handleError(err),
-    };
-  }
-};
+  ValidationError,
+} from "@jira-clone/core/types";
+import {
+  handleError,
+  publicFetch,
+  refreshAccessToken,
+  setTokenExpirationInLocalStorage,
+  tryCatch,
+} from "@jira-clone/core/utils";
+import { getAuth } from "@jira-clone/firebase/auth";
 
 export const signOutUser = async (): Promise<Result<void>> => {
   try {
@@ -80,3 +27,79 @@ export const signOutUser = async (): Promise<Result<void>> => {
     };
   }
 };
+
+export const signUpUser = tryCatch(
+  async ({
+    email,
+    password,
+    name,
+  }: SignUpSchema): Promise<Result<UserDto, ValidationError<SignUpSchema>>> => {
+    const { url, headers, method } = AUTH_API.SIGN_UP;
+    const result = await publicFetch<Result<AuthResult>, SignUpSchema>(url, {
+      body: {
+        email,
+        name,
+        password,
+      },
+      headers,
+      method,
+    });
+    if (result.data) {
+      const { accessTokenExpiration } = result.data;
+      setTokenExpirationInLocalStorage(accessTokenExpiration);
+      const user = result.data.user;
+      return {
+        data: user,
+      };
+    }
+    return {
+      error: result.error,
+    };
+  }
+);
+
+export const signInUser = tryCatch(
+  async ({ email, password }: SignInSchema): Promise<Result<UserDto>> => {
+    const { url, headers, method } = AUTH_API.SIGN_IN;
+    const result = await publicFetch<Result<AuthResult>, SignInSchema>(url, {
+      body: {
+        email,
+        password,
+      },
+      headers,
+      method,
+    });
+    if (result.data) {
+      const { accessTokenExpiration } = result.data;
+      setTokenExpirationInLocalStorage(accessTokenExpiration);
+      const user = result.data?.user;
+      return {
+        data: user,
+      };
+    }
+    return {
+      error: result.error,
+    };
+  }
+);
+
+export const getUserSession = tryCatch(async () => {
+  const isTokenUpdated = await refreshAccessToken();
+  if (!isTokenUpdated) {
+    return null;
+  }
+  const { url } = AUTH_API.SESSION;
+  const result = await publicFetch<Result<UserDto>>(url, {
+    credentials: "include",
+  });
+  if (result.data?.id) {
+    return result;
+  }
+  return null;
+});
+
+export type SignInUserResult = Awaited<ReturnType<typeof signInUser>>;
+
+export type SignUpUserResult = Awaited<ReturnType<typeof signUpUser>>;
+
+export type SignoutUserResult = Awaited<ReturnType<typeof signOutUser>>;

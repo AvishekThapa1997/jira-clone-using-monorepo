@@ -1,13 +1,14 @@
-import { app } from '..';
+import { getApp } from "..";
 import type {
   UploadTaskSnapshot,
   StorageError,
   UploadTask,
   StorageReference,
-} from 'firebase/storage';
+} from "firebase/storage";
 
 const getStorage = () =>
-  import('./storage').then(({ getStorage, ref, ...remaining }) => {
+  import("./storage").then(async ({ getStorage, ref, ...remaining }) => {
+    const app = await getApp();
     const storage = getStorage(app);
     return {
       storage,

@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { ERROR_MESSAGES, PASSWORD_LENGTH } from '../constants/auth';
+import { z } from "zod";
+import { ERROR_MESSAGES, PASSWORD_LENGTH } from "../constants/auth.js";
 
 const signInSchema = z.object({
   email: z
@@ -22,4 +22,8 @@ const signUpSchema = z.object({
     .nonempty(ERROR_MESSAGES.PASSWORD_REQUIRED),
 });
 
-export { signInSchema, signUpSchema };
+const tokenDetailSchema = z.object({
+  value: z.string(),
+  expiresAt: z.string(),
+});
+export { signInSchema, signUpSchema, tokenDetailSchema };

@@ -1,7 +1,8 @@
-import { app } from '..';
+import { getApp } from "..";
 
 export const getAuth = async () => {
-  return import('./auth').then(({ getAuth, ...remaining }) => {
+  return import("./auth").then(async ({ getAuth, ...remaining }) => {
+    const app = await getApp();
     const auth = getAuth(app);
     return {
       auth,
