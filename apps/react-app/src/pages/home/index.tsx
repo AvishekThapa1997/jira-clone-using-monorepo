@@ -13,12 +13,6 @@ const PageContent = lazy(() =>
 const HomePage = () => {
   const { isExtraLargeDevice, isLargeDevice, isMediumDevice, isSmallDevice } =
     useScreenSize();
-  console.log({
-    isExtraLargeDevice,
-    isLargeDevice,
-    isMediumDevice,
-    isSmallDevice,
-  });
   return (
     <Box>
       <PageHeader

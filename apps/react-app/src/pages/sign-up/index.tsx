@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { SignUpForm } from '../../features/auth/components/SignUpForm';
+import { SignUpFormSection } from '../../features/auth/components/SignUpForm';
 import { Separator } from '@/shared/components/ui/separator';
 import { AuthLayout } from '@/features/auth/layout/AuthLayout';
 import { Box } from '@/shared/components/ui/box';
@@ -23,7 +23,7 @@ const SignUpPage = () => {
         </Box>
         <Separator />
         <Box className='space-y-4'>
-          <SignUpForm />
+          <SignUpFormSection />
           <Box className='flex text-sm items-center gap-2 justify-center'>
             <Text className='text-center'>Already have an account?</Text>
             <Link

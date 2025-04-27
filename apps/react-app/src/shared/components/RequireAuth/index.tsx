@@ -7,7 +7,6 @@ import { If } from '../If';
 const RequireAuth = ({ children }: PropsWithChildren) => {
   const { user } = useUserSession();
   const isUserLoggedIn = Boolean(user?.id);
-  console.log({ user, isUserLoggedIn });
   return (
     <Choose>
       <If check={isUserLoggedIn}>{children}</If>

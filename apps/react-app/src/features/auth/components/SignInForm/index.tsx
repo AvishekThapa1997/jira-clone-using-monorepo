@@ -1,41 +1,52 @@
-import { LoadingButton } from '../../../../shared/components/ui/LoadingButton';
 import { SIGNIN_FORM_FIELDS } from '@jira-clone/core/constants/auth';
 
-import { Input } from '@/shared/components/ui/input';
-import { useAuthService } from '@/shared/hooks/useAuthService';
 import { Box } from '@/shared/components/ui/box';
+import { Form, FormInput, FormSubmitButton } from '@/shared/components/ui/form';
 
-const SignInForm = () => {
-  const { signInAction } = useAuthService();
-  const { isPending, operation } = signInAction;
+import { ComponentProps } from 'react';
+import { OAuthButtonSection } from '../OAuthButtonSection';
+
+import { useUserSignIn } from '../../hooks/useUserSignIn';
+import { Banner } from '@/shared/components/ui/banner';
+import { If } from '@/shared/components/If';
+import { SignInActionState } from '../../action';
+
+const SignInForm = (props: ComponentProps<'form'> & SignInActionState) => {
   return (
-    <form action={operation}>
+    <Form {...props}>
       <Box className='space-y-3'>
         {SIGNIN_FORM_FIELDS.map((formField, index) => {
           return (
             <Box key={index}>
-              <Input
+              <FormInput
                 className='h-10 px-4'
                 {...formField}
-                disabled={isPending}
-                autoComplete='on'
+                autoComplete={
+                  formField.name === 'password' ? 'current-password' : ''
+                }
+                defaultValue={props.value?.[formField.name]}
               />
             </Box>
           );
         })}
       </Box>
-      <Box className='mt-5'>
-        <LoadingButton
-          disabled={isPending}
-          type='submit'
-          className='w-full tracking-wider text-sm'
-        >
-          Login
-        </LoadingButton>
+      <Box className='mt-5 space-y-6'>
+        <FormSubmitButton>Login</FormSubmitButton>
+        <OAuthButtonSection />
       </Box>
-    </form>
-    // </Form>
+    </Form>
   );
 };
 
-export { SignInForm };
+export const SignInFormSection = () => {
+  const { action, signInData } = useUserSignIn();
+  const error = signInData.error?.message;
+  return (
+    <>
+      <If check={!!error}>
+        <Banner text={error} type='error' />
+      </If>
+      <SignInForm action={action} {...signInData} />
+    </>
+  );
+};

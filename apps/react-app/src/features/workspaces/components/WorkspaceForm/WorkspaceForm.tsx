@@ -1,6 +1,6 @@
 import { LoadingButton } from '@/shared/components/ui/LoadingButton';
 import { Button, type ButtonProps } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
+import { FormInput } from '@/shared/components/ui/form';
 import { Label } from '@/shared/components/ui/label';
 import { Progress } from '@/shared/components/ui/progress';
 import { Separator } from '@/shared/components/ui/separator';
@@ -77,7 +77,7 @@ const WorkspaceForm = ({
     >
       <Box className='space-y-2'>
         <Label htmlFor={nameFieldId}>Workspace Name</Label>
-        <Input
+        <FormInput
           variant='lg'
           id={nameFieldId}
           placeholder='Enter workspace name'
@@ -91,7 +91,11 @@ const WorkspaceForm = ({
           defaultValue={selectedWorkspace?.name}
         />
       </Box>
-      <Input type='hidden' name='imageUrl' value={uploadedWorkspaceIconUrl} />
+      <FormInput
+        type='hidden'
+        name='imageUrl'
+        value={uploadedWorkspaceIconUrl}
+      />
       <Box>
         <WorkspaceIconUploadSection
           onImageSelected={handleWorkspaceIconUpload}
@@ -182,7 +186,7 @@ const WorkspaceIconUploadSection = ({
         <Label htmlFor={iconFieldId} className='sr-only'>
           Upload workspace icon
         </Label>
-        <Input
+        <FormInput
           type='file'
           id={iconFieldId}
           ref={workspaceIconFieldRef}

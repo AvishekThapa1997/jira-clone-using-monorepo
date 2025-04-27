@@ -1,4 +1,6 @@
+import { CONSTANTS } from '@jira-clone/core/constants/auth';
 import type { UserDto } from '@jira-clone/core/types';
+import { tryCatch } from '@jira-clone/core/utils';
 import { getAuth } from '@jira-clone/firebase/auth';
 
 export const getLoggedInUser = async () => {

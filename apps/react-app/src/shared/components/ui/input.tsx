@@ -23,7 +23,9 @@ interface VariantProps {
   variant?: 'sm' | 'lg' | 'md';
 }
 
-interface InputProps extends React.ComponentProps<'input'>, VariantProps {
+export interface InputProps
+  extends React.ComponentProps<'input'>,
+    VariantProps {
   isError?: boolean;
   errorMessage?: string;
 }

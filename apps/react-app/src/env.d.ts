@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_ID: string;
   readonly VITE_IMAGEKIT_PUBLIC_KEY: string;
   readonly VITE_IMAGEKIT_URL_ENDPOINT: string;
+  readonly VITE_API_BASE_URL: string;
   // Add more environment variables as needed
 }
 

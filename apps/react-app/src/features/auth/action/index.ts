@@ -1,13 +1,20 @@
 import type {
-  UserDto,
+  FormInput,
   Result,
-  ValidationError,
+  SignInSchema,
   SignUpSchema,
+  UserDto,
+  ValidationError,
 } from '@jira-clone/core/types';
-import { signInUser, signUpUser } from '../service';
+import {
+  signInUser,
+  type SignInUserResult,
+  signUpUser,
+  type SignUpUserResult,
+} from '../service';
 
 export const signUpAction = async (
-  state: Result<UserDto, ValidationError<SignUpSchema>>,
+  state: SignUpActionState,
   formData: FormData,
 ): Promise<Result<UserDto, ValidationError<SignUpSchema>>> => {
   const email = formData.get('email') as string;
@@ -28,12 +35,17 @@ export const signUpAction = async (
         ? (error.validationErrors satisfies ValidationError<SignUpSchema>)
         : undefined,
     };
+    state.value = {
+      email,
+      name,
+      password,
+    };
   }
   return state;
 };
 
 export const signInAction = async (
-  state: Result<UserDto>,
+  state: SignInActionState,
   formData: FormData,
 ) => {
   const email = formData.get('email') as string;
@@ -47,9 +59,15 @@ export const signInAction = async (
   }
   if (error) {
     state.error = error;
+    state.value = {
+      email,
+      password: '',
+    };
   }
   return state;
 };
 
 export type SignUpAction = typeof signUpAction;
+export type SignUpActionState = SignUpUserResult & FormInput<SignUpSchema>;
 export type SignInAction = typeof signInAction;
+export type SignInActionState = SignInUserResult & FormInput<SignInSchema>;

@@ -4,8 +4,11 @@ import "@/lib/db.js";
 import { authRoutes } from "@/auth/auth.route.js";
 import { globalErrorHandler } from "@/util/globalErrorHandler.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import { serverHealtCheckHandler } from "./util/serverHealthCheckHandler.js";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 process.on("uncaughtException", (err) => {
@@ -20,13 +23,8 @@ process.on("unhandledRejection", (reason) => {
 export async function initServer() {
   const appRoutes = Router();
   appRoutes.use(authRoutes);
-  app.use("/test", (req, res) => {
-    console.log({ req });
-    res.status(200).json({
-      message: "Server running successfully",
-    });
-  });
   app.use("/api", appRoutes);
+  app.use(serverHealtCheckHandler);
   app.use(globalErrorHandler);
 }
 initServer();

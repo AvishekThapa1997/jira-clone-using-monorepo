@@ -55,7 +55,6 @@ export const handleCreateWorkspace = onDocumentCreatedWithAuthContext(
     try {
       const snapshot = event.data;
       if (!snapshot) {
-        console.log("No data associated with the event");
         return;
       }
       logger.info("AUTH DETAILS", event.authId, event.authType);

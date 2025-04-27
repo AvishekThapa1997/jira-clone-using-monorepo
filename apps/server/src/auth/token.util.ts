@@ -1,5 +1,6 @@
 // Adjust the import path as needed
 
+import { appConfig } from "@/config/environment/index.js";
 import { CONSTANTS } from "@/constants/index.js";
 import { redis } from "@/lib/redis.js";
 import { isDevEnvironment } from "@/util/shared.js";
@@ -20,19 +21,19 @@ export function getTokenKey(token: string): string {
  * Creates a JSON Web Token (JWT) for a given user with a specified expiration time.
  *
  * @param user - The user data transfer object (DTO) containing user information.
- * @param expiration - The expiration time for the token in seconds.
+ * @param expiration - The expiration time for the token in milliseconds.
  * @returns A promise that resolves to the generated JWT as a string.
  *
  * @throws Will reject the promise if there is an error during token generation.
  */
 export function createToken(
   user: UserDto,
-  expiration: number
+  expiration: SignOptions["expiresIn"]
 ): Promise<string> {
   const tokenPayload: JwtTokenPayload = {
     userId: user.id,
   };
-  const tokenSecret = process.env.TOKEN_SECRET;
+  const tokenSecret = appConfig.TOKEN_SECRET;
   const tokenOptions: SignOptions = {
     expiresIn: expiration,
   };
@@ -56,11 +57,11 @@ export function createToken(
 export async function generateAccessAndRefreshToken(user: UserDto) {
   const accessTokenPromise = createToken(
     user,
-    CONSTANTS.ACCESS_TOKEN_EXPIRATION
+    `${CONSTANTS.ACCESS_TOKEN_EXPIRATION}`
   );
   const refreshTokenPromise = createToken(
     user,
-    CONSTANTS.REFRESH_TOKEN_EXPIRATION
+    `${CONSTANTS.REFRESH_TOKEN_EXPIRATION}`
   );
   const [accessTokenResult, refreshTokenResult] = await Promise.allSettled([
     accessTokenPromise,
@@ -147,7 +148,7 @@ export const getUserIdFromToken = async (token: string) => {
  */
 const verifyToken = async (token: string) => {
   return new Promise<string>((resolve, reject) => {
-    const tokenSecret = process.env.TOKEN_SECRET;
+    const tokenSecret = appConfig.TOKEN_SECRET;
     jwt.verify(token, tokenSecret, function (err, tokenData) {
       if (err) {
         reject(err);
@@ -160,25 +161,27 @@ const verifyToken = async (token: string) => {
 };
 
 /**
- * Sets a refresh token in the HTTP response cookie.
+ * Sets the refresh token and access token as HTTP-only cookies in the response.
  *
- * @param refreshToken - The refresh token to be stored in the cookie.
- * @param res - The HTTP response object used to set the cookie.
- *
- * The cookie is configured with the following properties:
- * - `httpOnly`: Ensures the cookie is accessible only by the web server.
- * - `secure`: Indicates if the cookie should only be sent over HTTPS. Enabled in production.
- * - `sameSite`: Restricts the cookie to same-site requests.
- * - `maxAge`: Specifies the expiration time for the cookie, based on a constant value.
+ * @param refreshToken - The refresh token to be set in the cookie.
+ * @param accessToken - The access token to be set in the cookie.
+ * @param res - The HTTP response object used to set the cookies.
  */
-export const setRefreshTokenInCookie = (
-  refreshToken: string = "",
+export const setRefreshTokenAndAccessTokenInCookie = (
+  refreshToken: string,
+  accessToken: string,
   res: Response
 ) => {
   res.cookie(CONSTANTS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: true,
+    sameSite: "lax",
     maxAge: CONSTANTS.REFRESH_TOKEN_EXPIRATION,
+  });
+  res.cookie(CONSTANTS.ACCESS_TOKEN, accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: CONSTANTS.ACCESS_TOKEN_EXPIRATION,
   });
 };

@@ -29,11 +29,9 @@ export const useEventSuscriber = <Payload>({
   );
   useEffect(() => {
     if (subscribeOnMount) {
-      console.log({ subscribeOnMount });
       document.addEventListener(eventName, listener);
     }
     return () => {
-      console.log(unsuscribeOnUnmount);
       if (unsuscribeOnUnmount) {
         document.removeEventListener(eventName, listener);
       }

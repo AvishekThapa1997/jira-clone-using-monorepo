@@ -22,4 +22,8 @@ const signUpSchema = z.object({
     .nonempty(ERROR_MESSAGES.PASSWORD_REQUIRED),
 });
 
-export { signInSchema, signUpSchema };
+const tokenDetailSchema = z.object({
+  value: z.string(),
+  expiresAt: z.string(),
+});
+export { signInSchema, signUpSchema, tokenDetailSchema };

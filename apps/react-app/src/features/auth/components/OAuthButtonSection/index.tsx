@@ -1,9 +1,9 @@
 import { Box } from '@/shared/components/ui/box';
 import { Button } from '@/shared/components/ui/button';
-import { useAuthService } from '@/shared/hooks/useAuthService';
+import { useFormStatus } from 'react-dom';
 
 const OAuthButtonSection = () => {
-  const { isAuthInProgress } = useAuthService();
+  const { pending: isAuthInProgress } = useFormStatus();
 
   return (
     <Box className='space-y-3 flex flex-col'>

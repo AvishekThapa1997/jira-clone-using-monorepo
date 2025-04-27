@@ -1,4 +1,4 @@
-import { SignInForm } from '../../features/auth/components/SignInForm';
+import { SignInFormSection } from '../../features/auth/components/SignInForm';
 import { Link } from 'react-router';
 import { Separator } from '@/shared/components/ui/separator';
 import { AuthLayout } from '@/features/auth/layout/AuthLayout';
@@ -20,7 +20,7 @@ const SignInPage = () => {
         </Box>
         <Separator />
         <Box className='space-y-4 text-sm'>
-          <SignInForm />
+          <SignInFormSection />
           <Box className='flex items-center gap-2 justify-center'>
             <Text asChild>
               <span>Don't have an account?</span>

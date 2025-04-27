@@ -2,7 +2,7 @@ import { defineConfig } from "drizzle-kit";
 
 const isDevEnvironment =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development";
-console.log({ isDevEnvironment });
+
 export default defineConfig({
   dialect: "postgresql",
   schema: "./src/schema",

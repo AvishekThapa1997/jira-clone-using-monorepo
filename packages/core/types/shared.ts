@@ -29,3 +29,7 @@ export type OnFormSubmitOptions<T> = {
   onSubmit?: (data: T) => void;
   onFail?: (error: Error) => void;
 };
+
+export type FormInput<T> = {
+  value?: T;
+};

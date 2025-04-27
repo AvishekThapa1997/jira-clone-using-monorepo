@@ -7,12 +7,12 @@ import { ReactQueryClientProvider } from '../provider/ReactQueryClientProvider';
 const RootLayout = () => {
   return (
     <Box className='max-w-[1600px] mx-auto '>
-      <UserSessionProvider>
-        <ReactQueryClientProvider>
+      <ReactQueryClientProvider>
+        <UserSessionProvider>
           <Outlet />
-        </ReactQueryClientProvider>
-        <Toaster />
-      </UserSessionProvider>
+          <Toaster />
+        </UserSessionProvider>
+      </ReactQueryClientProvider>
     </Box>
   );
 };

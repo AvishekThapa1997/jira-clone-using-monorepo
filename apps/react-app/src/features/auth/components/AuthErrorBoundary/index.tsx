@@ -31,7 +31,6 @@ class AuthErrorBoundary extends React.Component<
   }
   componentDidCatch(err: unknown, errorInfo: React.ErrorInfo): void {
     const error = handleError(err);
-    console.log({ errorInfo });
     console.error(`Error Code : ${error.code}`, error.message);
   }
 

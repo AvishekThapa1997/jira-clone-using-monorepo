@@ -7,6 +7,7 @@ import { handleAuth } from '@jira-clone/firebase/utils';
 import { type PropsWithChildren, createContext } from 'react';
 
 import { useEffect, useState } from 'react';
+import { useGetSession } from '../hooks/useGetSession';
 
 type AuthStatus = {
   user?: UserDto;
@@ -70,13 +71,13 @@ export const UserSessionContext = createContext<UserSession | null>(null);
 interface UserSessionProviderProps extends PropsWithChildren {}
 
 export const UserSessionProvider = ({ children }: UserSessionProviderProps) => {
-  const { isLoading, user } = useAuth();
+  const { isFetching, user } = useGetSession();
   return (
     <Choose>
-      <If check={isLoading}>
+      <If check={isFetching}>
         <DashboardSkeleton />
       </If>
-      <If check={!isLoading}>
+      <If check={!isFetching}>
         <UserSessionContext.Provider
           value={{
             user,

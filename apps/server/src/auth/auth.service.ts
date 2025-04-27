@@ -5,7 +5,7 @@ import {
   getUserByEmail,
   getUserById,
 } from "@/repository/user/user.repository.js";
-import { tryCatch } from "@/util/tryCatch.js";
+
 import { signInSchema, signUpSchema } from "@jira-clone/core/schema/auth";
 import {
   Result,
@@ -14,7 +14,7 @@ import {
   TokenResult,
   UserDto,
 } from "@jira-clone/core/types";
-import { parseSchema } from "@jira-clone/core/utils";
+import { parseSchema, tryCatch } from "@jira-clone/core/utils";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import {
   comparePassword,
@@ -118,6 +118,7 @@ export const signInUser = tryCatch(
       };
       return result;
     }
+
     const isPasswordSame = await comparePassword(
       user.password,
       password,
@@ -133,7 +134,7 @@ export const signInUser = tryCatch(
     const tokenResult = await createAuthTokensAndStoreInRedis(user);
     if (!tokenResult) {
       result.error = {
-        message: CONSTANTS.ACCOUNT_CREATED_TOKEN_FAILED_MSG,
+        message: CONSTANTS.UNABLE_TO_LOGIN,
         code: StatusCodes.INTERNAL_SERVER_ERROR,
       };
       return result;
@@ -171,7 +172,6 @@ export const refreshToken = tryCatch(
   async (currentRefreshToken: string): Promise<Result<TokenResult>> => {
     const tokenResult: Result<TokenResult> = {};
     const userId = await getUserIdFromToken(currentRefreshToken);
-    console.log({ userId });
     if (!userId) {
       tokenResult.error = {
         code: StatusCodes.UNAUTHORIZED,
