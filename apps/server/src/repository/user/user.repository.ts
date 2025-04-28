@@ -25,7 +25,7 @@ export async function getUserByEmail(email: string, includePassword = false) {
   if (!user) {
     return null;
   }
-  return user as any;
+  return user;
 }
 
 export async function getUserById(id: string) {
@@ -38,7 +38,7 @@ export async function getUserById(id: string) {
     return null;
   }
 
-  return userDtoMapper.mapToDto(user as any);
+  return userDtoMapper.mapToDto(user);
 }
 
 export async function createUser(
@@ -53,5 +53,5 @@ export async function createUser(
   if (!newUser) {
     return null;
   }
-  return userDtoMapper.mapToDto(newUser as any);
+  return userDtoMapper.mapToDto(newUser);
 }

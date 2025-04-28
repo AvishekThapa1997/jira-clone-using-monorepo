@@ -122,7 +122,7 @@ export const signInUser = tryCatch(
     const isPasswordSame = await comparePassword(
       user.password,
       password,
-      user.passwordSalt
+      user.password_salt
     );
     if (!isPasswordSame) {
       result.error = {
