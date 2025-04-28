@@ -11,7 +11,9 @@
     "lint": "turbo run lint",
     "migrate": "node-pg-migrate --envPath ./apps/server/.env -m ./apps/server/src/db/migrations -j sql",
     "migrate:create": "npm run migrate create -j sql",
-    "migrate:up": "npm run migrate up"
+    "migrate:up": "npm run migrate up",
+    "deploy:server": "npm install && npm run migrate:up && turbo run build --filter=@jira-clone/server",
+    "server:start": "node ./app/server/dist/index.js"
   },
   "keywords": [],
   "author": "",
