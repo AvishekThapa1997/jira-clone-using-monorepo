@@ -1,9 +1,12 @@
 import { CreateUserDto, type UserDto } from "@jira-clone/core/types";
 
+import { query } from "@/lib/db.js";
+import {
+  userCommonProps,
+  userPropsWithPassword,
+  type User,
+} from "@/model/user.js";
 import { userDtoMapper } from "./userdto.mapper.js";
-import { type User, users } from "@/schema/users.js";
-import { db } from "@/lib/db.js";
-import { eq } from "drizzle-orm";
 
 export function getUserByEmail(
   email: string,
@@ -14,55 +17,41 @@ export function getUserByEmail(
   includePassword?: false
 ): Promise<Omit<User, "password" | "passwordSalt"> | null>;
 export async function getUserByEmail(email: string, includePassword = false) {
-  const [user] = await db
-    .select({
-      id: users.id,
-      email: users.email,
-      name: users.name,
-      createdAt: users.createdAt,
-      ...(includePassword
-        ? { password: users.password, passwordSalt: users.passwordSalt }
-        : {}),
-    })
-    .from(users)
-    .where(eq(users.email, email))
-    .execute();
+  const result = await query<User>({
+    text: `SELECT ${includePassword ? userPropsWithPassword : userCommonProps} FROM users WHERE email = $1`,
+    values: [email],
+  });
+  const user = result.rows?.[0];
   if (!user) {
     return null;
   }
-
-  return user;
+  return user as any;
 }
 
 export async function getUserById(id: string) {
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, id))
-    .execute();
+  const result = await query<User>({
+    text: `SELECT ${userCommonProps} FROM users WHERE id = $1`,
+    values: [id],
+  });
+  const user = result.rows?.[0];
   if (!user) {
     return null;
   }
 
-  return userDtoMapper.mapToDto(user);
+  return userDtoMapper.mapToDto(user as any);
 }
 
 export async function createUser(
   createUser: CreateUserDto
 ): Promise<UserDto | null> {
   const { email, name, password, passwordSalt } = createUser;
-  const [newUser] = await db
-    .insert(users)
-    .values({
-      email,
-      name,
-      password,
-      passwordSalt,
-    })
-    .returning();
-
+  const result = await query<User>({
+    text: "INSERT INTO users(email, name, password, password_salt) VALUES($1, $2, $3, $4) RETURNING *",
+    values: [email, name, password, passwordSalt],
+  });
+  const newUser = result.rows?.[0];
   if (!newUser) {
     return null;
   }
-  return userDtoMapper.mapToDto(newUser);
+  return userDtoMapper.mapToDto(newUser as any);
 }

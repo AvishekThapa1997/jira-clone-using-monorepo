@@ -1,4 +1,11 @@
 import { appConfig } from "@/config/environment/index.js";
-import { drizzle } from "drizzle-orm/node-postgres";
-const db = drizzle(appConfig.DATABASE_URL!);
-export { db };
+import pg from "pg";
+const { Pool } = pg;
+
+const pool = new Pool({
+  connectionString: appConfig.DATABASE_URL,
+});
+
+const query = (() => pool.query.bind(pool))();
+
+export { query, pool };
