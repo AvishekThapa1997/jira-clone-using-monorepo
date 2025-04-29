@@ -14,10 +14,7 @@ export type TokenResult = {
   refreshToken: string;
   user: UserDto;
 };
-export type AuthResult = {
-  accessTokenExpiration: string;
-  user: UserDto;
-};
+export type AuthResult = Omit<TokenResult, "refreshToken">;
 
 export type JwtTokenPayload = {
   userId: UserDto["id"];

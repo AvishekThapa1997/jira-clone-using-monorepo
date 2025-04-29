@@ -12,7 +12,7 @@ import {
   signInUser,
   signUpUser,
 } from "./auth.service.js";
-import { setRefreshTokenAndAccessTokenInCookie } from "./token.util.js";
+import { setRefreshTokenInCookie } from "./token.util.js";
 import { CONSTANTS } from "@/constants/index.js";
 import type { Response } from "express";
 
@@ -24,14 +24,15 @@ import type { Response } from "express";
  *                      access token, refresh token, expiration time, and user details.
  * @param res - The HTTP response object used to set cookies for the tokens.
  * @returns An object containing the HTTP status code and the authentication result,
- *          which includes the access token expiration time and user details.
+ *          which includes the access token, expiration time and user details.
  */
 const handleAuthSuccess = (tokenResult: TokenResult, res: Response) => {
   const { accessToken, refreshToken, expireAt, user } = tokenResult;
-  setRefreshTokenAndAccessTokenInCookie(refreshToken, accessToken, res);
+  setRefreshTokenInCookie(refreshToken, res);
   const authResult: AuthResult = {
-    accessTokenExpiration: expireAt,
+    expireAt,
     user,
+    accessToken,
   };
   return authResult;
 };

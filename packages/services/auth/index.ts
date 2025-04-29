@@ -9,9 +9,9 @@ import type {
 } from "@jira-clone/core/types";
 import {
   handleError,
+  privateFetch,
   publicFetch,
-  refreshAccessToken,
-  setTokenExpirationInLocalStorage,
+  setTokenDetailsInLocalStorage,
   tryCatch,
 } from "@jira-clone/core/utils";
 import { getAuth } from "@jira-clone/firebase/auth";
@@ -45,8 +45,8 @@ export const signUpUser = tryCatch(
       method,
     });
     if (result.data) {
-      const { accessTokenExpiration } = result.data;
-      setTokenExpirationInLocalStorage(accessTokenExpiration);
+      const { accessToken, expireAt } = result.data;
+      setTokenDetailsInLocalStorage(accessToken, expireAt);
       const user = result.data.user;
       return {
         data: user,
@@ -70,8 +70,8 @@ export const signInUser = tryCatch(
       method,
     });
     if (result.data) {
-      const { accessTokenExpiration } = result.data;
-      setTokenExpirationInLocalStorage(accessTokenExpiration);
+      const { accessToken, expireAt } = result.data;
+      setTokenDetailsInLocalStorage(accessToken, expireAt);
       const user = result.data?.user;
       return {
         data: user,
@@ -84,15 +84,11 @@ export const signInUser = tryCatch(
 );
 
 export const getUserSession = tryCatch(async () => {
-  const isTokenUpdated = await refreshAccessToken();
-  if (!isTokenUpdated) {
-    return null;
-  }
   const { url } = AUTH_API.SESSION;
-  const result = await publicFetch<Result<UserDto>>(url, {
+  const result = await privateFetch<Result<UserDto>>(url, {
     credentials: "include",
   });
-  if (result.data?.id) {
+  if (result?.data?.id) {
     return result;
   }
   return null;

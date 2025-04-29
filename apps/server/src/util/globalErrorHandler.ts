@@ -8,6 +8,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
   res,
   _next
 ) => {
+  console.log(err);
   const result: Result<void> = {
     error: {
       message: ReasonPhrases.INTERNAL_SERVER_ERROR,

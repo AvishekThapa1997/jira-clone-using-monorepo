@@ -12,8 +12,8 @@
     "migrate": "node-pg-migrate --envPath ./apps/server/.env -m ./apps/server/src/db/migrations -j sql",
     "migrate:create": "npm run migrate create -j sql",
     "migrate:up": "npm run migrate up",
-    "deploy:server": "npm install && npm i turbo -g && npm run migrate:up && turbo run build --filter=@jira-clone/server",
-    "server:start": "node ./apps/server/dist/index.js"
+    "deploy:server": "npm install && npm run migrate:up && turbo run build --filter=@jira-clone/server",
+    "server:start": "cross-env NODE_ENV=production node ./apps/server/dist/index.js"
   },
   "keywords": [],
   "author": "",

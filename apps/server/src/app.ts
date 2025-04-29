@@ -4,12 +4,10 @@ import "@/lib/db.js";
 import { authRoutes } from "@/auth/auth.route.js";
 import { globalErrorHandler } from "@/util/globalErrorHandler.js";
 import cookieParser from "cookie-parser";
-import cors from "cors";
 import { serverHealtCheckHandler } from "./util/serverHealthCheckHandler.js";
 import { pool } from "@/lib/db.js";
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 process.on("uncaughtException", (err) => {

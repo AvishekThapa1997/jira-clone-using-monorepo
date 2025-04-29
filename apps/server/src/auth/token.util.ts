@@ -161,27 +161,20 @@ const verifyToken = async (token: string) => {
 };
 
 /**
- * Sets the refresh token and access token as HTTP-only cookies in the response.
+ * Sets the refresh token as HTTP-only cookies in the response.
  *
  * @param refreshToken - The refresh token to be set in the cookie.
- * @param accessToken - The access token to be set in the cookie.
  * @param res - The HTTP response object used to set the cookies.
  */
-export const setRefreshTokenAndAccessTokenInCookie = (
+export const setRefreshTokenInCookie = (
   refreshToken: string,
-  accessToken: string,
   res: Response
 ) => {
+  console.log("REFRESH", appConfig.NODE_ENV);
   res.cookie(CONSTANTS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: CONSTANTS.REFRESH_TOKEN_EXPIRATION,
-  });
-  res.cookie(CONSTANTS.ACCESS_TOKEN, accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: CONSTANTS.ACCESS_TOKEN_EXPIRATION,
   });
 };
