@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "dependencies": {
+    "@jira-clone/core": "*",
     "@jira-clone/firebase": "*"
   },
   "exports": {
@@ -17,7 +18,7 @@
     }
   },
   "scripts": {
-    "build": "npm run build --workspace=@jira-clone/firebase && tsc --build"
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC"

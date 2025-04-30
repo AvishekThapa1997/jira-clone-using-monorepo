@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build --workspace=@jira-clone/core && tsc --build"
+    "build": "tsc"
   },
   "exports": {
     ".": {
@@ -40,6 +40,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@jira-clone/core": "*",
     "firebase": "^11.4.0"
   },
   "devDependencies": {

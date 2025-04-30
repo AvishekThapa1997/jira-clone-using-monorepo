@@ -13,8 +13,7 @@
     "migrate:create": "npm run migrate create -j sql",
     "migrate:up": "npm run migrate up",
     "deploy:server": "npm install && npm run migrate:up && turbo run build --filter=@jira-clone/server",
-    "deploy:frontend": "npm install && turbo run build --filer=@jira-clone/react-app",
-    "server:start": "cross-env NODE_ENV=production node ./apps/server/dist/index.js"
+    "server:start": "node ./apps/server/dist/index.js"
   },
   "keywords": [],
   "author": "",

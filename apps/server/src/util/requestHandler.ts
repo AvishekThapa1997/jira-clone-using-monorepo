@@ -1,6 +1,7 @@
 import { logRequest } from "@/lib/logger.js";
 import { Result } from "@jira-clone/core/types";
 import { type RequestHandler, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 type ExpressRequest<Body, Param, Query> = Request<Param, any, Body, Query>;
 
@@ -63,7 +64,9 @@ export const requestHandler = <T extends Partial<RequestHandlerParam>>(
         return;
       }
       const { status: successStatus, result } = handlerResult;
-      let status = result?.error ? result.error.code : successStatus;
+      let status = result?.error
+        ? (result.error.code ?? StatusCodes.INTERNAL_SERVER_ERROR)
+        : successStatus;
       if (result?.data?.refreshToken) {
         delete result?.data?.refreshToken;
       }
