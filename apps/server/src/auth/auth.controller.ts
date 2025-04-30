@@ -5,7 +5,7 @@ import type {
   SignUpSchema,
   TokenResult,
 } from "@jira-clone/core/types";
-import { StatusCodes } from "http-status-codes";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import {
   getUserSession,
   refreshToken,
@@ -150,6 +150,17 @@ export const getSessionHandler = requestHandler(async ({ req }) => {
  */
 export const refreshTokenHandler = requestHandler(async ({ req, res }) => {
   const existingRefreshToken = req.cookies[CONSTANTS.REFRESH_TOKEN] as string;
+  if (!existingRefreshToken) {
+    return {
+      status: StatusCodes.UNAUTHORIZED,
+      result: {
+        error: {
+          message: ReasonPhrases.UNAUTHORIZED,
+          code: StatusCodes.UNAUTHORIZED,
+        },
+      },
+    };
+  }
   const result = await refreshToken(existingRefreshToken);
   if (result?.data) {
     const authResult = handleAuthSuccess(result.data, res);

@@ -38,6 +38,12 @@
       "types": "./dist/keys/workspace.d.ts",
       "default": "./dist/keys/workspace.js"
     },
+    "./keys/auth": {
+      "import": "./dist/keys/auth.js",
+      "require": "./dist/keys/auth.js",
+      "types": "./dist/keys/auth.d.ts",
+      "default": "./dist/keys/auth.js"
+    },
     "./schema/auth": {
       "import": "./dist/schema/auth.js",
       "require": "./dist/schema/auth.js",

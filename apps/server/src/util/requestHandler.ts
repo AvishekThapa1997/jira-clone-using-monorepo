@@ -1,3 +1,4 @@
+import { logRequest } from "@/lib/logger.js";
 import { Result } from "@jira-clone/core/types";
 import { type RequestHandler, Request, Response } from "express";
 
@@ -51,6 +52,7 @@ export const requestHandler = <T extends Partial<RequestHandlerParam>>(
 ): RequestHandler<T["params"], any, T["payload"], T["query"]> => {
   return async (req, res, next) => {
     try {
+      logRequest(req);
       const payload = req.body as T["payload"];
       const param = req.params as T["params"];
       const query = req.query as T["query"];

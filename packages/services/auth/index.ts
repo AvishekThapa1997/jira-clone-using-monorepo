@@ -8,6 +8,7 @@ import type {
   ValidationError,
 } from "@jira-clone/core/types";
 import {
+  getAccessToken,
   handleError,
   privateFetch,
   publicFetch,
@@ -83,16 +84,27 @@ export const signInUser = tryCatch(
   }
 );
 
-export const getUserSession = tryCatch(async () => {
-  const { url } = AUTH_API.SESSION;
-  const result = await privateFetch<Result<UserDto>>(url, {
-    credentials: "include",
-  });
-  if (result?.data?.id) {
-    return result;
+export const getUserSession = tryCatch(
+  async () => {
+    const { user } = (await getAccessToken()) ?? {};
+    if (user) {
+      return {
+        data: user,
+      };
+    }
+    const { url } = AUTH_API.SESSION;
+    const result = await privateFetch<Result<UserDto>>(url, {
+      credentials: "include",
+    });
+    if (result?.data?.id) {
+      return result;
+    }
+    return null;
+  },
+  {
+    throwOnError: true,
   }
-  return null;
-});
+);
 
 export type SignInUserResult = Awaited<ReturnType<typeof signInUser>>;
 

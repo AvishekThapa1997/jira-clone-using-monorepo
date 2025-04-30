@@ -62,20 +62,15 @@ export const privateFetch = async <ResponseResult = any, RequestBody = any>(
   requestConfig: FetchRequest<RequestBody>,
   responseType: ResponseType = "json"
 ): Promise<ResponseResult | undefined> => {
-  const token = await getAccessToken(); // create a function that will check access token expiration from local storage if threshold is 5 min then refresh,access token will be stored in cookie only
-  if (!token) {
-    document.location.href =
-      "/auth/sign-in?error=You'r session has expired. Please login to continue.";
-  } else {
-    const bearerToken = `Bearer ${token}`;
-    const response = await fetch(url, {
-      ...requestConfig,
-      headers: { ...initHeaders(requestConfig), Authorization: bearerToken },
-      body: stringifyRequestBody(requestConfig),
-    });
-    const result = response[responseType]();
-    return result;
-  }
+  const result = await getAccessToken(); // create a function that will check access token expiration from local storage if threshold is 5 min then refresh,access token will be stored in cookie only
+  const { token } = result ?? {};
+  const bearerToken = `Bearer ${token}`;
+  const response = await fetch(url, {
+    ...requestConfig,
+    headers: { ...initHeaders(requestConfig), Authorization: bearerToken },
+    body: stringifyRequestBody(requestConfig),
+  });
+  return response[responseType]();
 };
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -131,15 +126,6 @@ export const parseSchema = <Schema = ZodSchema>(
     errors,
   };
 };
-
-export class OperationalError extends Error {
-  constructor(
-    public code: number,
-    message: string
-  ) {
-    super(message);
-  }
-}
 
 /**
  * Stores the access token and its expiration time in the browser's local storage.
@@ -199,36 +185,32 @@ export const getAccessToken = tryCatch(
   async (forceRefresh: boolean = false) => {
     const existingToken = getExistingToken();
     if (existingToken && !forceRefresh) {
-      return existingToken;
+      return { token: existingToken };
     } else {
       const { url } = AUTH_API.REFRESH_TOKEN;
       const result = await publicFetch<Result<AuthResult>>(url, {
         credentials: "include",
       });
-      if (result?.data) {
-        const { accessToken, expireAt } = result.data;
-        setTokenDetailsInLocalStorage(accessToken, expireAt);
-        return result.data.accessToken;
+      if (!result?.data) {
+        throw new Error("Session expired");
       }
-      return null;
+      const { accessToken, expireAt, user } = result.data;
+      setTokenDetailsInLocalStorage(accessToken, expireAt);
+      return { token: accessToken, expireAt, user };
     }
+  },
+  {
+    throwOnError: true,
   }
 );
 
 export const handleError = (err: unknown): ErrorResult => {
   if (err instanceof Error) {
     return {
-      code: 0,
-      message: err.message,
-    };
-  } else if (err instanceof OperationalError || err instanceof Error) {
-    return {
-      code: 0,
       message: err.message,
     };
   }
   return {
-    code: 0,
     message: "Something went wrong",
   };
 };

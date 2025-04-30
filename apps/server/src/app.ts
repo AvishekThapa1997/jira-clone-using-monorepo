@@ -21,6 +21,7 @@ process.on("unhandledRejection", (reason) => {
   pool.end();
   process.exit(1);
 });
+
 export async function initServer() {
   const appRoutes = Router();
   appRoutes.use(authRoutes);

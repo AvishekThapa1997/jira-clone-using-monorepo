@@ -1,3 +1,5 @@
+import { appConfig } from "@/config/environment/index.js";
+
 export const isDevEnvironment = () => {
-  return process.env.NODE_ENV === "development";
+  return appConfig.NODE_ENV === "development";
 };

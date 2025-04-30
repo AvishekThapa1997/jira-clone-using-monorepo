@@ -2,10 +2,12 @@
 
 import { appConfig } from "@/config/environment/index.js";
 import { CONSTANTS } from "@/constants/index.js";
+import { OperationalError } from "@/error/OperationalError.js";
 import { redis } from "@/lib/redis.js";
 import { isDevEnvironment } from "@/util/shared.js";
 import { JwtTokenPayload, type UserDto } from "@jira-clone/core/types";
 import { type Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import jwt, { type SignOptions } from "jsonwebtoken";
 
 /**
@@ -151,7 +153,12 @@ const verifyToken = async (token: string) => {
     const tokenSecret = appConfig.TOKEN_SECRET;
     jwt.verify(token, tokenSecret, function (err, tokenData) {
       if (err) {
-        reject(err);
+        reject(
+          new OperationalError(
+            ReasonPhrases.UNAUTHORIZED,
+            StatusCodes.UNAUTHORIZED
+          )
+        );
       } else {
         const tokenPayload = tokenData as JwtTokenPayload;
         resolve(tokenPayload.userId);
@@ -170,7 +177,6 @@ export const setRefreshTokenInCookie = (
   refreshToken: string,
   res: Response
 ) => {
-  console.log("REFRESH", appConfig.NODE_ENV);
   res.cookie(CONSTANTS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

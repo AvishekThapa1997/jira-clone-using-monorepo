@@ -1,4 +1,5 @@
 import { OperationalError } from "@/error/OperationalError.js";
+import { logError } from "@/lib/logger.js";
 import { Result } from "@jira-clone/core/types";
 import { type ErrorRequestHandler } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
@@ -8,7 +9,6 @@ export const globalErrorHandler: ErrorRequestHandler = (
   res,
   _next
 ) => {
-  console.log(err);
   const result: Result<void> = {
     error: {
       message: ReasonPhrases.INTERNAL_SERVER_ERROR,
@@ -17,12 +17,16 @@ export const globalErrorHandler: ErrorRequestHandler = (
   };
   let status = StatusCodes.INTERNAL_SERVER_ERROR;
   if (err instanceof OperationalError) {
+    logError(
+      `Error code: ${err.status}, Message: ${err.message}, stack: ${err.stack}`
+    );
     result.error = {
       message: err.message,
       code: err.status,
       validationErrors: err.errors,
     };
   } else if (err instanceof Error) {
+    logError(`Message: ${err.message}, stack: ${err.stack}`);
     result.error = {
       message: err.message,
       code: status,

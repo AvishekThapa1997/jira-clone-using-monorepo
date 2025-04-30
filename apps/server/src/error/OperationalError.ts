@@ -6,9 +6,7 @@ class OperationalError extends Error {
     public isValidationError?: boolean
   ) {
     super(message);
-    if (process.env.NODE_ENV === "development") {
-      Error.captureStackTrace(this, OperationalError);
-    }
+    Error.captureStackTrace(this, OperationalError);
   }
 }
 
