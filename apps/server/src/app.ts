@@ -6,8 +6,10 @@ import { globalErrorHandler } from "@/util/globalErrorHandler.js";
 import cookieParser from "cookie-parser";
 import { serverHealtCheckHandler } from "./util/serverHealthCheckHandler.js";
 import { pool } from "@/lib/db.js";
+import { notFoundHandler } from "./util/notFoundHandler.js";
 
 const app = express();
+
 app.use(express.json());
 app.use(cookieParser());
 process.on("uncaughtException", (err) => {
@@ -26,7 +28,8 @@ export async function initServer() {
   const appRoutes = Router();
   appRoutes.use(authRoutes);
   app.use("/api", appRoutes);
-  app.use(serverHealtCheckHandler);
+  app.get("/", serverHealtCheckHandler);
+  app.use(notFoundHandler);
   app.use(globalErrorHandler);
 }
 initServer();
