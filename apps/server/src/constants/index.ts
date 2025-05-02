@@ -1,7 +1,7 @@
 export const CONSTANTS = {
   VALIDATION_ERRORS: "Validation Error",
   EMAIL_IS_ALREADY_REGISTERED: "Email is already registered.",
-  ACCESS_TOKEN_EXPIRATION: 1 * 1 * 7 * 60 * 1000,
+  ACCESS_TOKEN_EXPIRATION: 1 * 24 * 60 * 60 * 1000,
   REFRESH_TOKEN_EXPIRATION: 7 * 24 * 60 * 60 * 1000,
   ACCOUNT_CREATED_TOKEN_FAILED_MSG:
     "Your account was created, but we're having trouble logging you in. Please try again in a moment.",
