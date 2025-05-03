@@ -1,76 +1,202 @@
 import clsx, { ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ZodSchema } from "zod";
-import {
+import type {
+  ApiOptions,
+  ApiOptionsWithoutMethod,
   AuthResult,
   ErrorResult,
+  FetchRequest,
+  FetchUrl,
+  InitRequestOptions,
+  ParseSchemaResult,
+  ResponseType,
   Result,
+  TryCatchOptions,
   ValidationError,
 } from "../types/index.js";
 import { AUTH_API, CONSTANTS } from "../constants/auth.js";
-type FetchUrl = string | URL | Request;
-type FetchRequest<RequestBody = any> = Omit<RequestInit, "body"> & {
-  body?: RequestBody;
-};
-type TryCatchOptions = {
-  throwOnError: boolean;
-  finally?: () => void;
-};
 
-type ResponseType = keyof Pick<
-  Response,
-  "arrayBuffer" | "blob" | "json" | "text"
->;
-
-type ParseSchemaResult<Schema> = {
-  data?: Schema;
-  errors?: ValidationError<Schema>;
-};
-const initHeaders = (requestConfig?: FetchRequest): Headers => {
-  const headers = new Headers();
-  const headerValues = Object.entries(requestConfig?.headers ?? {});
-  if (headerValues.length > 0) {
-    headerValues.forEach(([key, value]) => {
-      headers.append(key, value);
-    });
-  }
+/**
+ * Initializes and returns a `Headers` object populated with the headers
+ * provided in the optional `requestConfig` parameter.
+ *
+ * @param requestConfig - An optional configuration object of type `FetchRequest`
+ * containing a `headers` property. The `headers` property should be an object
+ * where keys are header names and values are header values.
+ *
+ * @returns A `Headers` object containing the headers from the `requestConfig`.
+ */
+const initHeaders = (requestConfig?: FetchRequest): Record<string, string> => {
+  const headers: Record<string, string> = {};
+  Object.entries(requestConfig?.headers ?? {}).reduce<Record<string, string>>(
+    (cumm, curr) => {
+      const [key, val] = curr;
+      cumm[key] = val;
+      return cumm;
+    },
+    headers
+  );
   return headers;
 };
 
+/**
+ * Converts the `body` property of a `FetchRequest` object into a JSON string.
+ *
+ * @param requestConfig - An optional `FetchRequest` object containing the request configuration.
+ * @returns A JSON string representation of the `body` property if it exists, otherwise `undefined`.
+ */
 const stringifyRequestBody = (requestConfig?: FetchRequest) => {
   if (requestConfig?.body) {
     return JSON.stringify(requestConfig?.body);
   }
 };
 
-export const publicFetch = async <ResponseResult = any, RequestBody = any>(
-  url: FetchUrl,
-  requestConfig?: FetchRequest<RequestBody>,
-  responseType: ResponseType = "json"
-): Promise<ResponseResult> => {
-  const response = await fetch(url, {
-    headers: initHeaders(requestConfig),
-    ...(requestConfig ?? {}),
-    body: stringifyRequestBody(requestConfig),
-  });
-  const result = response[responseType]();
-  return result;
+const _fetch: typeof fetch = (...args) => {
+  return fetch(...args);
 };
 
-export const privateFetch = async <ResponseResult = any, RequestBody = any>(
-  url: FetchUrl,
-  requestConfig: FetchRequest<RequestBody>,
-  responseType: ResponseType = "json"
-): Promise<ResponseResult | undefined> => {
-  const result = await getAccessToken(); // create a function that will check access token expiration from local storage if threshold is 5 min then refresh,access token will be stored in cookie only
-  const { token } = result ?? {};
-  const bearerToken = `Bearer ${token}`;
-  const response = await fetch(url, {
-    ...requestConfig,
-    headers: { ...initHeaders(requestConfig), Authorization: bearerToken },
-    body: stringifyRequestBody(requestConfig),
+/**
+ * Initializes a request configuration object by merging provided options
+ * with default headers and request body formatting.
+ *
+ * @param {InitRequestOptions} options - The options for initializing the request.
+ * @param {string} options.method - The HTTP method to use for the request (e.g., 'GET', 'POST').
+ * @param {Record<string, string>} options.additionalHeaders - Additional headers to include in the request.
+ * @param {RequestConfig} [options.requestConfig] - Optional base configuration for the request.
+ *
+ * @returns {RequestConfig | {}} The initialized request configuration object, or an empty object if no configuration is provided.
+ */
+const initRequest = ({
+  method,
+  additionalHeaders,
+  requestConfig,
+}: InitRequestOptions) => {
+  if (requestConfig) {
+    return {
+      ...requestConfig,
+      headers: { ...initHeaders(requestConfig), ...additionalHeaders },
+      body: stringifyRequestBody(requestConfig),
+      method,
+    };
+  }
+  return {};
+};
+
+/**
+ * Generates an authorization header for HTTP requests.
+ *
+ * @param requireAuth - A boolean indicating whether authentication is required. Defaults to `true`.
+ * @returns A promise that resolves to an object containing the `Authorization` header if authentication is required and a token is available, or an empty object otherwise.
+ *
+ * @example
+ * // Usage when authentication is required
+ * const header = await getAuthorizationHeader(true);
+ * console.log(header); // { Authorization: 'Bearer <token>' }
+ *
+ * @example
+ * // Usage when authentication is not required
+ * const header = await getAuthorizationHeader(false);
+ * console.log(header); // {}
+ */
+const getAuthorizationHeader = async (
+  requireAuth: boolean = true
+): Promise<Record<string, string>> => {
+  if (requireAuth) {
+    const result = await getAccessToken();
+    const { token } = result ?? {};
+    if (token) {
+      return { Authorization: `Bearer ${token}` };
+    }
+  }
+  return {};
+};
+
+/**
+ * Makes an HTTP request with the specified options and returns the response in the desired format.
+ *
+ * @template RequestBody - The type of the request body.
+ * @param {ApiOptions<RequestBody>} options - The options for the API request.
+ * @param {string} options.url - The URL to which the request is sent.
+ * @param {string} options.method - The HTTP method to use for the request (e.g., GET, POST).
+ * @param {boolean} options.requireAuth - Indicates whether the request requires authentication.
+ * @param {RequestInit} [options.requestConfig] - Additional configuration for the request, such as headers or body.
+ * @param {keyof Response} options.responseType - The type of response to return (e.g., "json", "text").
+ * @returns {Promise<any>} A promise that resolves to the response in the specified format.
+ * @throws {Error} Throws an error if the request fails or if the response cannot be processed.
+ */
+const makeRequest = async <ResponseResult, RequestBody>({
+  url,
+  method,
+  requireAuth,
+  requestConfig,
+  responseType,
+}: Required<ApiOptions<RequestBody>>) => {
+  const authHeaders = await getAuthorizationHeader(requireAuth);
+  const req = initRequest({
+    method,
+    requestConfig,
+    additionalHeaders: authHeaders,
   });
-  return response[responseType]();
+  const response = await _fetch(url, req);
+  return response[responseType]() as ResponseResult;
+};
+
+/**
+ * A utility object for making API requests with predefined methods.
+ */
+export const api = {
+  /**
+   * Sends a GET request to the specified URL.
+   *
+   * @template RequestBody - The type of the request body.
+   * @param {ApiOptionsWithoutMethod<RequestBody>} options - The options for the GET request.
+   * @param {string} options.url - The URL to send the request to.
+   * @param {object} [options.requestConfig] - Additional configuration for the request.
+   * @param {boolean} [options.requireAuth=true] - Whether the request requires authentication.
+   * @param {string} [options.responseType="json"] - The expected response type.
+   * @returns {Promise<any>} A promise that resolves with the response data.
+   */
+  get: <ResponseResult, RequestBody = any>({
+    url,
+    requestConfig = {},
+    requireAuth = true,
+    responseType = "json",
+  }: ApiOptionsWithoutMethod<RequestBody>) => {
+    return makeRequest<ResponseResult, RequestBody>({
+      url,
+      method: "GET",
+      requireAuth,
+      requestConfig,
+      responseType,
+    });
+  },
+
+  /**
+   * Sends a POST request to the specified URL.
+   *
+   * @template RequestBody - The type of the request body.
+   * @param {ApiOptionsWithoutMethod<RequestBody>} options - The options for the POST request.
+   * @param {string} options.url - The URL to send the request to.
+   * @param {object} [options.requestConfig] - Additional configuration for the request.
+   * @param {boolean} [options.requireAuth=true] - Whether the request requires authentication.
+   * @param {string} [options.responseType="json"] - The expected response type.
+   * @returns {Promise<any>} A promise that resolves with the response data.
+   */
+  post: <ResponseResult, RequestBody = any>({
+    url,
+    requestConfig = {},
+    requireAuth = true,
+    responseType = "json",
+  }: ApiOptionsWithoutMethod<RequestBody>): Promise<ResponseResult> => {
+    return makeRequest<ResponseResult, RequestBody>({
+      url,
+      method: "POST",
+      requireAuth,
+      requestConfig,
+      responseType,
+    });
+  },
 };
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -188,9 +314,7 @@ export const getAccessToken = tryCatch(
       return { token: existingToken };
     } else {
       const { url } = AUTH_API.REFRESH_TOKEN;
-      const result = await publicFetch<Result<AuthResult>>(url, {
-        credentials: "include",
-      });
+      const result = await api.get<Result<AuthResult>>({ url });
       if (!result?.data) {
         throw new Error("Session expired");
       }

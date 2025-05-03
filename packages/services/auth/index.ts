@@ -8,10 +8,9 @@ import type {
   ValidationError,
 } from "@jira-clone/core/types";
 import {
+  api,
   getAccessToken,
   handleError,
-  privateFetch,
-  publicFetch,
   setTokenDetailsInLocalStorage,
   tryCatch,
 } from "@jira-clone/core/utils";
@@ -35,15 +34,18 @@ export const signUpUser = tryCatch(
     password,
     name,
   }: SignUpSchema): Promise<Result<UserDto, ValidationError<SignUpSchema>>> => {
-    const { url, headers, method } = AUTH_API.SIGN_UP;
-    const result = await publicFetch<Result<AuthResult>, SignUpSchema>(url, {
-      body: {
-        email,
-        name,
-        password,
+    const { url, headers } = AUTH_API.SIGN_UP;
+    const result = await api.post<Result<AuthResult>, SignUpSchema>({
+      url,
+      requestConfig: {
+        body: {
+          email,
+          name,
+          password,
+        },
+        headers,
       },
-      headers,
-      method,
+      requireAuth: false,
     });
     if (result.data) {
       const { accessToken, expireAt } = result.data;
@@ -61,14 +63,17 @@ export const signUpUser = tryCatch(
 
 export const signInUser = tryCatch(
   async ({ email, password }: SignInSchema): Promise<Result<UserDto>> => {
-    const { url, headers, method } = AUTH_API.SIGN_IN;
-    const result = await publicFetch<Result<AuthResult>, SignInSchema>(url, {
-      body: {
-        email,
-        password,
+    const { url, headers } = AUTH_API.SIGN_IN;
+    const result = await api.post<Result<AuthResult>, SignInSchema>({
+      url,
+      requestConfig: {
+        body: {
+          email,
+          password,
+        },
+        headers,
       },
-      headers,
-      method,
+      requireAuth: false,
     });
     if (result.data) {
       const { accessToken, expireAt } = result.data;
@@ -84,27 +89,20 @@ export const signInUser = tryCatch(
   }
 );
 
-export const getUserSession = tryCatch(
-  async () => {
-    const { user } = (await getAccessToken()) ?? {};
-    if (user) {
-      return {
-        data: user,
-      };
-    }
-    const { url } = AUTH_API.SESSION;
-    const result = await privateFetch<Result<UserDto>>(url, {
-      credentials: "include",
-    });
-    if (result?.data?.id) {
-      return result;
-    }
-    return null;
-  },
-  {
-    throwOnError: true,
+export const getUserSession = tryCatch(async () => {
+  const { user } = (await getAccessToken()) ?? {};
+  if (user) {
+    return {
+      data: user,
+    };
   }
-);
+  const { url } = AUTH_API.SESSION;
+  const result = await api.get<Result<UserDto>>({ url });
+  if (result?.data?.id) {
+    return result;
+  }
+  return null;
+});
 
 export type SignInUserResult = Awaited<ReturnType<typeof signInUser>>;
 

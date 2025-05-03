@@ -33,3 +33,43 @@ export type OnFormSubmitOptions<T> = {
 export type FormInput<T> = {
   value?: T;
 };
+
+export type FetchUrl = string | URL | Request;
+export type FetchRequest<RequestBody = any> = Omit<RequestInit, "body"> & {
+  body?: RequestBody;
+};
+export type TryCatchOptions = {
+  throwOnError: boolean;
+  finally?: () => void;
+};
+
+export type ResponseType = keyof Pick<
+  Response,
+  "arrayBuffer" | "blob" | "json" | "text"
+>;
+
+export type ParseSchemaResult<Schema> = {
+  data?: Schema;
+  errors?: ValidationError<Schema>;
+};
+
+export type InitRequestOptions = {
+  method: ApiMethod;
+  requestConfig?: FetchRequest;
+  additionalHeaders: Record<string, string>;
+};
+
+export type ApiMethod = "GET" | "POST";
+
+export type ApiOptions<RequestBody> = {
+  url: FetchUrl;
+  method: ApiMethod;
+  requestConfig?: FetchRequest<RequestBody>;
+  requireAuth?: boolean;
+  responseType?: ResponseType;
+};
+
+export type ApiOptionsWithoutMethod<RequestBody> = Omit<
+  ApiOptions<RequestBody>,
+  "method"
+>;
