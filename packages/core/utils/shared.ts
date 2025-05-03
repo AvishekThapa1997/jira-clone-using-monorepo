@@ -1,21 +1,19 @@
 import clsx, { ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ZodSchema } from "zod";
+import { AUTH_API, CONSTANTS } from "../constants/auth.js";
 import type {
   ApiOptions,
   ApiOptionsWithoutMethod,
   AuthResult,
   ErrorResult,
   FetchRequest,
-  FetchUrl,
   InitRequestOptions,
   ParseSchemaResult,
-  ResponseType,
   Result,
   TryCatchOptions,
   ValidationError,
 } from "../types/index.js";
-import { AUTH_API, CONSTANTS } from "../constants/auth.js";
 
 /**
  * Initializes and returns a `Headers` object populated with the headers
